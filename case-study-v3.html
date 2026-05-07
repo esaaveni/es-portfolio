@@ -548,7 +548,7 @@
 
     /* ── MOBILE PROGRESS BAR ── */
     .mob-progress {
-      display: none;
+      display: block;
       position: fixed;
       top: calc(var(--nav-h) + var(--bar-h));
       left: 0; right: 0;
@@ -556,6 +556,9 @@
       background: var(--ash);
       z-index: 185;
       pointer-events: none;
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--bar-h)));
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
     }
     .mob-progress-fill {
       height: 100%;
@@ -563,7 +566,10 @@
       background: var(--ink);
       transition: width 0.2s ease;
     }
-    .mob-progress.visible { display: block; }
+    .mob-progress.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* ── MOBILE FLOATING CHIP ── */
     .mob-chip {
@@ -1230,14 +1236,19 @@
 
     window.addEventListener('scroll', updateProgress, { passive: true });
 
-    // Show title bar + sidebar + mobile elements when hero scrolls out
+    // Show chip immediately on any scroll (independent of hero)
+    window.addEventListener('scroll', () => {
+      if (!isMobile()) return;
+      mobChip.classList.toggle('visible', window.scrollY > 50);
+    }, { passive: true });
+
+    // Show title bar + sidebar + progress bar when hero scrolls out
     const heroObs = new IntersectionObserver((entries) => {
       const gone = !entries[0].isIntersecting;
       titleBar.classList.toggle('visible', gone);
       sidebar.classList.toggle('visible', gone);
       if (isMobile()) {
         mobProgress.classList.toggle('visible', gone);
-        mobChip.classList.toggle('visible', gone);
       }
     }, { threshold: 0 });
     heroObs.observe(hero);
