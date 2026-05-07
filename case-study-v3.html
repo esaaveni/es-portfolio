@@ -539,25 +539,124 @@
 
     /* ─ RESPONSIVE: collapse sidebar on small screens ─ */
     @media (max-width: 860px) {
-      .page-grid {
-        grid-template-columns: 1fr;
-      }
+      .page-grid { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .title-bar { padding-left: 48px; }
+      .content { padding: 0 32px 120px; }
+      footer { padding: 32px; }
+    }
 
-      .sidebar {
-        display: none;
-      }
+    /* ── MOBILE PROGRESS BAR ── */
+    .mob-progress {
+      display: none;
+      position: fixed;
+      top: calc(var(--nav-h) + var(--bar-h));
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--ash);
+      z-index: 185;
+      pointer-events: none;
+    }
+    .mob-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--ink);
+      transition: width 0.2s ease;
+    }
+    .mob-progress.visible { display: block; }
 
-      .title-bar {
-        padding-left: 48px;
-      }
+    /* ── MOBILE FLOATING CHIP ── */
+    .mob-chip {
+      display: none;
+      position: fixed;
+      bottom: 24px; right: 20px;
+      background: var(--ink);
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      border-radius: 20px;
+      padding: 9px 16px;
+      cursor: pointer;
+      z-index: 300;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transition: transform 0.2s var(--ease), opacity 0.3s var(--ease);
+      white-space: nowrap;
+    }
+    .mob-chip:active { transform: scale(0.96); }
+    .mob-chip.visible { display: block; }
 
-      .content {
-        padding: 0 32px 120px;
-      }
+    /* ── MOBILE BOTTOM SHEET ── */
+    .mob-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      z-index: 400;
+      transition: background 0.3s;
+    }
+    .mob-overlay.open { background: rgba(0,0,0,0.3); }
+    .mob-sheet {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: var(--paper);
+      border-radius: 16px 16px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1);
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .mob-sheet.open { transform: translateY(0); }
+    .mob-sheet-handle {
+      width: 32px; height: 3px;
+      background: var(--ash);
+      border-radius: 2px;
+      margin: 12px auto 10px;
+    }
+    .mob-sheet-title {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      padding: 0 20px 10px;
+    }
+    .mob-sheet-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-top: 1px solid var(--ash);
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+    }
+    .mob-sheet-item:active { background: var(--ash); }
+    .mob-sheet-num {
+      font-size: 10px;
+      color: var(--graphite);
+      width: 20px;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .mob-sheet-name {
+      font-size: 13px;
+      color: var(--ink);
+      flex: 1;
+    }
+    .mob-sheet-item.active-section .mob-sheet-num { color: var(--ink); font-weight: 500; }
+    .mob-sheet-item.active-section .mob-sheet-name { font-weight: 600; }
+    .mob-sheet-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--ink);
+      opacity: 0;
+      flex-shrink: 0;
+    }
+    .mob-sheet-item.active-section .mob-sheet-dot { opacity: 1; }
 
-      footer {
-        padding: 32px;
-      }
+    @media (min-width: 861px) {
+      .mob-chip, .mob-overlay, .mob-progress { display: none !important; }
     }
   </style>
 </head>
@@ -589,6 +688,21 @@
       <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
     </div>
   </nav>
+
+  <!-- ══ MOBILE PROGRESS BAR ══ -->
+  <div class="mob-progress" id="mobProgress"><div class="mob-progress-fill" id="mobProgressFill"></div></div>
+
+  <!-- ══ MOBILE FLOATING CHIP ══ -->
+  <div class="mob-chip" id="mobChip" onclick="mobOpenSheet()"></div>
+
+  <!-- ══ MOBILE BOTTOM SHEET ══ -->
+  <div class="mob-overlay" id="mobOverlay" onclick="mobCloseSheet()">
+    <div class="mob-sheet" id="mobSheet" onclick="event.stopPropagation()">
+      <div class="mob-sheet-handle"></div>
+      <div class="mob-sheet-title">Jump to section</div>
+      <div id="mobSheetItems"></div>
+    </div>
+  </div>
 
   <!-- ══ COMPACT TITLE BAR ══ -->
   <div class="title-bar" id="titleBar">
@@ -1064,24 +1178,82 @@
     const items = document.querySelectorAll('.sidebar-item');
     const sections = document.querySelectorAll('.section[id]');
 
-    // Show title bar + sidebar when hero scrolls out
+    // Mobile elements
+    const mobProgress = document.getElementById('mobProgress');
+    const mobProgressFill = document.getElementById('mobProgressFill');
+    const mobChip = document.getElementById('mobChip');
+    const mobOverlay = document.getElementById('mobOverlay');
+    const mobSheet = document.getElementById('mobSheet');
+    const mobSheetItems = document.getElementById('mobSheetItems');
+
+    let activeSection = null;
+    const isMobile = () => window.innerWidth <= 860;
+
+    // Build bottom sheet items from sidebar links
+    function buildMobSheet() {
+      mobSheetItems.innerHTML = '';
+      items.forEach(item => {
+        const a = document.createElement('a');
+        a.className = 'mob-sheet-item' + (item.dataset.s === activeSection ? ' active-section' : '');
+        a.href = item.getAttribute('href');
+        a.innerHTML = `<span class="mob-sheet-num">${item.textContent.trim().split(' ')[0]}</span>
+          <span class="mob-sheet-name">${item.textContent.trim().split(/\s+/).slice(1).join(' ')}</span>
+          <div class="mob-sheet-dot"></div>`;
+        a.onclick = () => mobCloseSheet();
+        mobSheetItems.appendChild(a);
+      });
+    }
+
+    function mobOpenSheet() {
+      buildMobSheet();
+      mobOverlay.style.display = 'block';
+      requestAnimationFrame(() => {
+        mobOverlay.classList.add('open');
+        mobSheet.classList.add('open');
+      });
+    }
+
+    function mobCloseSheet() {
+      mobOverlay.classList.remove('open');
+      mobSheet.classList.remove('open');
+      setTimeout(() => { mobOverlay.style.display = 'none'; }, 350);
+    }
+
+    // Reading progress
+    function updateProgress() {
+      if (!isMobile()) return;
+      const scrollTop = window.scrollY;
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docH > 0 ? Math.min(100, (scrollTop / docH) * 100) : 0;
+      mobProgressFill.style.width = pct + '%';
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+
+    // Show title bar + sidebar + mobile elements when hero scrolls out
     const heroObs = new IntersectionObserver((entries) => {
       const gone = !entries[0].isIntersecting;
       titleBar.classList.toggle('visible', gone);
       sidebar.classList.toggle('visible', gone);
+      if (isMobile()) {
+        mobProgress.classList.toggle('visible', gone);
+        mobChip.classList.toggle('visible', gone);
+      }
     }, { threshold: 0 });
     heroObs.observe(hero);
 
-    // Track active section → update sidebar + bar label
+    // Track active section → update sidebar + bar label + chip
     const secObs = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (!e.isIntersecting) return;
         const id = e.target.id;
+        activeSection = id;
         items.forEach(item => item.classList.toggle('active', item.dataset.s === id));
         const active = document.querySelector(`.sidebar-item[data-s="${id}"]`);
         if (active) {
-          const txt = active.textContent.trim().replace(/\s+/, ' &middot; ');
+          const txt = active.textContent.trim().replace(/\s+/, ' · ');
           barSection.innerHTML = txt;
+          if (isMobile()) mobChip.textContent = txt + ' ↑';
         }
       });
     }, { threshold: 0, rootMargin: '-108px 0px -75% 0px' });
