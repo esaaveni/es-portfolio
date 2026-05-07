@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero Refund — Esteban Saavedra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --ink: #1A1A1A;
+      --graphite: #5C5C5C;
+      --ash: #E5E4E0;
+      --peach: #E07A5F;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+      --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+      --nav-h: 60px;
+      --bar-h: 48px;
+      --side-w: 210px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════
+       NAV — always fixed, full width
+    ══════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      z-index: 200;
+    }
+
+    .nav-logo svg {
+      height: 18px;
+      width: auto;
+      display: block;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+
+    .nav-name {
+      font-size: 11px;
+      color: var(--graphite);
+      letter-spacing: 0.04em;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .nav-link {
+      font-size: 12px;
+      color: var(--peach);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: opacity 0.3s var(--ease);
+    }
+
+    .nav-link-muted {
+      color: var(--ink);
+    }
+
+    .nav-link:hover {
+      opacity: 0.65;
+    }
+
+    /* ══════════════════════════════
+       COMPACT TITLE BAR
+       Fixed below nav. Hidden until hero exits.
+       Title (regular) + dek (italic) — two lines.
+    ══════════════════════════════ */
+    .title-bar {
+      position: fixed;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      height: var(--bar-h);
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px 0 calc(var(--side-w) + 48px);
+      z-index: 190;
+      gap: 16px;
+
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--bar-h)));
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+      pointer-events: none;
+    }
+
+    .title-bar.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .bar-text {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      overflow: hidden;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bar-title {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .bar-dek {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--graphite);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bar-section {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: 24px;
+      transition: opacity 0.3s var(--ease);
+    }
+
+    /* ══════════════════════════════
+       HERO — full width, tall, editorial
+       Only visible before scroll
+    ══════════════════════════════ */
+    .hero {
+      margin-top: var(--nav-h);
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-bottom: 1px solid var(--ash);
+    }
+
+    .hero-meta {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      margin-bottom: .5rem;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(48px, 7vw, 92px);
+      font-weight: 300;
+      line-height: 1.04;
+      letter-spacing: -0.025em;
+      max-width: 740px;
+      margin-bottom: 8px;
+    }
+
+    .hero-sub {
+      font-family: var(--serif);
+      font-size: clamp(22px, 3vw, 38px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--graphite);
+      margin-top: 0.5em;
+      margin-bottom: 2.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-dek {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.55;
+      color: var(--ink);
+      max-width: 500px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-strip {
+      display: flex;
+      gap: 2rem;
+      font-size: 11px;
+      color: var(--graphite);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-top: 1px solid var(--ash);
+      padding-top: 1.5rem;
+    }
+
+    /* ══════════════════════════════
+       TWO-COLUMN LAYOUT
+       Sidebar (sticky) | Content (scrolls)
+    ══════════════════════════════ */
+    .page-grid {
+      display: grid;
+      grid-template-columns: var(--side-w) 1fr;
+    }
+
+    /* ─ SIDEBAR ─ */
+    .sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + var(--bar-h));
+      height: calc(100vh - var(--nav-h) - var(--bar-h));
+      overflow-y: auto;
+      padding: 40px 0 40px 40px;
+      border-right: 1px solid var(--ash);
+      scrollbar-width: none;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sidebar-item {
+      display: block;
+      text-decoration: none;
+      padding: 8px 0 8px 12px;
+      border-left: 1.5px solid transparent;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      opacity: 0.38;
+      line-height: 1.35;
+      transition: opacity 0.25s var(--ease),
+        color 0.25s var(--ease),
+        border-color 0.25s var(--ease);
+    }
+
+    .sidebar-item:hover {
+      opacity: 0.65;
+    }
+
+    .sidebar-item.active {
+      opacity: 1;
+      color: var(--ink);
+      border-left-color: var(--ink);
+    }
+
+    /* ─ CONTENT ─ */
+    .content {
+      padding: 0 80px 160px 64px;
+      scroll-margin-top: calc(var(--nav-h) + var(--bar-h));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .content .section {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .section {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--ash);
+      scroll-margin-top: calc(var(--nav-h) + var(--bar-h) + 24px);
+    }
+
+    .section:first-child {
+      padding-top: 40px;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section-heading {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+
+    .section p {
+      font-size: 15.5px;
+      line-height: 1.78;
+      color: var(--ink);
+      max-width: 58ch;
+      letter-spacing: 0.01em;
+      margin-bottom: 16px;
+    }
+
+    .section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section strong {
+      font-weight: 500;
+    }
+
+    /* ─ HYPOTHESIS ─ */
+    .hypothesis {
+      border-left: 1px solid var(--ash);
+      padding: 22px 26px;
+      margin: 24px 0;
+    }
+
+    .hypothesis .h-tag {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    .hypothesis .h-text {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.55;
+      color: var(--ink);
+      margin-bottom: 6px;
+      max-width: none;
+    }
+
+    .hypothesis .h-bridge {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      margin: 10px 0;
+    }
+
+    /* ─ METRIC TIERS ─ */
+    .tier {
+      border-left: 1px solid var(--ash);
+      padding: 14px 20px;
+      margin: 12px 0;
+    }
+
+    .tier-title {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      margin-bottom: 7px;
+    }
+
+    .tier p {
+      font-size: 14px;
+      color: var(--graphite);
+      line-height: 1.65;
+      max-width: none;
+      margin: 0;
+      letter-spacing: 0.01em;
+    }
+
+    /* ─ METRICS GRID ─ */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--ash);
+      margin: 24px 0;
+      max-width: 520px;
+    }
+
+    .metric-cell {
+      background: var(--paper);
+      padding: 24px 22px;
+    }
+
+    .metric-number {
+      font-family: var(--serif);
+      font-size: 52px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--graphite);
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+
+    /* ─ CHART ─ */
+    .chart-wrap {
+      margin: 28px 0;
+      padding: 28px;
+      background: #fff;
+      border: 1px solid var(--ash);
+    }
+
+    .chart-wrap svg {
+      display: block;
+      width: 100%;
+    }
+
+    .chart-caption {
+      font-size: 13px;
+      color: var(--graphite);
+      margin-top: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─ FIGURES ─ */
+    .fig-wrap {
+      margin: 28px 0;
+    }
+
+    .fig-wrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .fig-caption {
+      padding: 8px 0 0;
+      font-size: 13px !important;
+      color: var(--graphite);
+      letter-spacing: 0.02em;
+    }
+
+    /* ─ TAKEAWAY ─ */
+    .takeaway {
+      margin: 20px 0;
+    }
+
+    .takeaway-title {
+      font-family: var(--serif);
+      font-size: 19px;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 7px;
+    }
+
+    /* ─ TEAM LIST ─ */
+    .team-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .team-list li {
+      display: flex;
+      gap: 20px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--ash);
+      font-size: 14px;
+      letter-spacing: 0.01em;
+    }
+
+    .team-list li:first-child {
+      border-top: 1px solid var(--ash);
+    }
+
+    .team-list li strong {
+      font-weight: 500;
+      min-width: 180px;
+      flex-shrink: 0;
+    }
+
+    .team-list li span {
+      color: var(--graphite);
+    }
+
+    /* ─ FOOTER ─ */
+    footer {
+      border-top: 1px solid var(--ash);
+      padding: 36px 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo svg {
+      height: 15px;
+      width: auto;
+      opacity: 0.3;
+    }
+
+    /* ─ RESPONSIVE: collapse sidebar on small screens ─ */
+    @media (max-width: 860px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .title-bar {
+        padding-left: 48px;
+      }
+
+      .content {
+        padding: 0 32px 120px;
+      }
+
+      footer {
+        padding: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ NAV ══ -->
+  <nav>
+    <div class="nav-left">
+      <a href="#" class="nav-logo"><svg width="73" height="41" viewBox="0 0 73 41" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z"
+            fill="black" />
+          <path
+            d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z"
+            fill="#1A1A1A" />
+        </svg></a>
+      <span class="nav-name">esteban saavedra nilo</span>
+    </div>
+    <div class="nav-right">
+      <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="nav-link nav-link-muted">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:1px" xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+      <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+    </div>
+  </nav>
+
+  <!-- ══ COMPACT TITLE BAR ══ -->
+  <div class="title-bar" id="titleBar">
+    <div class="bar-text">
+      <span class="bar-title">Optimizing post-purchase integrity</span>
+      <span class="bar-dek">&ldquo;Zero Refund&rdquo; experiment</span>
+    </div>
+    <span class="bar-section" id="barSection">02 &middot; context</span>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="hero">
+    <p class="hero-meta">LATAM Airlines &nbsp;&middot;&nbsp; 2025</p>
+    <h1 class="hero-title">Optimizing post-purchase integrity</h1>
+    <p class="hero-sub">&ldquo;Zero Refund&rdquo; experiment</p>
+    <div class="hero-strip">
+      <span>Customer Support</span>
+      <span>Senior Product Designer</span>
+      <span>A/B experiment</span>
+      <span>Group Sequential &middot; ABSmartly</span>
+    </div>
+  </section>
+
+  <!-- ══ TWO-COLUMN GRID ══ -->
+  <div class="page-grid">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <a href="#s02" class="sidebar-item" data-s="s02">02&nbsp; context</a>
+      <a href="#s03" class="sidebar-item" data-s="s03">03&nbsp; problem</a>
+      <a href="#s04" class="sidebar-item" data-s="s04">04&nbsp; solution</a>
+      <a href="#s05" class="sidebar-item" data-s="s05">05&nbsp; test scope</a>
+      <a href="#s06" class="sidebar-item" data-s="s06">06&nbsp; metrics</a>
+      <a href="#s07" class="sidebar-item" data-s="s07">07&nbsp; results</a>
+      <a href="#s08" class="sidebar-item" data-s="s08">08&nbsp; challenge</a>
+      <a href="#s09" class="sidebar-item" data-s="s09">09&nbsp; logic</a>
+      <a href="#s10" class="sidebar-item" data-s="s10">10&nbsp; takeaways</a>
+      <a href="#s11" class="sidebar-item" data-s="s11">11&nbsp; conclusion</a>
+      <a href="#s12" class="sidebar-item" data-s="s12">12&nbsp; my role</a>
+      <a href="#s13" class="sidebar-item" data-s="s13">13&nbsp; my team</a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <section class="section" id="s02">
+        <h2 class="section-heading">Context</h2>
+        <p>LATAM is the largest airline in Latin America &mdash; 87.4 million passengers in 2025, averaging 250,000
+          travelers daily.</p>
+        <p>A fundamental tension exists between the high volume of contact center interactions and the transparency of
+          fare conditions. Non-refundable fares are a staple of revenue management, but they frequently become a source
+          of friction when passengers fail to recognize the limitations of their purchase &mdash; or we, as designers,
+          failed to make those limitations recognizable.</p>
+        <p>Clarity in fare conditions is not merely a UX improvement. It is a lever for operational efficiency, aimed at
+          reducing support burden at the point of greatest friction: the eligibility pre-check screen &mdash; the first
+          screen a passenger sees when they initiate a refund request, before they&rsquo;ve invested any further effort.
+        </p>
+        <div class="fig-wrap">
+          <img src="fig-01-refund-flow-before.svg" alt="Refund flow before — original system">
+          <p class="fig-caption">fig.01 &middot; refund flow &middot; before</p>
+        </div>
+      </section>
+
+      <section class="section" id="s03">
+        <h2 class="section-heading">Problem</h2>
+        <p>Medallia data indicated a decline in CSAT scores, driven primarily by dissatisfaction with refund policies.
+          This correlated directly with a spike in contact center call volumes.</p>
+        <p>When we investigated, the data revealed a massive expectation gap: 67% of passengers with non-reimbursable
+          fares call the contact center specifically to understand why they aren&rsquo;t receiving a full refund. Within
+          this group, &ldquo;Light&rdquo; fare passengers represented the highest call volume at 37%.</p>
+        <div class="chart-wrap">
+          <svg viewBox="0 0 680 440" xmlns="http://www.w3.org/2000/svg"
+            font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif">
+
+            <!-- ── TITLE ── -->
+            <text x="90" y="30" font-size="15" font-weight="700" fill="#111111" letter-spacing="-0.3">
+              Calls to contact center by fare type
+            </text>
+
+            <!-- ── BASELINE ── -->
+            <line x1="90" y1="65" x2="90" y2="355" stroke="#CCCCCC" stroke-width="1.5" />
+
+            <!-- ══════════════════════════════════════════
+       NON-REFUNDABLE  r=7  #1D3557  label 600
+  ══════════════════════════════════════════ -->
+
+            <!-- LIGHT · 1447 · x=478.6 · y=80 -->
+            <line x1="90" y1="80" x2="472" y2="80" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="479" cy="80" r="7" fill="#1D3557" />
+            <text x="83" y="84" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Light</text>
+            <text x="491" y="77" font-size="10.5" fill="#1D3557" font-weight="600">1,447</text>
+            <!-- annotation -->
+            <text x="491" y="89" font-size="10" fill="#888888">37% of all inbound calls</text>
+
+            <!-- BASIC · 950 · x=345.3 · y=110 -->
+            <line x1="90" y1="110" x2="338" y2="110" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="345" cy="110" r="7" fill="#1D3557" />
+            <text x="83" y="114" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Basic</text>
+            <text x="357" y="114" font-size="10.5" fill="#1D3557" font-weight="600">950</text>
+
+            <!-- STANDARD · 215 · x=147.8 · y=170 — shown below Full to keep descending order -->
+
+            <!-- ══════════════════════════════════════════
+       REFUNDABLE  r=5  #8D99AE  label 400
+  ══════════════════════════════════════════ -->
+
+            <!-- FULL · 575 · x=244.5 · y=140 -->
+            <line x1="90" y1="140" x2="239" y2="140" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="245" cy="140" r="5" fill="#8D99AE" />
+            <text x="83" y="144" font-size="12" fill="#888888" text-anchor="end">Full</text>
+            <text x="255" y="144" font-size="10.5" fill="#8D99AE">575</text>
+
+            <!-- STANDARD · 215 · x=147.8 · y=170 -->
+            <line x1="90" y1="170" x2="141" y2="170" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="148" cy="170" r="7" fill="#1D3557" />
+            <text x="83" y="174" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Standard</text>
+            <text x="160" y="174" font-size="10.5" fill="#1D3557" font-weight="600">215</text>
+
+            <!-- ── divider ── -->
+            <line x1="90" y1="188" x2="520" y2="188" stroke="#F4F4F4" stroke-width="1" stroke-dasharray="2 3" />
+
+            <!-- ══════════════════════════════════════════
+       OTHER  r=3  #DADADA  label 10.5/#BBB
+  ══════════════════════════════════════════ -->
+
+            <!-- PB TOP · 200 · x=143.75 · y=205 -->
+            <line x1="90" y1="205" x2="140" y2="205" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="144" cy="205" r="3" fill="#DADADA" />
+            <text x="83" y="209" font-size="10.5" fill="#BBBBBB" text-anchor="end">PB Top</text>
+
+            <!-- OTHER · 180 · x=138.4 · y=228 -->
+            <line x1="90" y1="228" x2="135" y2="228" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="138" cy="228" r="3" fill="#DADADA" />
+            <text x="83" y="232" font-size="10.5" fill="#BBBBBB" text-anchor="end">Other</text>
+
+            <!-- PE PLUS · 140 · x=127.6 · y=251 -->
+            <line x1="90" y1="251" x2="124" y2="251" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="128" cy="251" r="3" fill="#DADADA" />
+            <text x="83" y="255" font-size="10.5" fill="#BBBBBB" text-anchor="end">PE Plus</text>
+
+            <!-- PE · 75 · x=110.2 · y=274 -->
+            <line x1="90" y1="274" x2="108" y2="274" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="110" cy="274" r="3" fill="#DADADA" />
+            <text x="83" y="278" font-size="10.5" fill="#BBBBBB" text-anchor="end">PE</text>
+
+            <!-- PLUS · 30 · x=98.1 · y=297 -->
+            <line x1="90" y1="297" x2="96" y2="297" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="98" cy="297" r="3" fill="#DADADA" />
+            <text x="83" y="301" font-size="10.5" fill="#BBBBBB" text-anchor="end">Plus</text>
+
+            <!-- PB · 25 · x=96.7 · y=320 -->
+            <line x1="90" y1="320" x2="94" y2="320" stroke="#EEEEEE" stroke-width="1" />
+            <circle cx="97" cy="320" r="3" fill="#DADADA" />
+            <text x="83" y="324" font-size="10.5" fill="#BBBBBB" text-anchor="end">PB</text>
+
+            <!-- ── SOURCE ── -->
+            <text x="90" y="410" font-size="9.5" fill="#CCCCCC">
+              Source: LATAM contact center call data · Clínica Métricas, June 2025
+            </text>
+
+          </svg>
+          <p class="chart-caption">fig.01 &middot; calls to contact center by fare type &middot; June 2025</p>
+        </div>
+        <p>A massive volume of preventable interactions was being driven by a lack of upfront transparency.</p>
+      </section>
+
+      <section class="section" id="s04">
+        <h2 class="section-heading">Solution</h2>
+        <div class="hypothesis">
+          <span class="h-tag">hypothesis</span>
+          <p class="h-text">We believe that displaying personalized refund amounts directly on the eligibility page</p>
+          <p class="h-bridge">will result in</p>
+          <p class="h-text">higher-quality traffic in the refund flow, providing passengers with clear fare conditions
+            and minimizing redundant support calls.</p>
+        </div>
+        <div class="fig-wrap">
+          <img src="fig-02-refund-flow-after.svg" alt="Refund flow after — system queries DCP">
+          <p class="fig-caption">fig.02 · refund flow diagram - after · change of the system queries to the Global
+            Distribution System (GDS)</p>
+        </div>
+        <p>By shifting the &ldquo;moment of truth&rdquo; to the start of the flow, we aligned expectations before the
+          user invested further effort. The design answered three questions immediately upon entering: how much, what,
+          and why.</p>
+        <p>The design didn&rsquo;t soften the bad news &mdash; it delivered it with a number attached, on the first
+          screen.</p>
+        <p><strong>How much?</strong> The exact, personalized monetary value appeared at the top of the screen &mdash;
+          not buried after multiple taps.</p>
+        <p><strong>What is it?</strong> The UI clarified that the amount was a return of boarding taxes, not a partial
+          ticket refund.</p>
+        <p><strong>Why?</strong> Dynamic cards connected the limited refund amount to the user&rsquo;s past purchase
+          decision, reinforcing the specific fare conditions of their ticket.</p>
+        <p><strong>Cognitive recall:</strong> The brand color of the user&rsquo;s fare tier was integrated into the UI
+          component &mdash; matching visual cues used across all LATAM services, giving users an intuitive way to
+          recognize the ticket class they purchased.</p>
+        <div class="fig-wrap">
+          <img src="fig-03-eligibility-screen.png" alt="New eligibility screen design">
+          <p class="fig-caption">fig.03 · new eligibility screen: the design solution didn't soften the bad news — it
+            delivered it with a number attached, on the first screen.</p>
+        </div>
+      </section>
+
+      <section class="section" id="s05">
+        <h2 class="section-heading">Test scope</h2>
+        <p>The A/B test was deployed globally using a Group Sequential approach &mdash; a statistical method that
+          pre-defines specific checkpoints for reviewing results, so you can stop early if the evidence is strong enough
+          without inflating the chance of a false positive.</p>
+        <p>This prevented the error of &ldquo;peeking&rdquo;: reviewing results prematurely and making rushed decisions
+          based on incomplete data.</p>
+        <div class="fig-wrap">
+          <img src="fig-04-ab-control-treatment.png" alt="A/B test — control vs treatment">
+          <p class="fig-caption">fig.04 &middot; A/B testing &middot; control vs treatment &middot; ABSmartly</p>
+        </div>
+      </section>
+
+      <section class="section" id="s06">
+        <h2 class="section-heading">Metric framework</h2>
+        <p>Operating under the principle of &ldquo;if you can&rsquo;t trust the data, use proxies, not
+          assumptions,&rdquo; we established a three-tier metric hierarchy:</p>
+        <div class="tier">
+          <p class="tier-title">Primary &middot; proxy for clarity</p>
+          <p>RequestToCompleteRefundConversion (baseline: 61.6%) &mdash; of all passengers who reached the refund
+            details screen, how many actually completed the request? An increase here would prove that users at this
+            stage were better informed and no longer abandoning in frustration.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Secondary &middot; behavioral context</p>
+          <p>Traffic from the eligibility screen to the calculation screen, and redirections toward the voluntary
+            exchange flow. FullStory observations revealed passengers exploring exchanges &mdash; a behavior worth
+            monitoring.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Guardrail &middot; break glass</p>
+          <p>FullRefundCompleteConversion: if this moved in the wrong direction, stop immediately. It ensured the new
+            filtering logic did not accidentally block legitimate, fully refundable transactions.</p>
+        </div>
+      </section>
+
+      <section class="section" id="s07">
+        <h2 class="section-heading">Results</h2>
+        <p>Over its one-week duration, the experiment processed 17,411 participating orders.</p>
+        <div class="metrics-grid">
+          <div class="metric-cell">
+            <div class="metric-number">+75%</div>
+            <p class="metric-label">Primary metric &middot; relative lift<br>Better-informed users completing the flow
+            </p>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-number">&minus;44%</div>
+            <p class="metric-label">Traffic to calculation screen<br>Unqualified users filtered at the door</p>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-number">+14%</div>
+            <p class="metric-label">Absolute refund requests<br>Higher-intent users, higher completion</p>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-number">+12%</div>
+            <p class="metric-label">Conversion &middot; refund flow<br>Serious users who know the truth proceed</p>
+          </div>
+        </div>
+        <p>The &minus;44% is counter-intuitive. Fewer people reaching the calculation screen sounds like failure &mdash;
+          but it represents the successful filtering of unqualified users who would have previously reached a dead end,
+          then called support. That&rsquo;s the efficiency gain the experiment was designed to create.</p>
+        <div class="chart-wrap">
+          <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg"
+            font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif">
+
+            <!-- ── TITLE ── -->
+            <text x="90" y="28" font-size="15" font-weight="700" fill="#111111" letter-spacing="-0.3">
+              Confidence interval over time
+            </text>
+            <text x="90" y="47" font-size="11.5" fill="#888888">
+              Group Sequential analysis · experiment closed Day 7
+            </text>
+
+            <!-- ══════════════════════════════════
+       SEMANTIC ZONES (fills first, under everything)
+  ══════════════════════════════════ -->
+
+            <!-- GREEN zone: above MDE (+2) — favorable, significant -->
+            <rect x="90" y="70" width="500" height="210" fill="#EEF5EE" />
+
+            <!-- NEUTRAL zone: between 0 and +2 -->
+            <rect x="90" y="280" width="500" height="20" fill="#FFFFFF" />
+
+            <!-- PINK zone: below 0 — danger, negative effect -->
+            <rect x="90" y="300" width="500" height="40" fill="#FAEEEE" />
+
+            <!-- ── ZONE LABELS (right side) ── -->
+            <text x="596" y="145" font-size="9.5" fill="#5A8C5A">favorable</text>
+            <text x="596" y="157" font-size="9.5" fill="#5A8C5A">zone</text>
+
+            <text x="596" y="308" font-size="9.5" fill="#C07070">danger</text>
+            <text x="596" y="320" font-size="9.5" fill="#C07070">zone</text>
+
+            <!-- ── ZERO LINE ── -->
+            <line x1="90" y1="300" x2="590" y2="300" stroke="#CCCCCC" stroke-width="1" />
+            <text x="83" y="304" font-size="10" fill="#AAAAAA" text-anchor="end">0</text>
+
+            <!-- ── MDE HAIRLINE at +2 ── -->
+            <line x1="90" y1="280" x2="590" y2="280" stroke="#AAAAAA" stroke-width="1" stroke-dasharray="3 4" />
+            <text x="83" y="284" font-size="10" fill="#AAAAAA" text-anchor="end">+2</text>
+            <text x="596" y="284" font-size="9" fill="#AAAAAA">MDE</text>
+
+            <!-- ── Y-AXIS LABELS ── -->
+            <text x="83" y="124" font-size="10" fill="#AAAAAA" text-anchor="end">+16</text>
+            <text x="83" y="204" font-size="10" fill="#AAAAAA" text-anchor="end">+8</text>
+            <text x="83" y="324" font-size="10" fill="#AAAAAA" text-anchor="end">−2</text>
+
+            <!-- ── EXPERIMENT CLOSE vertical at x=590 ── -->
+            <line x1="590" y1="70" x2="590" y2="340" stroke="#888888" stroke-width="1" stroke-dasharray="3 4" />
+
+            <!-- ══════════════════════════════════
+       CI BAND — the confidence interval
+  ══════════════════════════════════ -->
+            <polygon points="90,120 215,270 340,275 465,280 590,280
+            590,285 465,290 340,297 215,315 90,300" fill="#FFFFFF" opacity="0.7" />
+
+            <!-- ── UPPER CI LINE ── -->
+            <polyline points="90,120 215,270 340,275 465,280 590,280" fill="none" stroke="#2E6B2E" stroke-width="1.5"
+              stroke-linejoin="round" />
+
+            <!-- ── LOWER CI LINE ── -->
+            <polyline points="90,300 215,315 340,297 465,290 590,285" fill="none" stroke="#B05050" stroke-width="1.5"
+              stroke-linejoin="round" />
+
+            <!-- ── DOTS on upper CI ── -->
+            <circle cx="90" cy="120" r="3" fill="#2E6B2E" />
+            <circle cx="215" cy="270" r="3" fill="#2E6B2E" />
+            <circle cx="340" cy="275" r="3" fill="#2E6B2E" />
+            <circle cx="465" cy="280" r="3" fill="#2E6B2E" />
+            <circle cx="590" cy="280" r="3" fill="#2E6B2E" />
+
+            <!-- ── DOTS on lower CI ── -->
+            <circle cx="90" cy="300" r="3" fill="#B05050" />
+            <circle cx="215" cy="315" r="3" fill="#B05050" />
+            <circle cx="340" cy="297" r="3" fill="#B05050" />
+            <circle cx="465" cy="290" r="3" fill="#B05050" />
+            <circle cx="590" cy="285" r="3" fill="#B05050" />
+
+            <!-- ══════════════════════════════════
+       YELLOW / SIGNIFICANCE MARKER at 18/6
+  ══════════════════════════════════ -->
+
+            <!-- vertical stem to peak -->
+            <line x1="215" y1="280" x2="215" y2="97" stroke="#E8B84B" stroke-width="1.5" stroke-dasharray="2 2" />
+
+            <!-- peak dot -->
+            <circle cx="215" cy="90" r="6" fill="#E8B84B" />
+
+            <!-- significance label -->
+            <text x="226" y="86" font-size="10.5" fill="#B08020" font-weight="600">Statistical significance</text>
+            <text x="226" y="100" font-size="10" fill="#B08020">reached · 18 June · Day 3</text>
+
+            <!-- ── X-AXIS ── -->
+            <line x1="90" y1="340" x2="590" y2="340" stroke="#CCCCCC" stroke-width="1" />
+
+            <!-- ── X-AXIS LABELS ── -->
+            <text x="90" y="357" font-size="10.5" fill="#888888" text-anchor="middle">1 Jun</text>
+            <text x="215" y="357" font-size="10.5" fill="#888888" text-anchor="middle">18 Jun</text>
+            <text x="340" y="357" font-size="10.5" fill="#888888" text-anchor="middle">25 Jun</text>
+            <text x="465" y="357" font-size="10.5" fill="#888888" text-anchor="middle">2 Jul</text>
+            <text x="590" y="357" font-size="10.5" fill="#888888" text-anchor="middle" font-weight="600">9 Jul</text>
+            <text x="590" y="369" font-size="9" fill="#AAAAAA" text-anchor="middle">close</text>
+
+            <!-- ── SOURCE ── -->
+            <text x="90" y="402" font-size="9.5" fill="#CCCCCC">
+              Source: ABSmartly experiment dashboard · July 2025
+            </text>
+
+          </svg>
+          <p class="chart-caption">fig.02 &middot; confidence interval over time &middot; group sequential &middot;
+            ABSmartly &middot; July 2025</p>
+        </div>
+      </section>
+
+      <section class="section" id="s08">
+        <h2 class="section-heading">Challenge</h2>
+        <p>LATAM operates across dozens of markets, each with different tax structures, fare rules, and legal
+          requirements. Every combination needed to return the right number in real time.</p>
+        <p>To present an accurate &ldquo;total to refund&rdquo; on the eligibility screen, the engine had to
+          instantaneously aggregate the ticket price, fare conditions, and embarkation fees &mdash; which are often the
+          only refundable component of a &ldquo;Zero Refund&rdquo; ticket.</p>
+      </section>
+
+      <section class="section" id="s09">
+        <h2 class="section-heading">Logic complexity</h2>
+        <p>The automated pre-check was not a simple binary filter. It required a robust logic layer to exclude cases
+          that did not fit the standard non-refundable profile:</p>
+        <p><strong>Flex fares and contingency cases</strong> &mdash; where specific override rules apply.</p>
+        <p><strong>Legal mandates</strong> &mdash; such as the &ldquo;Ley de retracto&rdquo; (right of withdrawal) in
+          specific jurisdictions.</p>
+        <p><strong>Commercial exceptions and award bookings</strong> &mdash; tickets purchased via mileage or marketing
+          exceptions.</p>
+        <p>The implementation revealed significant functional misunderstandings about the exact audience parameters.
+          This led to a rollback, a more exhaustive analysis, and a re-launch. The lesson: technical bottlenecks in
+          high-logic flows can only be mitigated by a shared understanding of the intended use case across Design,
+          Development, and Product.</p>
+      </section>
+
+      <section class="section" id="s10">
+        <h2 class="section-heading">Takeaways</h2>
+        <p>This experiment represents a shift toward rigorous experimental validation &mdash; away from assumptions and
+          toward behavioral proxies, experiment integrity, and collaborative OKRs.</p>
+        <div class="takeaway">
+          <p class="takeaway-title">The proxy mandate</p>
+          <p>When primary data is noisy or lacks traceability, use behavioral proxies. &ldquo;Refund completion
+            rate&rdquo; stood in for &ldquo;passenger understanding&rdquo; &mdash; because understanding is invisible,
+            but behavior isn&rsquo;t.</p>
+        </div>
+        <div class="takeaway">
+          <p class="takeaway-title">Experiment integrity</p>
+          <p>Statistical drift happens when you leave an experiment running too long after the result is clear &mdash;
+            new users dilute the signal, and the result can shift in ways that no longer reflect the real effect.</p>
+        </div>
+        <div class="takeaway">
+          <p class="takeaway-title">Collaborative OKRs</p>
+          <p>There is a clear need to propose more sensitive ways of measuring user experience beyond traditional,
+            low-response metrics like CSAT or claims volume.</p>
+        </div>
+      </section>
+
+      <section class="section" id="s11">
+        <h2 class="section-heading">Conclusion</h2>
+        <p>Positive friction at the start of the journey reduces operational friction at the end of it. The &ldquo;Zero
+          Refund&rdquo; experiment demonstrates that immediate, personalized transparency is a high-leverage strategy
+          for both passenger satisfaction and institutional efficiency.</p>
+      </section>
+
+      <section class="section" id="s12">
+        <h2 class="section-heading">My role</h2>
+        <p>Senior Product Designer embedded in the Customer Support squad. I owned the design process, co-authored the
+          experiment hypothesis, and helped define and track metrics. After launch I co-led a company-wide training
+          session on how to choose the right data for Group Sequential experiments.</p>
+      </section>
+
+      <section class="section" id="s13">
+        <h2 class="section-heading">My team</h2>
+        <ul class="team-list">
+          <li><strong>Daniela Prieto</strong><span>Data Science</span></li>
+          <li><strong>Verona Carrillo</strong><span>Product Design &middot; Contingencies</span></li>
+          <li><strong>Engineering team</strong><span>Development</span></li>
+          <li><strong>Experimentation SME</strong><span></span></li>
+          <li><strong>Customer Services Ops</strong><span></span></li>
+          <li><strong>Project Manager</strong><span></span></li>
+        </ul>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo"><svg width="73" height="41" viewBox="0 0 73 41" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z"
+          fill="black" />
+        <path
+          d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z"
+          fill="#1A1A1A" />
+      </svg></span>
+    <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+  </footer>
+
+  <script>
+    const titleBar = document.getElementById('titleBar');
+    const sidebar = document.getElementById('sidebar');
+    const barSection = document.getElementById('barSection');
+    const hero = document.getElementById('hero');
+    const items = document.querySelectorAll('.sidebar-item');
+    const sections = document.querySelectorAll('.section[id]');
+
+    // Show title bar + sidebar when hero scrolls out
+    const heroObs = new IntersectionObserver((entries) => {
+      const gone = !entries[0].isIntersecting;
+      titleBar.classList.toggle('visible', gone);
+      sidebar.classList.toggle('visible', gone);
+    }, { threshold: 0 });
+    heroObs.observe(hero);
+
+    // Track active section → update sidebar + bar label
+    const secObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const id = e.target.id;
+        items.forEach(item => item.classList.toggle('active', item.dataset.s === id));
+        const active = document.querySelector(`.sidebar-item[data-s="${id}"]`);
+        if (active) {
+          const txt = active.textContent.trim().replace(/\s+/, ' &middot; ');
+          barSection.innerHTML = txt;
+        }
+      });
+    }, { threshold: 0, rootMargin: '-108px 0px -75% 0px' });
+    sections.forEach(s => secObs.observe(s));
+  </script>
+</body>
+
+</html>
