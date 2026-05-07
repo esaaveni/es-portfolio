@@ -390,7 +390,8 @@
     }
 
     .tier-title {
-      font-size: 10px;
+      font-size: 13px !important;
+      font-weight: 500;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--graphite);
@@ -452,10 +453,11 @@
     }
 
     .chart-caption {
-      font-size: 13px;
+      font-size: 10px !important;
       color: var(--graphite);
       margin-top: 12px;
       letter-spacing: 0.02em;
+      max-width: none !important;
     }
 
     /* ─ FIGURES ─ */
@@ -474,6 +476,7 @@
       font-size: 13px !important;
       color: var(--graphite);
       letter-spacing: 0.02em;
+      max-width: none !important;
     }
 
     /* ─ TAKEAWAY ─ */
@@ -482,12 +485,11 @@
     }
 
     .takeaway-title {
-      font-family: var(--serif);
-      font-size: 19px;
-      font-weight: 300;
-      font-style: italic;
-      letter-spacing: -0.01em;
-      color: var(--ink);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--graphite);
       margin-bottom: 7px;
     }
 
@@ -577,7 +579,13 @@
       <span class="nav-name">esteban saavedra nilo</span>
     </div>
     <div class="nav-right">
-      <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="nav-link nav-link-muted">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:1px" xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+      <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener"
+        class="nav-link nav-link-muted">Career evolution <svg
+          style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:1px"
+          xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="currentColor">
+          <path
+            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z" />
+        </svg></a>
       <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
     </div>
   </nav>
@@ -619,8 +627,7 @@
       <a href="#s09" class="sidebar-item" data-s="s09">09&nbsp; logic</a>
       <a href="#s10" class="sidebar-item" data-s="s10">10&nbsp; takeaways</a>
       <a href="#s11" class="sidebar-item" data-s="s11">11&nbsp; conclusion</a>
-      <a href="#s12" class="sidebar-item" data-s="s12">12&nbsp; my role</a>
-      <a href="#s13" class="sidebar-item" data-s="s13">13&nbsp; my team</a>
+      <a href="#s12" class="sidebar-item" data-s="s12">12&nbsp; my role & team</a>
     </aside>
 
     <!-- CONTENT -->
@@ -628,16 +635,16 @@
 
       <section class="section" id="s02">
         <h2 class="section-heading">Context</h2>
-        <p>LATAM is the largest airline in Latin America &mdash; 87.4 million passengers in 2025, averaging 250,000
-          travelers daily.</p>
-        <p>A fundamental tension exists between the high volume of contact center interactions and the transparency of
-          fare conditions. Non-refundable fares are a staple of revenue management, but they frequently become a source
-          of friction when passengers fail to recognize the limitations of their purchase &mdash; or we, as designers,
-          failed to make those limitations recognizable.</p>
-        <p>Clarity in fare conditions is not merely a UX improvement. It is a lever for operational efficiency, aimed at
-          reducing support burden at the point of greatest friction: the eligibility pre-check screen &mdash; the first
-          screen a passenger sees when they initiate a refund request, before they&rsquo;ve invested any further effort.
-        </p>
+        <p>LATAM is the largest airline in Latin America and the 10th largest globally by seat capacity, transporting a
+          record 87.4 million passengers in 2025 &mdash; averaging nearly 250,000 travelers daily.</p>
+        <p>A fundamental strategic tension exists between the high volume of Call Center (CC) interactions and the
+          transparency of fare conditions. While non-refundable fares are a staple of revenue management, they
+          frequently become a source of operational friction when passengers fail to recognize the limitations of their
+          purchase &mdash; or we, as designers, failed to make it recognizable.</p>
+        <p>Clarity in these conditions is not merely a UX improvement; it is a critical lever for operational
+          efficiency, aimed at reducing the burden on support centers and mitigating passenger frustration at the point
+          of greatest friction: the eligibility pre-check screen &mdash; the first screen a passenger sees when they
+          initiate a refund request, before they&rsquo;ve committed any further effort.</p>
         <div class="fig-wrap">
           <img src="fig-01-refund-flow-before.svg" alt="Refund flow before — original system">
           <p class="fig-caption">fig.01 &middot; refund flow &middot; before</p>
@@ -646,11 +653,15 @@
 
       <section class="section" id="s03">
         <h2 class="section-heading">Problem</h2>
-        <p>Medallia data indicated a decline in CSAT scores, driven primarily by dissatisfaction with refund policies.
-          This correlated directly with a spike in contact center call volumes.</p>
-        <p>When we investigated, the data revealed a massive expectation gap: 67% of passengers with non-reimbursable
-          fares call the contact center specifically to understand why they aren&rsquo;t receiving a full refund. Within
-          this group, &ldquo;Light&rdquo; fare passengers represented the highest call volume at 37%.</p>
+        <p>Qualitative data from Medallia indicated a decline in CSAT scores,
+          driven primarily by dissatisfaction with refund policies. This trend directly correlated with a significant
+          spike in customer call volumes.</p>
+        <p>When our team investigated the root cause, the data revealed a massive expectation gap:</p>
+        <p>67% of passengers with non-reimbursable fares (Light, Basic, and Standard) call the CC specifically to
+          understand why they aren't receiving a full refund. Within this group, passengers who purchased "Light" fares
+          represented the highest call volume at 37%.</p>
+        <p>Our findings confirmed a massive volume of preventable customer support interactions was being driven
+          primarily by a lack of upfront transparency.</p>
         <div class="chart-wrap">
           <svg viewBox="0 0 680 440" xmlns="http://www.w3.org/2000/svg"
             font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif">
@@ -828,16 +839,16 @@
             </p>
           </div>
           <div class="metric-cell">
-            <div class="metric-number">&minus;44%</div>
-            <p class="metric-label">Traffic to calculation screen<br>Unqualified users filtered at the door</p>
-          </div>
-          <div class="metric-cell">
             <div class="metric-number">+14%</div>
             <p class="metric-label">Absolute refund requests<br>Higher-intent users, higher completion</p>
           </div>
           <div class="metric-cell">
             <div class="metric-number">+12%</div>
             <p class="metric-label">Conversion &middot; refund flow<br>Serious users who know the truth proceed</p>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-number">&minus;44%</div>
+            <p class="metric-label">Traffic to calculation screen<br>Unqualified users filtered at the door</p>
           </div>
         </div>
         <p>The &minus;44% is counter-intuitive. Fewer people reaching the calculation screen sounds like failure &mdash;
@@ -985,18 +996,18 @@
         <p>This experiment represents a shift toward rigorous experimental validation &mdash; away from assumptions and
           toward behavioral proxies, experiment integrity, and collaborative OKRs.</p>
         <div class="takeaway">
-          <p class="takeaway-title">The proxy mandate</p>
+          <h3 class="takeaway-title">The proxy mandate</h3>
           <p>When primary data is noisy or lacks traceability, use behavioral proxies. &ldquo;Refund completion
             rate&rdquo; stood in for &ldquo;passenger understanding&rdquo; &mdash; because understanding is invisible,
             but behavior isn&rsquo;t.</p>
         </div>
         <div class="takeaway">
-          <p class="takeaway-title">Experiment integrity</p>
+          <h3 class="takeaway-title">Experiment integrity</h3>
           <p>Statistical drift happens when you leave an experiment running too long after the result is clear &mdash;
             new users dilute the signal, and the result can shift in ways that no longer reflect the real effect.</p>
         </div>
         <div class="takeaway">
-          <p class="takeaway-title">Collaborative OKRs</p>
+          <h3 class="takeaway-title">Collaborative OKRs</h3>
           <p>There is a clear need to propose more sensitive ways of measuring user experience beyond traditional,
             low-response metrics like CSAT or claims volume.</p>
         </div>
@@ -1019,12 +1030,12 @@
       <section class="section" id="s13">
         <h2 class="section-heading">My team</h2>
         <ul class="team-list">
-          <li><strong>Daniela Prieto</strong><span>Data Science</span></li>
-          <li><strong>Verona Carrillo</strong><span>Product Design &middot; Contingencies</span></li>
-          <li><strong>Engineering team</strong><span>Development</span></li>
-          <li><strong>Experimentation SME</strong><span></span></li>
-          <li><strong>Customer Services Ops</strong><span></span></li>
-          <li><strong>Project Manager</strong><span></span></li>
+          <li><strong>Daniela Prieto</strong><span>Data Science &middot; BigQuery measurement</span></li>
+          <li><strong>Verona Carrillo</strong><span>PD Contingencies &middot; metrics for exchange</span></li>
+          <li><strong>Engineering / Dev team</strong><span>Filter logic and ABSmartly integration</span></li>
+          <li><strong>Experimentation SME</strong><span>Guidance and QA</span></li>
+          <li><strong>Customer Services Ops</strong><span>Call-rate data and qualitative input</span></li>
+          <li><strong>Project Manager</strong><span>Business context</span></li>
         </ul>
       </section>
 
