@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access — Esteban Saavedra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --ink: #1A1A1A;
+      --graphite: #5C5C5C;
+      --ash: #E5E4E0;
+      --peach: #E07A5F;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+      --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+      --nav-h: 60px;
+      --bar-h: 48px;
+      --side-w: 210px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      z-index: 200;
+      transition: padding 0.3s var(--ease);
+    }
+    nav.scrolled { padding-bottom: 8px; }
+
+    .nav-logo svg { height: 18px; width: auto; display: block; }
+    .nav-left { display: flex; align-items: baseline; gap: 14px; }
+    .nav-name { font-size: 11px; color: var(--graphite); letter-spacing: 0.04em; }
+    .nav-right { display: flex; align-items: center; gap: 36px; }
+    .nav-link {
+      font-size: 12px; color: var(--peach);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: opacity 0.3s var(--ease);
+    }
+    .nav-link-muted { color: var(--ink); }
+    .nav-link:hover { opacity: 0.65; }
+
+    /* ══════════════════════════════
+       COMPACT TITLE BAR
+    ══════════════════════════════ */
+    .title-bar {
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0;
+      height: var(--bar-h);
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px 0 calc(var(--side-w) + 48px);
+      z-index: 190;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--bar-h)));
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+      pointer-events: none;
+    }
+    .title-bar.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      padding: 0 48px;
+    }
+    .bar-text {
+      display: flex; align-items: baseline;
+      gap: 10px; overflow: hidden; flex: 1; min-width: 0;
+    }
+    .bar-title {
+      font-family: var(--serif); font-size: 18px; font-weight: 400;
+      letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; flex-shrink: 0;
+    }
+    .bar-dek {
+      font-family: var(--serif); font-size: 18px; font-weight: 300; font-style: italic;
+      color: var(--graphite); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .bar-section {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); white-space: nowrap; flex-shrink: 0;
+      margin-left: 24px; transition: opacity 0.3s var(--ease);
+    }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      margin-top: var(--nav-h);
+      padding: 3rem;
+      display: flex; flex-direction: column; justify-content: center;
+      border-bottom: 1px solid var(--ash);
+    }
+    .hero-meta {
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--graphite); margin-bottom: .5rem;
+    }
+    .hero-title {
+      font-family: var(--serif); font-size: clamp(48px, 7vw, 92px);
+      font-weight: 300; line-height: 1.04; letter-spacing: -0.025em;
+      max-width: 740px; margin-bottom: 8px;
+    }
+    .hero-sub {
+      font-family: var(--serif); font-size: clamp(22px, 3vw, 38px);
+      font-weight: 300; font-style: italic; color: var(--graphite);
+      margin-top: 0.5em; margin-bottom: 2.5rem; letter-spacing: -0.01em;
+    }
+    .hero-strip {
+      display: flex; gap: 2rem; font-size: 11px; color: var(--graphite);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border-top: 1px solid var(--ash); padding-top: 1.5rem;
+    }
+
+    /* ══════════════════════════════
+       TWO-COLUMN LAYOUT
+    ══════════════════════════════ */
+    .page-grid { display: grid; grid-template-columns: var(--side-w) 1fr; }
+
+    .sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + var(--bar-h));
+      height: calc(100vh - var(--nav-h) - var(--bar-h));
+      overflow-y: auto;
+      padding: 40px 0 40px 40px;
+      border-right: 1px solid var(--ash);
+      scrollbar-width: none;
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar-item {
+      display: block; text-decoration: none;
+      padding: 8px 0 8px 12px;
+      border-left: 1.5px solid transparent;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--graphite); opacity: 0.38; line-height: 1.35;
+      transition: opacity 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+    .sidebar-item:hover { opacity: 0.65; }
+    .sidebar-item.active { opacity: 1; color: var(--ink); border-left-color: var(--ink); }
+
+    .content {
+      padding: 0 80px 160px 64px;
+      scroll-margin-top: calc(var(--nav-h) + var(--bar-h));
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .content .section { width: 100%; max-width: 640px; }
+
+    .section {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--ash);
+      scroll-margin-top: calc(var(--nav-h) + var(--bar-h) + 24px);
+    }
+    .section:first-child { padding-top: 40px; }
+    .section:last-child { border-bottom: none; }
+
+    .section-heading {
+      font-family: var(--serif); font-size: 26px; font-weight: 400;
+      letter-spacing: -0.01em; line-height: 1.15; color: var(--ink); margin-bottom: 24px;
+    }
+    .section p {
+      font-size: 15.5px; line-height: 1.78; color: var(--ink);
+      max-width: 58ch; letter-spacing: 0.01em; margin-bottom: 16px;
+    }
+    .section p:last-child { margin-bottom: 0; }
+    .section strong { font-weight: 500; }
+
+    /* ─ HYPOTHESIS ─ */
+    .hypothesis {
+      border-left: 1px solid var(--ash);
+      padding: 22px 26px; margin: 24px 0;
+    }
+    .hypothesis .h-tag {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--graphite); display: block; margin-bottom: 14px;
+    }
+    .hypothesis .h-text {
+      font-family: var(--serif); font-size: 18px; font-style: italic;
+      font-weight: 300; line-height: 1.55; color: var(--ink);
+      margin-bottom: 6px; max-width: none;
+    }
+    .hypothesis .h-bridge {
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--graphite); margin: 10px 0;
+    }
+
+    /* ─ TIER BLOCKS ─ */
+    .tier { border-left: 1px solid var(--ash); padding: 14px 20px; margin: 12px 0; }
+    .tier-title {
+      font-size: 13px !important; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); margin-bottom: 7px;
+    }
+    .tier p {
+      font-size: 14px; color: var(--graphite);
+      line-height: 1.65; max-width: none; margin: 0; letter-spacing: 0.01em;
+    }
+
+    /* ─ METRICS GRID ─ */
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--ash); margin: 24px 0; max-width: 520px;
+    }
+    .metric-cell { background: var(--paper); padding: 24px 22px; }
+    .metric-number {
+      font-family: var(--serif); font-size: 52px; font-weight: 300;
+      line-height: 1; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 8px;
+    }
+    .metric-label { font-size: 11px; color: var(--graphite); line-height: 1.5; letter-spacing: 0.01em; }
+
+    /* ─ CHART ─ */
+    .chart-wrap {
+      margin: 28px 0; padding: 28px; background: #fff; border: 1px solid var(--ash);
+    }
+    .chart-wrap svg { display: block; width: 100%; }
+    .chart-caption {
+      font-size: 10px !important; color: var(--graphite);
+      margin-top: 12px; letter-spacing: 0.02em; max-width: none !important;
+    }
+
+    /* ─ TAKEAWAY ─ */
+    .takeaway { margin: 20px 0; }
+    .takeaway-title {
+      font-size: 13px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--graphite); margin-bottom: 7px;
+    }
+
+    /* ─ TEAM LIST ─ */
+    .team-list { list-style: none; padding: 0; }
+    .team-list li {
+      display: flex; gap: 20px; padding: 11px 0;
+      border-bottom: 1px solid var(--ash);
+      font-size: 14px; letter-spacing: 0.01em;
+    }
+    .team-list li:first-child { border-top: 1px solid var(--ash); }
+    .team-list li strong { font-weight: 500; min-width: 180px; flex-shrink: 0; }
+    .team-list li span { color: var(--graphite); }
+
+    /* ─ FOOTNOTE ─ */
+    .footnote {
+      font-size: 11px !important; color: var(--graphite); letter-spacing: 0.01em;
+      line-height: 1.6; margin-top: 32px !important;
+      border-top: 1px solid var(--ash); padding-top: 16px;
+    }
+
+    /* ─ FOOTER ─ */
+    footer {
+      border-top: 1px solid var(--ash); padding: 36px 80px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-logo svg { height: 15px; width: auto; opacity: 0.3; }
+
+    /* ─ RESPONSIVE ─ */
+    @media (max-width: 860px) {
+      .page-grid { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .title-bar.visible { padding: 0 20px !important; }
+      .content { padding: 0 32px 120px; }
+      footer { padding: 32px; }
+      .hero { padding: 2rem 32px 2.5rem; }
+      .hero-title { font-size: clamp(40px, 10vw, 64px); }
+      .hero-sub { font-size: clamp(18px, 5vw, 28px); margin-bottom: 1.75rem; }
+      .hero-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem; padding-top: 30px; }
+    }
+
+    /* ── MOBILE PROGRESS BAR ── */
+    .mob-progress {
+      display: block; position: fixed;
+      top: calc(var(--nav-h) + var(--bar-h)); left: 0; right: 0;
+      height: 2px; background: var(--ash); z-index: 185; pointer-events: none;
+      opacity: 0; transform: translateY(calc(-1 * var(--bar-h)));
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+    }
+    .mob-progress-fill { height: 100%; width: 0%; background: var(--ink); transition: width 0.2s ease; }
+    .mob-progress.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── MOBILE FLOATING CHIP ── */
+    .mob-chip {
+      display: none; position: fixed;
+      bottom: 120px; right: 20px;
+      background: var(--ink); color: #fff;
+      font-family: var(--sans); font-size: 11px; letter-spacing: 0.04em;
+      border-radius: 20px; padding: 9px 16px; cursor: pointer; z-index: 300;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transition: transform 0.2s var(--ease), opacity 0.3s var(--ease);
+      white-space: nowrap;
+    }
+    .mob-chip:active { transform: scale(0.96); }
+    .mob-chip.visible { display: block; }
+
+    /* ── MOBILE BOTTOM SHEET ── */
+    .mob-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0); z-index: 400; transition: background 0.3s;
+    }
+    .mob-overlay.open { background: rgba(0,0,0,0.3); }
+    .mob-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: var(--paper); border-radius: 16px 16px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1);
+      max-height: 70vh; overflow-y: auto;
+    }
+    .mob-sheet.open { transform: translateY(0); }
+    .mob-sheet-handle {
+      width: 32px; height: 3px; background: var(--ash);
+      border-radius: 2px; margin: 12px auto 10px;
+    }
+    .mob-sheet-title {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); padding: 0 20px 10px;
+    }
+    .mob-sheet-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+      border-top: 1px solid var(--ash); cursor: pointer;
+      transition: background 0.15s; text-decoration: none;
+    }
+    .mob-sheet-item:active { background: var(--ash); }
+    .mob-sheet-num {
+      font-size: 10px; color: var(--graphite); width: 20px;
+      letter-spacing: 0.08em; flex-shrink: 0; font-variant-numeric: tabular-nums;
+    }
+    .mob-sheet-name { font-size: 13px; color: var(--ink); flex: 1; }
+    .mob-sheet-item.active-section .mob-sheet-num { color: var(--ink); font-weight: 500; }
+    .mob-sheet-item.active-section .mob-sheet-name { font-weight: 600; }
+    .mob-sheet-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--ink); opacity: 0; flex-shrink: 0;
+    }
+    .mob-sheet-item.active-section .mob-sheet-dot { opacity: 1; }
+
+    @media (min-width: 861px) {
+      .mob-chip, .mob-overlay, .mob-progress,
+      .mob-menu-btn, .mob-drawer, .mob-drawer-overlay { display: none !important; }
+    }
+    @media (max-width: 860px) {
+      .bar-section { display: none; }
+      .nav-right { display: none; }
+      nav { padding: 0 20px; }
+
+      .mob-menu-btn {
+        display: flex; flex-direction: column; justify-content: center; gap: 5px;
+        width: 48px; height: 48px; background: none; border: none;
+        cursor: pointer; padding: 12px; margin-right: -12px;
+      }
+      .mob-menu-btn span {
+        display: block; width: 22px; height: 1.5px;
+        background: var(--ink); border-radius: 1px;
+        transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+      }
+      .mob-menu-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+      .mob-menu-btn.open span:nth-child(2) { opacity: 0; }
+      .mob-menu-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+      .mob-drawer-overlay {
+        display: block; position: fixed; inset: 0;
+        background: rgba(0,0,0,0); z-index: 450; pointer-events: none;
+        transition: background 0.35s var(--ease);
+      }
+      .mob-drawer-overlay.open { background: rgba(0,0,0,0.25); pointer-events: auto; }
+
+      .mob-drawer {
+        display: flex; flex-direction: column;
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: 72vw; max-width: 280px;
+        background: var(--paper); z-index: 500;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1);
+        padding: calc(var(--nav-h) + 32px) 32px 48px;
+        border-left: 1px solid var(--ash);
+      }
+      .mob-drawer.open { transform: translateX(0); }
+      .mob-drawer-label {
+        font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--graphite); margin-bottom: 20px;
+      }
+      .mob-drawer-link {
+        font-family: var(--serif); font-size: 22px; font-weight: 300;
+        color: var(--ink); text-decoration: none; line-height: 1.3;
+        display: block; margin-bottom: 16px; transition: opacity 0.2s;
+      }
+      .mob-drawer-link:last-child { margin-bottom: 0; }
+      .mob-drawer-link:active { opacity: 0.5; }
+      .mob-drawer-contact { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+      .mob-drawer-msg {
+        font-family: var(--serif); font-size: 15px; font-weight: 300; font-style: italic;
+        line-height: 1.5; color: var(--graphite);
+      }
+      .mob-drawer-email { font-size: 12px; color: var(--peach); text-decoration: none; letter-spacing: 0.02em; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ NAV ══ -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">
+        <svg width="73" height="41" viewBox="0 0 73 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z" fill="black"/>
+          <path d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z" fill="#1A1A1A"/>
+        </svg>
+      </a>
+      <span class="nav-name">esteban saavedra nilo</span>
+    </div>
+    <div class="nav-right">
+      <a href="index.html" class="nav-link nav-link-muted">Work</a>
+      <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="nav-link nav-link-muted">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:1px" xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+      <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+    </div>
+    <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Open menu" onclick="mobToggleDrawer()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══ MOBILE DRAWER ══ -->
+  <div class="mob-drawer-overlay" id="mobDrawerOverlay" onclick="mobCloseDrawer()"></div>
+  <div class="mob-drawer" id="mobDrawer">
+    <p class="mob-drawer-label">Esteban Saavedra</p>
+    <a href="index.html" class="mob-drawer-link" onclick="mobCloseDrawer()">Work</a>
+    <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="mob-drawer-link" onclick="mobCloseDrawer()">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:2px" xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+    <div class="mob-drawer-contact">
+      <p class="mob-drawer-msg">Open to new projects &mdash;<br>I&rsquo;d love to hear from you.</p>
+      <a href="mailto:esaaveni@gmail.com" class="mob-drawer-email">esaaveni@gmail.com</a>
+    </div>
+  </div>
+
+  <!-- ══ MOBILE PROGRESS BAR ══ -->
+  <div class="mob-progress" id="mobProgress"><div class="mob-progress-fill" id="mobProgressFill"></div></div>
+
+  <!-- ══ MOBILE FLOATING CHIP ══ -->
+  <div class="mob-chip" id="mobChip" onclick="mobOpenSheet()"></div>
+
+  <!-- ══ MOBILE BOTTOM SHEET ══ -->
+  <div class="mob-overlay" id="mobOverlay" onclick="mobCloseSheet()">
+    <div class="mob-sheet" id="mobSheet" onclick="event.stopPropagation()">
+      <div class="mob-sheet-handle"></div>
+      <div class="mob-sheet-title">Jump to section</div>
+      <div id="mobSheetItems"></div>
+    </div>
+  </div>
+
+  <!-- ══ COMPACT TITLE BAR ══ -->
+  <div class="title-bar" id="titleBar">
+    <div class="bar-text">
+      <span class="bar-title">Access</span>
+      <span class="bar-dek">Exchange &amp; Refund A/B</span>
+    </div>
+    <span class="bar-section" id="barSection">01 &middot; context</span>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="hero">
+    <p class="hero-meta">LATAM Airlines &nbsp;&middot;&nbsp; 2025</p>
+    <h1 class="hero-title">Access</h1>
+    <p class="hero-sub">Exchange &amp; Refund A/B experiment</p>
+    <div class="hero-strip">
+      <span>Customer Support</span>
+      <span>Senior Product Designer</span>
+      <span>A/B experiment</span>
+      <span>ABSmartly</span>
+      <span>CRO Brasil</span>
+    </div>
+  </section>
+
+  <!-- ══ TWO-COLUMN GRID ══ -->
+  <div class="page-grid">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <a href="#s01" class="sidebar-item" data-s="s01">01&nbsp; context</a>
+      <a href="#s02" class="sidebar-item" data-s="s02">02&nbsp; problem</a>
+      <a href="#s03" class="sidebar-item" data-s="s03">03&nbsp; solution</a>
+      <a href="#s04" class="sidebar-item" data-s="s04">04&nbsp; test scope</a>
+      <a href="#s05" class="sidebar-item" data-s="s05">05&nbsp; metrics</a>
+      <a href="#s06" class="sidebar-item" data-s="s06">06&nbsp; results</a>
+      <a href="#s07" class="sidebar-item" data-s="s07">07&nbsp; challenge</a>
+      <a href="#s08" class="sidebar-item" data-s="s08">08&nbsp; takeaways</a>
+      <a href="#s09" class="sidebar-item" data-s="s09">09&nbsp; conclusion</a>
+      <a href="#s10" class="sidebar-item" data-s="s10">10&nbsp; my role &amp; team</a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- ── 01 · CONTEXT ── -->
+      <section class="section" id="s01">
+        <h2 class="section-heading">Context</h2>
+        <p>LATAM Airlines operates across 15 markets in Latin America. The Customer Service squad is responsible for
+          the digital self-service experience &mdash; the flows passengers use to change, cancel, or get a refund on
+          their tickets, without calling support.</p>
+        <p>The voluntary exchange flow was one of those self-service options. Passengers who found it could change
+          their ticket end-to-end inside the app. The product worked. The problem was that on mobile, almost no one
+          was reaching it.</p>
+        <p>This was the squad&rsquo;s first ever production A/B experiment. There was no internal playbook, no
+          precedent for how to design the measurement framework. The constraint going in: mobile only, one change,
+          and whatever we built had to be verifiable by the business.</p>
+      </section>
+
+      <!-- ── 02 · PROBLEM ── -->
+      <section class="section" id="s02">
+        <h2 class="section-heading">Problem</h2>
+        <p>The Medallia detractor data was specific. Passengers weren&rsquo;t writing vague complaints &mdash; they
+          were writing the same sentence, week after week: <em>&ldquo;It was hard to find where to change the
+          ticket.&rdquo;</em> Ten percent of mobile users, in their own words, unprompted.</p>
+        <p>The BigQuery analysis made it measurable. In a sample week, 268,210 mobile sessions reached My Trips
+          Level 2 &mdash; the panel where exchange should have been reachable. Only 2.45% got to the Request Change
+          page. On desktop that same week, 12.33% made it.</p>
+
+        <div class="chart-wrap">
+          <svg viewBox="0 0 600 195" xmlns="http://www.w3.org/2000/svg"
+            font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif">
+            <text x="0" y="22" font-size="13" font-weight="700" fill="#111111" letter-spacing="-0.2">Access rate to voluntary exchange flow</text>
+            <text x="0" y="38" font-size="10.5" fill="#888888">Sessions reaching My Trips Level 2 &rarr; Request Change page &middot; sample week</text>
+            <!-- DESKTOP -->
+            <text x="0" y="74" font-size="11" fill="#888888" font-weight="500" letter-spacing="0.04em">DESKTOP</text>
+            <rect x="90" y="60" width="450" height="18" fill="#F0F0EF" rx="2"/>
+            <rect x="90" y="60" width="450" height="18" fill="#1A1A1A" rx="2"/>
+            <text x="548" y="74" font-size="12" font-weight="600" fill="#1A1A1A">12.33%</text>
+            <!-- MOBILE -->
+            <text x="0" y="118" font-size="11" fill="#888888" font-weight="500" letter-spacing="0.04em">MOBILE</text>
+            <rect x="90" y="104" width="450" height="18" fill="#F0F0EF" rx="2"/>
+            <rect x="90" y="104" width="89" height="18" fill="#E07A5F" rx="2"/>
+            <text x="548" y="118" font-size="12" font-weight="600" fill="#E07A5F">2.45%</text>
+            <!-- annotation -->
+            <line x1="179" y1="86" x2="430" y2="100" stroke="#CCCCCC" stroke-width="1" stroke-dasharray="2 3"/>
+            <text x="230" y="96" font-size="10" fill="#AAAAAA">5&times; gap &mdash; same product, same users</text>
+            <!-- source -->
+            <text x="0" y="178" font-size="9" fill="#CCCCCC">Source: BigQuery &middot; GA4 &middot; sample week 2025</text>
+          </svg>
+          <p class="chart-caption">fig.01 &middot; access rate to exchange flow by device &middot; My Trips Level 2 &rarr; Request Change</p>
+        </div>
+
+        <p>The gap wasn&rsquo;t behavioral. It was architectural.</p>
+        <p>FullStory sessions confirmed it. Passengers were scanning the My Trips panel, tapping adjacent buttons,
+          backing out &mdash; not because the feature was broken, but because there was no direct entry point. Users
+          who needed exchange were routing through the baggage store as a discovery workaround.</p>
+        <p>The flow worked fine once you reached it. The fix wasn&rsquo;t a redesign. It was an entry.</p>
+      </section>
+
+      <!-- ── 03 · SOLUTION ── -->
+      <section class="section" id="s03">
+        <h2 class="section-heading">Solution</h2>
+        <div class="hypothesis">
+          <span class="h-tag">hypothesis</span>
+          <p class="h-text">Adding a direct &ldquo;Exchange &amp; Refunds&rdquo; entry in the My Trips button panel on mobile</p>
+          <p class="h-bridge">will result in</p>
+          <p class="h-text">a measurable increase in organic traffic to the voluntary exchange flow, without cannibalizing the baggage flow.</p>
+        </div>
+        <p>Version A was the existing My Trips layout. Version B added one new button: a direct path to
+          &ldquo;Exchange &amp; Refunds,&rdquo; mobile only.</p>
+        <p>I made a deliberate decision not to touch anything else &mdash; not the button styling, not the
+          surrounding hierarchy, not the desktop experience. The discipline matters because it makes the result
+          attributable. If you redesign the panel and traffic goes up, you don&rsquo;t know why. If you add one
+          entry and traffic goes up, you know exactly why.</p>
+        <p>This was non-negotiable when I framed the experiment brief.</p>
+      </section>
+
+      <!-- ── 04 · TEST SCOPE ── -->
+      <section class="section" id="s04">
+        <h2 class="section-heading">Test scope</h2>
+        <p>The A/B test was deployed on mobile only, across all 15 LATAM markets, using ABSmartly for experiment
+          management. Traffic was split equally between Version A (control) and Version B (treatment).</p>
+        <p>The experiment used predefined checkpoints &mdash; a statistical method that lets a team stop an
+          experiment early without inflating the risk of a false positive, as long as the stopping rules are
+          declared before the experiment starts. The read date and 95% confidence threshold were locked in the
+          experiment brief before any code was written.</p>
+        <p>This prevented the error of &ldquo;peeking&rdquo;: reviewing results prematurely and making decisions
+          based on incomplete data. Defining the stopping criteria upfront is what made the early close legitimate.</p>
+      </section>
+
+      <!-- ── 05 · METRICS ── -->
+      <section class="section" id="s05">
+        <h2 class="section-heading">Metric framework</h2>
+        <p>Before we wrote a line of code, I defined three tiers. The discipline of defining metrics before results
+          exist is what removes the debate when results come in.</p>
+        <div class="tier">
+          <p class="tier-title">Primary &middot; the behavior we wanted to move</p>
+          <p>Unique pageviews to the voluntary-change landing page from mobile. If the new entry worked, this number
+            would go up. Everything else followed from this signal.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Secondary &middot; downstream evidence</p>
+          <p>Unique pageviews to exchange confirmation, and the CSAT shift on the &ldquo;hard to find&rdquo;
+            detractor segment &mdash; evidence that access improvement translated into completed exchanges and
+            reduced frustration.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Guardrail &middot; what &ldquo;harm&rdquo; looked like</p>
+          <p>Mobile baggage-store access. The hypothesis was that a direct exchange path would not cannibalize the
+            bags flow. Declaring it as a guardrail before the test meant there was no debate about the 7.98% drop
+            when results came in. We&rsquo;d already agreed on what harm looked like &mdash; and this wasn&rsquo;t it.</p>
+        </div>
+      </section>
+
+      <!-- ── 06 · RESULTS ── -->
+      <section class="section" id="s06">
+        <h2 class="section-heading">Results</h2>
+        <p>Statistical confidence reached 95% four days ahead of the planned read date. The experiment closed
+          early &mdash; the predefined checkpoint logic made that call legitimate.</p>
+        <div class="metrics-grid">
+          <div class="metric-cell">
+            <div class="metric-number">+11.89%</div>
+            <p class="metric-label">Organic traffic to mobile exchange flow &middot; primary metric &middot; externally published, CRO Brasil</p>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-number">26.79%</div>
+            <p class="metric-label">Faster to statistical significance &middot; 4 days ahead of planned read date</p>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-number">+36 pts</div>
+            <p class="metric-label">Exchange CSAT &middot; Medallia scale (&minus;1 &rarr; +35) &middot; W10&ndash;W16 2025</p>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-number">&minus;7.98%</div>
+            <p class="metric-label">Baggage-store access &middot; guardrail held &middot; on purpose</p>
+          </div>
+        </div>
+        <p>The &minus;7.98% baggage-store drop is counter-intuitive. Users who previously routed through the bags
+          page to find exchange no longer needed to. They weren&rsquo;t buying fewer bags &mdash; they were no
+          longer using the bags page as a map. Conversion on baggage purchases was unaffected.</p>
+        <p>CRO Brasil published the experiment results. The case was named finalist in the CRO Awards Brasil 2025,
+          &ldquo;Experiments that move the needle&rdquo; category.</p>
+      </section>
+
+      <!-- ── 07 · CHALLENGE ── -->
+      <section class="section" id="s07">
+        <h2 class="section-heading">Challenge</h2>
+        <p>This was the squad&rsquo;s first production experiment. There was no internal playbook. No one had
+          run an A/B test in this product surface before.</p>
+        <p>I built the measurement framework from scratch &mdash; BigQuery queries, ABSmartly configuration,
+          predefined checkpoint logic. The upfront investment was significant. But the cost showed up in the
+          readout: when the results came in clean, no one questioned them. The rigor removed the debate.</p>
+        <p>The baggage-store drop created a moment of friction during the readout. A 7.98% decrease in any metric
+          draws attention. Because we had declared it as a guardrail before the experiment started &mdash; and
+          defined what &ldquo;harm&rdquo; meant in advance &mdash; there was no debate. We had already agreed on
+          the answer.</p>
+      </section>
+
+      <!-- ── 08 · TAKEAWAYS ── -->
+      <section class="section" id="s08">
+        <h2 class="section-heading">Takeaways</h2>
+        <p>This experiment shipped as a one-button change. What it actually shipped was a methodology. The three
+          PM squads that ran experiments after this one used the same framework: primary, secondary, guardrail
+          &mdash; defined before code, not after results.</p>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Evidence is cheaper than opinion</h3>
+          <p>One A/B test changes how a team argues about everything else. Before the experiment,
+            &ldquo;we should make this more findable&rdquo; was a design opinion. After it, there was a number.
+            The opinion didn&rsquo;t change. The cost of dismissing it did.</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">The discovery layer is the design</h3>
+          <p>When users can&rsquo;t find the feature, no improvement to the feature itself will help. Findability
+            isn&rsquo;t a navigation problem &mdash; it&rsquo;s a design surface. Treating it that way meant we
+            measured it the way we&rsquo;d measure any other design decision: with a hypothesis, a metric, and a
+            test.</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Cross-functional permission is granted by results</h3>
+          <p>Design earned a seat in OKR co-authoring after this experiment, not before. The invitation came
+            because the squad produced evidence the business could read and trust. Influence followed
+            accountability &mdash; not the other way around.</p>
+        </div>
+      </section>
+
+      <!-- ── 09 · CONCLUSION ── -->
+      <section class="section" id="s09">
+        <h2 class="section-heading">Conclusion</h2>
+        <p>After the results published internally, design was invited into OKR co-authoring for the first time.
+          Not because someone decided designers deserved a seat. Because the experiment produced evidence the
+          business could verify.</p>
+        <p>The methodology became the template for every experiment the squad ran afterward. Three PM squads
+          adopted the primary / secondary / guardrail framework directly. This case is the one peers cited when
+          arguing for an experimentation practice &mdash; not because of the result, but because of how the
+          result was produced.</p>
+
+        <p style="margin-top: 40px; font-size: 15.5px; line-height: 1.78; color: var(--ink);">
+          Want this kind of evidence on your team?<br>
+          <a href="mailto:esaaveni@gmail.com" style="color: var(--peach); text-decoration: none;">esaaveni@gmail.com</a>
+        </p>
+      </section>
+
+      <!-- ── 10 · MY ROLE & TEAM ── -->
+      <section class="section" id="s10">
+        <h2 class="section-heading">My role &amp; team</h2>
+        <p>Senior Product Designer embedded in the Customer Service squad. I owned the experiment brief,
+          co-authored the hypothesis, and built the measurement framework from scratch &mdash; BigQuery queries,
+          ABSmartly configuration, and predefined checkpoint logic.</p>
+        <p>I led the metric definition process and the internal result readout. After launch I became the
+          reference point for experimentation methodology across adjacent squads.</p>
+        <ul class="team-list">
+          <li><strong>Data Science</strong><span>BigQuery measurement &middot; statistical validation</span></li>
+          <li><strong>Product Manager</strong><span>Business context &middot; stakeholder alignment</span></li>
+          <li><strong>Engineering</strong><span>Feature implementation &middot; ABSmartly integration</span></li>
+          <li><strong>Experimentation SME</strong><span>Checkpoint methodology &middot; QA</span></li>
+          <li><strong>Customer Services Ops</strong><span>Medallia data &middot; qualitative input</span></li>
+        </ul>
+        <p class="footnote">
+          Verified by: CRO Brasil, June 2025 &middot; LinkedIn pulse &middot;
+          Esteban-Saavedra-2025-Cases-Study-LatamAirlines.pptx (slides 26&ndash;32) &middot;
+          Verified metrics &mdash; LATAM.md<br>
+          Available on request: raw 7,211-row CSAT survey &middot; internal eBusiness W16 checkpoint<br>
+          Last updated: 2026-05-15
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <span class="footer-logo">
+      <svg width="73" height="41" viewBox="0 0 73 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z" fill="black"/>
+        <path d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z" fill="#1A1A1A"/>
+      </svg>
+    </span>
+    <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+  </footer>
+
+  <script>
+    const titleBar   = document.getElementById('titleBar');
+    const sidebar    = document.getElementById('sidebar');
+    const barSection = document.getElementById('barSection');
+    const hero       = document.getElementById('hero');
+    const items      = document.querySelectorAll('.sidebar-item');
+    const sections   = document.querySelectorAll('.section[id]');
+
+    const mobProgress     = document.getElementById('mobProgress');
+    const mobProgressFill = document.getElementById('mobProgressFill');
+    const mobChip         = document.getElementById('mobChip');
+    const mobOverlay      = document.getElementById('mobOverlay');
+    const mobSheet        = document.getElementById('mobSheet');
+    const mobSheetItems   = document.getElementById('mobSheetItems');
+    const mobMenuBtn      = document.getElementById('mobMenuBtn');
+    const mobDrawer       = document.getElementById('mobDrawer');
+    const mobDrawerOverlay= document.getElementById('mobDrawerOverlay');
+
+    let activeSection = null;
+    const isMobile = () => window.innerWidth <= 860;
+
+    function mobToggleDrawer() { mobDrawer.classList.contains('open') ? mobCloseDrawer() : mobOpenDrawer(); }
+    function mobOpenDrawer() {
+      mobDrawer.classList.add('open'); mobDrawerOverlay.classList.add('open');
+      mobMenuBtn.classList.add('open'); mobMenuBtn.setAttribute('aria-label','Close menu');
+    }
+    function mobCloseDrawer() {
+      mobDrawer.classList.remove('open'); mobDrawerOverlay.classList.remove('open');
+      mobMenuBtn.classList.remove('open'); mobMenuBtn.setAttribute('aria-label','Open menu');
+    }
+
+    function buildMobSheet() {
+      mobSheetItems.innerHTML = '';
+      items.forEach(item => {
+        const a = document.createElement('a');
+        a.className = 'mob-sheet-item' + (item.dataset.s === activeSection ? ' active-section' : '');
+        a.href = item.getAttribute('href');
+        a.innerHTML = `<span class="mob-sheet-num">${item.textContent.trim().split(' ')[0]}</span>
+          <span class="mob-sheet-name">${item.textContent.trim().split(/\s+/).slice(1).join(' ')}</span>
+          <div class="mob-sheet-dot"></div>`;
+        a.onclick = () => mobCloseSheet();
+        mobSheetItems.appendChild(a);
+      });
+    }
+    function mobOpenSheet() {
+      buildMobSheet();
+      mobOverlay.style.display = 'block';
+      requestAnimationFrame(() => { mobOverlay.classList.add('open'); mobSheet.classList.add('open'); });
+    }
+    function mobCloseSheet() {
+      mobOverlay.classList.remove('open'); mobSheet.classList.remove('open');
+      setTimeout(() => { mobOverlay.style.display = 'none'; }, 350);
+    }
+
+    function updateProgress() {
+      if (!isMobile()) return;
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      mobProgressFill.style.width = (docH > 0 ? Math.min(100, (window.scrollY / docH) * 100) : 0) + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+
+    const navEl = document.querySelector('nav');
+    window.addEventListener('scroll', () => { navEl.classList.toggle('scrolled', window.scrollY > 10); }, { passive: true });
+    window.addEventListener('scroll', () => { if (!isMobile()) return; mobChip.classList.toggle('visible', window.scrollY > 50); }, { passive: true });
+
+    const heroObs = new IntersectionObserver((entries) => {
+      const gone = !entries[0].isIntersecting;
+      titleBar.classList.toggle('visible', gone);
+      sidebar.classList.toggle('visible', gone);
+      if (isMobile()) mobProgress.classList.toggle('visible', gone);
+    }, { threshold: 0 });
+    heroObs.observe(hero);
+
+    const secObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        activeSection = e.target.id;
+        items.forEach(item => item.classList.toggle('active', item.dataset.s === activeSection));
+        const active = document.querySelector(`.sidebar-item[data-s="${activeSection}"]`);
+        if (active) {
+          const txt = active.textContent.trim().replace(/\s+/, ' · ');
+          barSection.innerHTML = txt;
+          if (isMobile()) mobChip.textContent = txt + ' ↑';
+        }
+      });
+    }, { threshold: 0, rootMargin: '-108px 0px -75% 0px' });
+    sections.forEach(s => secObs.observe(s));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Esteban Saavedra — Senior Product Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --ink: #1A1A1A;
+      --graphite: #5C5C5C;
+      --ash: #E5E4E0;
+      --peach: #E07A5F;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+      --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+      --nav-h: 60px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      z-index: 200;
+      transition: padding 0.3s var(--ease);
+    }
+    nav.scrolled { padding-bottom: 8px; }
+
+    .nav-logo svg { height: 18px; width: auto; display: block; }
+    .nav-left { display: flex; align-items: baseline; gap: 14px; }
+    .nav-name { font-size: 11px; color: var(--graphite); letter-spacing: 0.04em; }
+    .nav-right { display: flex; align-items: center; gap: 36px; }
+    .nav-link {
+      font-size: 12px; color: var(--peach);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: opacity 0.3s var(--ease);
+    }
+    .nav-link-muted { color: var(--ink); }
+    .nav-link:hover { opacity: 0.65; }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      margin-top: var(--nav-h);
+      padding: 80px 48px 72px;
+      border-bottom: 1px solid var(--ash);
+      max-width: 1100px;
+    }
+
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      margin-bottom: 24px;
+    }
+
+    .hero-name {
+      font-family: var(--serif);
+      font-size: clamp(52px, 7vw, 96px);
+      font-weight: 300;
+      line-height: 1.02;
+      letter-spacing: -0.025em;
+      margin-bottom: 20px;
+    }
+
+    .hero-bio {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2.2vw, 26px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--graphite);
+      line-height: 1.5;
+      max-width: 640px;
+      margin-bottom: 40px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-strip {
+      display: flex;
+      gap: 2rem;
+      font-size: 11px;
+      color: var(--graphite);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-top: 1px solid var(--ash);
+      padding-top: 24px;
+    }
+
+    /* ══════════════════════════════
+       WORK SECTION
+    ══════════════════════════════ */
+    .work {
+      padding: 0 48px 120px;
+    }
+
+    .work-header {
+      padding: 48px 0 0;
+      margin-bottom: 0;
+    }
+
+    .work-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--graphite);
+    }
+
+    /* ══════════════════════════════
+       CASE CARD
+    ══════════════════════════════ */
+    .case-card {
+      display: grid;
+      grid-template-columns: 80px 1fr 200px;
+      gap: 0 48px;
+      align-items: start;
+      padding: 48px 0;
+      border-bottom: 1px solid var(--ash);
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s var(--ease);
+    }
+    .case-card:first-of-type { border-top: 1px solid var(--ash); margin-top: 40px; }
+    .case-card:hover { opacity: 0.72; }
+    .case-card:hover .case-arrow { transform: translateX(4px); }
+
+    .case-index {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      padding-top: 8px;
+    }
+
+    .case-body { min-width: 0; }
+
+    .case-meta {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      margin-bottom: 12px;
+    }
+
+    .case-title {
+      font-family: var(--serif);
+      font-size: clamp(32px, 3.5vw, 52px);
+      font-weight: 300;
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .case-sub {
+      font-family: var(--serif);
+      font-size: clamp(16px, 1.8vw, 22px);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--graphite);
+      margin-bottom: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    .case-desc {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--graphite);
+      max-width: 52ch;
+      letter-spacing: 0.01em;
+    }
+
+    .case-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .case-tag {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      border: 1px solid var(--ash);
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    .case-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+      padding-top: 8px;
+    }
+
+    .case-stat {
+      text-align: right;
+    }
+
+    .case-stat-number {
+      font-family: var(--serif);
+      font-size: 42px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+
+    .case-stat-label {
+      font-size: 10px;
+      color: var(--graphite);
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+      margin-top: 5px;
+    }
+
+    .case-arrow {
+      font-size: 18px;
+      color: var(--graphite);
+      transition: transform 0.2s var(--ease);
+      margin-top: 8px;
+    }
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--ash);
+      padding: 36px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-logo svg { height: 15px; width: auto; opacity: 0.3; }
+
+    /* ══════════════════════════════
+       MOBILE
+    ══════════════════════════════ */
+    @media (max-width: 860px) {
+      nav { padding: 0 20px; }
+      .nav-right { display: none; }
+      .hero { padding: 48px 24px 56px; }
+      .hero-strip { flex-wrap: wrap; gap: 1rem 1.5rem; }
+      .work { padding: 0 24px 80px; }
+      .case-card {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 36px 0;
+      }
+      .case-index { margin-bottom: 12px; }
+      .case-right {
+        align-items: flex-start;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--ash);
+        width: 100%;
+      }
+      .case-stat-number { font-size: 34px; }
+      footer { padding: 28px 24px; }
+
+      /* hamburger */
+      .mob-menu-btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 48px; height: 48px;
+        background: none; border: none;
+        cursor: pointer; padding: 12px; margin-right: -12px;
+      }
+      .mob-menu-btn span {
+        display: block; width: 22px; height: 1.5px;
+        background: var(--ink); border-radius: 1px;
+        transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+      }
+      .mob-menu-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+      .mob-menu-btn.open span:nth-child(2) { opacity: 0; }
+      .mob-menu-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+      .mob-drawer-overlay {
+        display: block; position: fixed; inset: 0;
+        background: rgba(0,0,0,0); z-index: 450; pointer-events: none;
+        transition: background 0.35s var(--ease);
+      }
+      .mob-drawer-overlay.open { background: rgba(0,0,0,0.25); pointer-events: auto; }
+
+      .mob-drawer {
+        display: flex; flex-direction: column;
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: 72vw; max-width: 280px;
+        background: var(--paper); z-index: 500;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1);
+        padding: calc(var(--nav-h) + 32px) 32px 48px;
+        border-left: 1px solid var(--ash);
+      }
+      .mob-drawer.open { transform: translateX(0); }
+      .mob-drawer-label {
+        font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--graphite); margin-bottom: 20px;
+      }
+      .mob-drawer-link {
+        font-family: var(--serif); font-size: 22px; font-weight: 300;
+        color: var(--ink); text-decoration: none; line-height: 1.3;
+        display: block; margin-bottom: 16px; transition: opacity 0.2s;
+      }
+      .mob-drawer-link:active { opacity: 0.5; }
+      .mob-drawer-contact { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+      .mob-drawer-msg {
+        font-family: var(--serif); font-size: 15px; font-weight: 300; font-style: italic;
+        line-height: 1.5; color: var(--graphite);
+      }
+      .mob-drawer-email { font-size: 12px; color: var(--peach); text-decoration: none; letter-spacing: 0.02em; }
+    }
+
+    @media (min-width: 861px) {
+      .mob-menu-btn, .mob-drawer, .mob-drawer-overlay { display: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ NAV ══ -->
+  <nav id="mainNav">
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">
+        <svg width="73" height="41" viewBox="0 0 73 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z" fill="black"/>
+          <path d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z" fill="#1A1A1A"/>
+        </svg>
+      </a>
+      <span class="nav-name">esteban saavedra nilo</span>
+    </div>
+    <div class="nav-right">
+      <a href="#work" class="nav-link nav-link-muted">Work</a>
+      <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="nav-link nav-link-muted">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:1px" xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+      <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+    </div>
+    <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Open menu" onclick="mobToggleDrawer()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══ MOBILE DRAWER ══ -->
+  <div class="mob-drawer-overlay" id="mobDrawerOverlay" onclick="mobCloseDrawer()"></div>
+  <div class="mob-drawer" id="mobDrawer">
+    <p class="mob-drawer-label">Esteban Saavedra</p>
+    <a href="#work" class="mob-drawer-link" onclick="mobCloseDrawer()">Work</a>
+    <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="mob-drawer-link" onclick="mobCloseDrawer()">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:2px" xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+    <div class="mob-drawer-contact">
+      <p class="mob-drawer-msg">Open to new projects &mdash;<br>I&rsquo;d love to hear from you.</p>
+      <a href="mailto:esaaveni@gmail.com" class="mob-drawer-email">esaaveni@gmail.com</a>
+    </div>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <p class="hero-label">Senior Product Designer &nbsp;&middot;&nbsp; Santiago, Chile</p>
+    <h1 class="hero-name">Esteban<br>Saavedra</h1>
+    <p class="hero-bio">15 years designing products that move numbers — and the experiments to prove it.</p>
+    <div class="hero-strip">
+      <span>LATAM Airlines</span>
+      <span>Davivienda</span>
+      <span>KTB Bank Thailand</span>
+      <span>Lead Innovation</span>
+    </div>
+  </section>
+
+  <!-- ══ WORK ══ -->
+  <section class="work" id="work">
+    <div class="work-header">
+      <p class="work-label">Selected work</p>
+    </div>
+
+    <!-- Case 01 — Zero Refund -->
+    <a href="case-study-v3.html" class="case-card">
+      <div class="case-index">01</div>
+      <div class="case-body">
+        <p class="case-meta">LATAM Airlines &nbsp;&middot;&nbsp; 2025</p>
+        <h2 class="case-title">Optimizing post-purchase integrity</h2>
+        <p class="case-sub">&ldquo;Zero Refund&rdquo; experiment</p>
+        <p class="case-desc">67% of passengers with non-refundable tickets called support to ask why they weren&rsquo;t getting a full refund. One screen change showing the exact amount upfront — before any further commitment — moved 75% more passengers through the flow.</p>
+        <div class="case-tags">
+          <span class="case-tag">A/B experiment</span>
+          <span class="case-tag">Customer Support</span>
+          <span class="case-tag">Group Sequential</span>
+          <span class="case-tag">ABSmartly</span>
+        </div>
+      </div>
+      <div class="case-right">
+        <div class="case-stat">
+          <div class="case-stat-number">+75%</div>
+          <p class="case-stat-label">Primary metric<br>relative lift</p>
+        </div>
+        <div class="case-arrow">→</div>
+      </div>
+    </a>
+
+    <!-- Case 02 — Access -->
+    <a href="exchange-refund.html" class="case-card">
+      <div class="case-index">02</div>
+      <div class="case-body">
+        <p class="case-meta">LATAM Airlines &nbsp;&middot;&nbsp; 2025</p>
+        <h2 class="case-title">Access</h2>
+        <p class="case-sub">Exchange &amp; Refund A/B experiment</p>
+        <p class="case-desc">Mobile access to the exchange flow was 5&times; lower than desktop. The same passengers, the same product — different device. One new entry in the My Trips panel closed the gap. The squad&rsquo;s first ever production experiment became the methodology every subsequent test was built on.</p>
+        <div class="case-tags">
+          <span class="case-tag">A/B experiment</span>
+          <span class="case-tag">Discovery</span>
+          <span class="case-tag">ABSmartly</span>
+          <span class="case-tag">CRO Brasil</span>
+        </div>
+      </div>
+      <div class="case-right">
+        <div class="case-stat">
+          <div class="case-stat-number">+11.89%</div>
+          <p class="case-stat-label">Organic traffic<br>mobile exchange</p>
+        </div>
+        <div class="case-arrow">→</div>
+      </div>
+    </a>
+
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <span class="footer-logo">
+      <svg width="73" height="41" viewBox="0 0 73 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z" fill="black"/>
+        <path d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z" fill="#1A1A1A"/>
+      </svg>
+    </span>
+    <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+  </footer>
+
+  <script>
+    const navEl = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      navEl.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    const mobMenuBtn = document.getElementById('mobMenuBtn');
+    const mobDrawer = document.getElementById('mobDrawer');
+    const mobDrawerOverlay = document.getElementById('mobDrawerOverlay');
+
+    function mobToggleDrawer() { mobDrawer.classList.contains('open') ? mobCloseDrawer() : mobOpenDrawer(); }
+    function mobOpenDrawer() {
+      mobDrawer.classList.add('open'); mobDrawerOverlay.classList.add('open');
+      mobMenuBtn.classList.add('open'); mobMenuBtn.setAttribute('aria-label', 'Close menu');
+    }
+    function mobCloseDrawer() {
+      mobDrawer.classList.remove('open'); mobDrawerOverlay.classList.remove('open');
+      mobMenuBtn.classList.remove('open'); mobMenuBtn.setAttribute('aria-label', 'Open menu');
+    }
+  </script>
+
+</body>
+</html>
