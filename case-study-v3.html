@@ -474,6 +474,219 @@
       height: auto;
     }
 
+    .fig-hint {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--peach);
+      margin-left: 12px;
+      opacity: 0.5;
+    }
+
+    .fig-flow-container {
+      position: relative;
+      width: 100%;
+      /* SVG viewBox 971×118 */
+      aspect-ratio: 971 / 118;
+      overflow: hidden;
+    }
+
+    .fig-flow-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+      display: block;
+    }
+
+    .flow-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* ── SVG FLOW ANIMATIONS ── */
+    #conn12, #conn45, #conn56 { animation: connNormal   0.3s  linear infinite paused; stroke-opacity: 0.25; }
+    #conn23, #conn34          { animation: connFriction  1.2s  linear infinite paused; stroke-opacity: 1;    stroke-width: 2; }
+    @keyframes connNormal   { from { stroke-dashoffset: 10; } to { stroke-dashoffset: 0; } }
+    @keyframes connFriction { from { stroke-dashoffset: 10; } to { stroke-dashoffset: 0; } }
+
+    #fig01Container.animate #conn12,
+    #fig01Container.animate #conn23,
+    #fig01Container.animate #conn34,
+    #fig01Container.animate #conn45,
+    #fig01Container.animate #conn56 { animation-play-state: running; }
+
+    /* ── HOTSPOTS — ring animates via SVG animate (no transform-origin issues) ── */
+
+    /* ── FLOW MODAL ── */
+    .flow-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      z-index: 800;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s var(--ease);
+    }
+    .flow-modal-overlay.open {
+      display: flex;
+      background: rgba(15,15,15,0.82);
+    }
+    .flow-modal {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: transform 0.4s var(--ease), opacity 0.4s var(--ease);
+    }
+    .flow-modal-overlay.open .flow-modal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .flow-modal-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+    /* ── LO-FI PHONE FRAME ── */
+    .flow-lofi-phone {
+      width: 300px;
+      background: #FAFAFA;
+      border-radius: 40px;
+      border: 2px solid var(--ink);
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+    }
+    .lofi-status {
+      height: 32px;
+      background: var(--ink);
+      flex-shrink: 0;
+    }
+    .lofi-nav {
+      height: 44px;
+      background: #FAFAFA;
+      border-bottom: 1px solid var(--ash);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+    }
+    .lofi-nav-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--ash);
+    }
+    .lofi-body {
+      padding: 20px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .lofi-body.lofi-center { align-items: center; justify-content: center; min-height: 260px; }
+    .lofi-row {
+      height: 9px;
+      border-radius: 5px;
+      background: var(--ash);
+    }
+    .lofi-row.short  { width: 42%; }
+    .lofi-row.medium { width: 63%; }
+    .lofi-row.long   { width: 82%; }
+    .lofi-row.full   { width: 100%; }
+    .lofi-row.title  { height: 14px; width: 55%; background: #C8C7C2; }
+    .lofi-spacer     { height: 6px; flex-shrink: 0; }
+    .lofi-block      { height: 44px; border-radius: 8px; background: var(--ash); }
+    .lofi-block.peach   { background: var(--peach); opacity: 0.75; }
+    .lofi-block.outline { background: transparent; border: 1.5px solid var(--ash); }
+    .lofi-divider    { height: 1px; background: var(--ash); }
+    .lofi-badge {
+      height: 32px;
+      border-radius: 6px;
+      background: rgba(224,122,95,0.12);
+      border: 1.5px solid var(--peach);
+      width: 85%;
+    }
+    .lofi-spinner {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 3px solid var(--ash);
+      border-top-color: var(--ink);
+      animation: lofi-spin 0.9s linear infinite;
+    }
+    @keyframes lofi-spin { to { transform: rotate(360deg); } }
+    .lofi-amount {
+      height: 52px;
+      border-radius: 10px;
+      background: #EEECEA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 28px;
+      color: var(--ink);
+      opacity: 0.65;
+    }
+    .lofi-check {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: var(--ink);
+    }
+
+
+    /* ── NODE HIT AREAS ── */
+    .flow-node-hit {
+      position: absolute;
+      top: -4px; bottom: -4px;
+      cursor: pointer;
+      z-index: 10;
+      background: transparent;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .flow-node-hit:hover {
+      background: rgba(26,26,26,0.07);
+    }
+    .flow-node-hit[data-node="3"]:hover {
+      background: rgba(224,122,95,0.14);
+    }
+
+    .flow-modal-disclosure {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .flow-modal-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 8px;
+      position: absolute;
+      top: -44px;
+      right: 0;
+      transition: color 0.2s;
+    }
+    .flow-modal-close:hover { color: #fff; }
+
     .fig-caption {
       padding: 8px 0 0;
       font-size: 13px !important;
@@ -891,9 +1104,106 @@
           efficiency, aimed at reducing the burden on support centers and mitigating passenger frustration at the point
           of greatest friction: the eligibility pre-check screen &mdash; the first screen a passenger sees when they
           initiate a refund request, before they&rsquo;ve committed any further effort.</p>
-        <div class="fig-wrap">
-          <img src="fig-01-refund-flow-before.svg" alt="Refund flow before — original system">
-          <p class="fig-caption">fig.01 &middot; refund flow &middot; before</p>
+        <div class="fig-wrap" id="fig01Wrap">
+          <div class="fig-flow-container" id="fig01Container">
+            <svg id="fig01Svg" viewBox="0 0 971 118" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;display:block;">
+
+              <!-- ── SOLID PAGE NODES ── -->
+              <rect id="n1" x="1"   y="1" width="99"  height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1"/>
+              <rect id="n3" x="354" y="1" width="100" height="116" rx="6" fill="white" stroke="#E07A5F" stroke-width="1.5"/>
+              <rect id="n5" x="709" y="1" width="100" height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1"/>
+              <rect id="n6" x="871" y="1" width="99"  height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1"/>
+
+              <!-- ── DASHED LOADER NODES ── -->
+              <rect id="n2" x="162" y="1" width="130" height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1" stroke-dasharray="5 4"/>
+              <rect id="n4" x="517" y="1" width="130" height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1" stroke-dasharray="5 4"/>
+
+              <!-- ── CONNECTOR DOTS ── -->
+              <circle cx="100" cy="59" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
+              <circle cx="292" cy="59" r="3" fill="#E07A5F"/>
+              <circle cx="454" cy="59" r="3" fill="#E07A5F"/>
+              <circle cx="647" cy="59" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
+              <circle cx="809" cy="59" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
+
+              <!-- ── CONNECTOR LINES (animated stroke-dashoffset) ── -->
+              <line id="conn12" x1="103" y1="59" x2="155" y2="59" stroke="#1A1A1A"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12"/>
+              <line id="conn23" x1="295" y1="59" x2="347" y2="59" stroke="#E07A5F"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" stroke-opacity="0.6"/>
+              <line id="conn34" x1="457" y1="59" x2="510" y2="59" stroke="#E07A5F"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" stroke-opacity="0.6"/>
+              <line id="conn45" x1="650" y1="59" x2="702" y2="59" stroke="#1A1A1A"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12"/>
+              <line id="conn56" x1="812" y1="59" x2="864" y2="59" stroke="#1A1A1A"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12"/>
+
+              <!-- ── ARROWHEADS ── -->
+              <polygon points="162,59 155,55 155,63" fill="#1A1A1A" opacity="0.25"/>
+              <polygon points="354,59 347,55 347,63" fill="#E07A5F"/>
+              <polygon points="517,59 510,55 510,63" fill="#E07A5F"/>
+              <polygon points="709,59 702,55 702,63" fill="#1A1A1A" opacity="0.25"/>
+              <polygon points="871,59 864,55 864,63" fill="#1A1A1A" opacity="0.25"/>
+
+              <!-- ── LABELS ── -->
+              <text x="51"  y="64" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">My trips</text>
+              <text x="227" y="64" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">fair rules</text>
+              <text id="n3-t1" x="404" y="53" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" font-weight="500" fill="#E07A5F">eligibility</text>
+              <text id="n3-t2" x="404" y="70" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" font-weight="500" fill="#E07A5F">screen</text>
+              <text x="582" y="64" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">Calculate</text>
+              <text x="759" y="55" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">Refund</text>
+              <text x="759" y="70" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">details</text>
+              <text x="921" y="55" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">Refund</text>
+              <text x="921" y="70" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">Complete</text>
+
+              <!-- ── HOTSPOTS (bottom-left corner, ring animates r from center) ── -->
+              <g transform="translate(8, 110)">
+                <circle r="3" fill="#E07A5F"/>
+                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
+                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="0s"     repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="0s"     repeatCount="indefinite"/>
+                </circle>
+              </g>
+              <g transform="translate(169, 110)">
+                <circle r="3" fill="#E07A5F"/>
+                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
+                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="0.33s"  repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="0.33s"  repeatCount="indefinite"/>
+                </circle>
+              </g>
+              <g transform="translate(361, 110)">
+                <circle r="3" fill="#E07A5F"/>
+                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
+                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="0.66s"  repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="0.66s"  repeatCount="indefinite"/>
+                </circle>
+              </g>
+              <g transform="translate(524, 110)">
+                <circle r="3" fill="#E07A5F"/>
+                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
+                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="1s"     repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="1s"     repeatCount="indefinite"/>
+                </circle>
+              </g>
+              <g transform="translate(716, 110)">
+                <circle r="3" fill="#E07A5F"/>
+                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
+                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="1.33s"  repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="1.33s"  repeatCount="indefinite"/>
+                </circle>
+              </g>
+              <g transform="translate(878, 110)">
+                <circle r="3" fill="#E07A5F"/>
+                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
+                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="1.66s"  repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="1.66s"  repeatCount="indefinite"/>
+                </circle>
+              </g>
+
+            </svg>
+            <!-- node hit areas — positioned over each box in the flow -->
+            <div class="flow-node-hit" data-node="1" style="left:0%;width:10.4%"    onclick="openNodeModal(1)"></div>
+            <div class="flow-node-hit" data-node="2" style="left:16.7%;width:13.4%" onclick="openNodeModal(2)"></div>
+            <div class="flow-node-hit" data-node="3" style="left:36.5%;width:10.3%" onclick="openNodeModal(3)"></div>
+            <div class="flow-node-hit" data-node="4" style="left:53.2%;width:13.4%" onclick="openNodeModal(4)"></div>
+            <div class="flow-node-hit" data-node="5" style="left:73%;width:10.3%"   onclick="openNodeModal(5)"></div>
+            <div class="flow-node-hit" data-node="6" style="left:89.7%;width:10.3%" onclick="openNodeModal(6)"></div>
+          </div>
+          <p class="fig-caption">fig.01 &middot; refund flow &middot; before<span class="fig-hint">tap any node to explore</span></p>
         </div>
       </section>
 
@@ -1288,6 +1598,23 @@
     </main>
   </div>
 
+  <!-- ══ NODE MODAL (lo-fi) ══ -->
+  <div class="flow-modal-overlay" id="flowModalOverlay" onclick="closeFlowModal()">
+    <div class="flow-modal" onclick="event.stopPropagation()">
+      <button class="flow-modal-close" onclick="closeFlowModal()">&#x2715;</button>
+      <p class="flow-modal-label" id="flowModalLabel"></p>
+      <div class="flow-lofi-phone">
+        <div class="lofi-status"></div>
+        <div class="lofi-nav">
+          <div class="lofi-nav-bar" style="width:56px"></div>
+          <div class="lofi-nav-bar" style="width:24px;margin-left:auto"></div>
+        </div>
+        <div id="flowModalContent"></div>
+      </div>
+      <p class="flow-modal-disclosure">Under construction &middot; wireframe for reference only</p>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer>
     <span class="footer-logo"><svg width="73" height="41" viewBox="0 0 73 41" fill="none"
@@ -1303,6 +1630,132 @@
   </footer>
 
   <script>
+    /* ── FLOW ANIMATION — triggers when fig enters viewport ── */
+    let flowAnimated = false;
+    const fig01 = document.getElementById('fig01Container');
+
+    const flowObs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !flowAnimated) {
+        flowAnimated = true;
+        fig01.classList.add('animate');
+        flowObs.disconnect();
+      }
+    }, { threshold: 0.3 });
+
+    if (fig01) flowObs.observe(fig01);
+
+    /* ── NODE MODAL (lo-fi) ── */
+    const flowModalOverlay = document.getElementById('flowModalOverlay');
+    const flowModalLabel   = document.getElementById('flowModalLabel');
+    const flowModalContent = document.getElementById('flowModalContent');
+
+    const nodeData = {
+      1: {
+        label: '01 · Refund request',
+        html: `<div class="lofi-body">
+          <div class="lofi-row title"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-row long"></div>
+          <div class="lofi-row medium"></div>
+          <div class="lofi-row short"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-divider"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-row long"></div>
+          <div class="lofi-row medium"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-block peach"></div>
+        </div>`
+      },
+      2: {
+        label: '02 · Processing',
+        html: `<div class="lofi-body lofi-center" style="gap:14px">
+          <div class="lofi-spinner"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-row medium"></div>
+          <div class="lofi-row short"></div>
+        </div>`
+      },
+      3: {
+        label: '03 · Eligibility check — friction point',
+        html: `<div class="lofi-body">
+          <div class="lofi-badge"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-row long"></div>
+          <div class="lofi-row full"></div>
+          <div class="lofi-row medium"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-divider"></div>
+          <div class="lofi-row long"></div>
+          <div class="lofi-divider"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-block outline"></div>
+          <div class="lofi-block peach"></div>
+        </div>`
+      },
+      4: {
+        label: '04 · Calculating refund',
+        html: `<div class="lofi-body lofi-center" style="gap:14px">
+          <div class="lofi-spinner"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-row medium"></div>
+          <div class="lofi-row short"></div>
+        </div>`
+      },
+      5: {
+        label: '05 · Refund result',
+        html: `<div class="lofi-body">
+          <div class="lofi-row title"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-amount">$0.00</div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-row long"></div>
+          <div class="lofi-row medium"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-block outline"></div>
+          <div class="lofi-block peach"></div>
+        </div>`
+      },
+      6: {
+        label: '06 · Confirmation',
+        html: `<div class="lofi-body lofi-center" style="gap:14px">
+          <div class="lofi-check">✓</div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-row medium"></div>
+          <div class="lofi-row short"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-row short"></div>
+          <div class="lofi-spacer"></div>
+          <div class="lofi-block peach"></div>
+        </div>`
+      }
+    };
+
+    function openNodeModal(nodeId) {
+      const data = nodeData[nodeId];
+      if (!data) return;
+      flowModalLabel.textContent = data.label;
+      flowModalContent.innerHTML = data.html;
+      flowModalOverlay.style.display = 'flex';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => flowModalOverlay.classList.add('open'));
+      });
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeFlowModal() {
+      flowModalOverlay.classList.remove('open');
+      setTimeout(() => {
+        flowModalOverlay.style.display = 'none';
+        flowModalContent.innerHTML = '';
+      }, 380);
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeFlowModal();
+    });
+
     const titleBar = document.getElementById('titleBar');
     const sidebar = document.getElementById('sidebar');
     const barSection = document.getElementById('barSection');
