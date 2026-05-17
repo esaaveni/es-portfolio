@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Zero Refund — Esteban Saavedra</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -486,8 +489,8 @@
     .fig-flow-container {
       position: relative;
       width: 100%;
-      /* SVG viewBox 971×118 */
-      aspect-ratio: 971 / 118;
+      /* SVG viewBox 971×90 */
+      aspect-ratio: 971 / 90;
       overflow: hidden;
     }
 
@@ -753,6 +756,27 @@
       opacity: 0.3;
     }
 
+    /* ── FIG-01 SCALE: full width of main.content column ──
+       Negative margins cancel .content's own padding on both sides.
+       No explicit width — block element expands naturally to fill the column.
+       40px symmetric padding keeps the diagram off the hard edges.
+       Works at any viewport width without vw math. */
+    #fig01Wrap {
+      /* Full-bleed within the content column. Breaks out of centered 640px .section via vw math. */
+      width: calc(100vw - var(--side-w));
+      margin-left: calc(((100vw - var(--side-w) - 144px - 640px) / -2) - 64px);
+      /* ≥ 1440px: proportional padding (~15% of column) */
+      padding: 0 calc((100vw - var(--side-w)) * 0.15);
+    }
+
+    /* 1024px – 1440px: fixed padding, comfortable at mid-range viewports */
+    @media (max-width: 1440px) {
+      #fig01Wrap { padding: 0 48px; }
+    }
+
+    /* ── FIG-01 VISUAL: friction connectors heavier ── */
+    #conn23, #conn34 { stroke-width: 2.5; }
+
     /* ─ RESPONSIVE: collapse sidebar on small screens ─ */
     @media (max-width: 860px) {
       .page-grid { grid-template-columns: 1fr; }
@@ -764,6 +788,36 @@
       .hero-title { font-size: clamp(40px, 10vw, 64px); }
       .hero-sub { font-size: clamp(18px, 5vw, 28px); margin-bottom: 1.75rem; }
       .hero-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem; padding-top: 30px; }
+
+      /* FIG-01 mobile: reset desktop vw math.
+         Matches content padding — diagram aligns flush with prose.
+         Horizontal scroll with right-edge fade signals swipe affordance. */
+      #fig01Wrap {
+        width: 100%;
+        margin-left: 0;
+        padding: 0;
+      }
+      .fig-scroll-zone {
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -webkit-mask-image: linear-gradient(to right, black 0%, black 88%, transparent 100%);
+        mask-image: linear-gradient(to right, black 0%, black 88%, transparent 100%);
+      }
+      .fig-scroll-zone::-webkit-scrollbar { display: none; }
+      /* Fixed size on mobile: width drives horizontal scroll, height overrides aspect-ratio
+         so nodes render at their intended ~90px — readable and tappable. */
+      #fig01Container {
+        width: 700px;
+        min-width: 700px;
+        height: 90px;
+        aspect-ratio: unset;
+      }
+      /* Re-align caption with prose (recovers the -32px margin offset) */
+      #fig01Wrap .fig-caption {
+        padding-left: 16px;
+      }
     }
 
     /* ── MOBILE PROGRESS BAR ── */
@@ -1105,93 +1159,84 @@
           of greatest friction: the eligibility pre-check screen &mdash; the first screen a passenger sees when they
           initiate a refund request, before they&rsquo;ve committed any further effort.</p>
         <div class="fig-wrap" id="fig01Wrap">
+          <div class="fig-scroll-zone">
           <div class="fig-flow-container" id="fig01Container">
-            <svg id="fig01Svg" viewBox="0 0 971 118" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;display:block;">
+            <svg id="fig01Svg" viewBox="0 0 971 90" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;display:block;">
+              <defs>
+                <marker id="arr"  markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1A1A1A" opacity="0.25"/></marker>
+                <marker id="arrp" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#E07A5F"/></marker>
+              </defs>
 
-              <!-- ── SOLID PAGE NODES ── -->
-              <rect id="n1" x="1"   y="1" width="99"  height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1"/>
-              <rect id="n3" x="354" y="1" width="100" height="116" rx="6" fill="white" stroke="#E07A5F" stroke-width="1.5"/>
-              <rect id="n5" x="709" y="1" width="100" height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1"/>
-              <rect id="n6" x="871" y="1" width="99"  height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1"/>
+              <!-- ── NODES ── -->
+              <!-- N1 My trips — solid -->
+              <rect id="n1" x="1"   y="1" width="99"  height="88" rx="6" fill="white" stroke="#1A1A1A" stroke-width="1.5"/>
+              <text x="50.5" y="34" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="8" fill="#1A1A1A" opacity="0.45" letter-spacing="0.08em">ENTRY</text>
+              <text x="50.5" y="50" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="14" fill="#1A1A1A">My trips</text>
 
-              <!-- ── DASHED LOADER NODES ── -->
-              <rect id="n2" x="162" y="1" width="130" height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1" stroke-dasharray="5 4"/>
-              <rect id="n4" x="517" y="1" width="130" height="116" rx="6" fill="white" stroke="#C0BEBC" stroke-width="1" stroke-dasharray="5 4"/>
+              <!-- N2 Fare rules — dashed loader -->
+              <rect id="n2" x="162" y="1" width="130" height="88" rx="6" fill="white" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="5 4" stroke-opacity="0.35"/>
+              <text x="227" y="34" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="8" fill="#1A1A1A" opacity="0.35" letter-spacing="0.08em">PROCESSING</text>
+              <text x="227" y="50" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="14" fill="#1A1A1A">Fare rules</text>
+
+              <!-- N3 Eligibility — FRICTION (peach) -->
+              <rect id="n3" x="354" y="1" width="100" height="88" rx="6" fill="white" stroke="#E07A5F" stroke-width="2"/>
+              <text x="404" y="31" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="8" fill="#E07A5F" letter-spacing="0.08em">FRICTION</text>
+              <text x="404" y="46" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="14" fill="#1A1A1A">Eligibility</text>
+              <text x="404" y="61" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="12" fill="#1A1A1A" opacity="0.6" font-style="italic">screen</text>
+
+              <!-- N4 Calculate — dashed loader -->
+              <rect id="n4" x="517" y="1" width="130" height="88" rx="6" fill="white" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="5 4" stroke-opacity="0.35"/>
+              <text x="582" y="34" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="8" fill="#1A1A1A" opacity="0.35" letter-spacing="0.08em">PROCESSING</text>
+              <text x="582" y="50" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="14" fill="#1A1A1A">Calculate</text>
+
+              <!-- N5 Refund details — solid -->
+              <rect id="n5" x="709" y="1" width="100" height="88" rx="6" fill="white" stroke="#1A1A1A" stroke-width="1.5"/>
+              <text x="759" y="31" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="8" fill="#1A1A1A" opacity="0.45" letter-spacing="0.08em">RESOLUTION</text>
+              <text x="759" y="46" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="14" fill="#1A1A1A">Refund</text>
+              <text x="759" y="61" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="14" fill="#1A1A1A">details</text>
+
+              <!-- N6 Refund complete — solid -->
+              <rect id="n6" x="871" y="1" width="99"  height="88" rx="6" fill="white" stroke="#1A1A1A" stroke-width="1.5"/>
+              <text x="920.5" y="31" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="8" fill="#1A1A1A" opacity="0.45" letter-spacing="0.08em">COMPLETE</text>
+              <text x="920.5" y="46" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="14" fill="#1A1A1A">Refund</text>
+              <text x="920.5" y="61" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="14" fill="#1A1A1A">complete</text>
 
               <!-- ── CONNECTOR DOTS ── -->
-              <circle cx="100" cy="59" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
-              <circle cx="292" cy="59" r="3" fill="#E07A5F"/>
-              <circle cx="454" cy="59" r="3" fill="#E07A5F"/>
-              <circle cx="647" cy="59" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
-              <circle cx="809" cy="59" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
+              <circle cx="100" cy="45" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
+              <circle cx="292" cy="45" r="3" fill="#E07A5F"/>
+              <circle cx="454" cy="45" r="3" fill="#E07A5F"/>
+              <circle cx="647" cy="45" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
+              <circle cx="809" cy="45" r="3" fill="#1A1A1A" fill-opacity="0.25"/>
 
               <!-- ── CONNECTOR LINES (animated stroke-dashoffset) ── -->
-              <line id="conn12" x1="103" y1="59" x2="155" y2="59" stroke="#1A1A1A"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12"/>
-              <line id="conn23" x1="295" y1="59" x2="347" y2="59" stroke="#E07A5F"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" stroke-opacity="0.6"/>
-              <line id="conn34" x1="457" y1="59" x2="510" y2="59" stroke="#E07A5F"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" stroke-opacity="0.6"/>
-              <line id="conn45" x1="650" y1="59" x2="702" y2="59" stroke="#1A1A1A"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12"/>
-              <line id="conn56" x1="812" y1="59" x2="864" y2="59" stroke="#1A1A1A"   stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12"/>
+              <line id="conn12" x1="103" y1="45" x2="155" y2="45" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" marker-end="url(#arr)"/>
+              <line id="conn23" x1="295" y1="45" x2="347" y2="45" stroke="#E07A5F" stroke-width="2.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" marker-end="url(#arrp)"/>
+              <line id="conn34" x1="457" y1="45" x2="510" y2="45" stroke="#E07A5F" stroke-width="2.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" marker-end="url(#arrp)"/>
+              <line id="conn45" x1="650" y1="45" x2="702" y2="45" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" marker-end="url(#arr)"/>
+              <line id="conn56" x1="812" y1="45" x2="864" y2="45" stroke="#1A1A1A" stroke-width="1.5" stroke-dasharray="4 6" stroke-linecap="round" stroke-dashoffset="12" marker-end="url(#arr)"/>
 
-              <!-- ── ARROWHEADS ── -->
-              <polygon points="162,59 155,55 155,63" fill="#1A1A1A" opacity="0.25"/>
-              <polygon points="354,59 347,55 347,63" fill="#E07A5F"/>
-              <polygon points="517,59 510,55 510,63" fill="#E07A5F"/>
-              <polygon points="709,59 702,55 702,63" fill="#1A1A1A" opacity="0.25"/>
-              <polygon points="871,59 864,55 864,63" fill="#1A1A1A" opacity="0.25"/>
-
-              <!-- ── LABELS ── -->
-              <text x="51"  y="64" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">My trips</text>
-              <text x="227" y="64" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">fair rules</text>
-              <text id="n3-t1" x="404" y="53" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" font-weight="500" fill="#E07A5F">eligibility</text>
-              <text id="n3-t2" x="404" y="70" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" font-weight="500" fill="#E07A5F">screen</text>
-              <text x="582" y="64" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">Calculate</text>
-              <text x="759" y="55" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">Refund</text>
-              <text x="759" y="70" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">details</text>
-              <text x="921" y="55" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">Refund</text>
-              <text x="921" y="70" text-anchor="middle" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#5C5C5C">Complete</text>
-
-              <!-- ── HOTSPOTS (bottom-left corner, ring animates r from center) ── -->
-              <g transform="translate(8, 110)">
+              <!-- ── HOTSPOTS ── only eligibility pulses ── -->
+              <g transform="translate(8, 80)">
+                <circle r="3" fill="#E07A5F" opacity="0.4"/>
+              </g>
+              <g transform="translate(169, 80)">
+                <circle r="3" fill="#E07A5F" opacity="0.4"/>
+              </g>
+              <g transform="translate(361, 80)">
                 <circle r="3" fill="#E07A5F"/>
                 <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
-                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="0s"     repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="0s"     repeatCount="indefinite"/>
+                  <animate attributeName="r"              from="3" to="10" dur="2s" begin="0s" repeatCount="indefinite"/>
+                  <animate attributeName="stroke-opacity" from="0.7" to="0"  dur="2s" begin="0s" repeatCount="indefinite"/>
                 </circle>
               </g>
-              <g transform="translate(169, 110)">
-                <circle r="3" fill="#E07A5F"/>
-                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
-                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="0.33s"  repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="0.33s"  repeatCount="indefinite"/>
-                </circle>
+              <g transform="translate(524, 80)">
+                <circle r="3" fill="#E07A5F" opacity="0.4"/>
               </g>
-              <g transform="translate(361, 110)">
-                <circle r="3" fill="#E07A5F"/>
-                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
-                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="0.66s"  repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="0.66s"  repeatCount="indefinite"/>
-                </circle>
+              <g transform="translate(716, 80)">
+                <circle r="3" fill="#E07A5F" opacity="0.4"/>
               </g>
-              <g transform="translate(524, 110)">
-                <circle r="3" fill="#E07A5F"/>
-                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
-                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="1s"     repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="1s"     repeatCount="indefinite"/>
-                </circle>
-              </g>
-              <g transform="translate(716, 110)">
-                <circle r="3" fill="#E07A5F"/>
-                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
-                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="1.33s"  repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="1.33s"  repeatCount="indefinite"/>
-                </circle>
-              </g>
-              <g transform="translate(878, 110)">
-                <circle r="3" fill="#E07A5F"/>
-                <circle r="3" fill="none" stroke="#E07A5F" stroke-width="1.2">
-                  <animate attributeName="r"              from="3" to="11" dur="2s" begin="1.66s"  repeatCount="indefinite"/>
-                  <animate attributeName="stroke-opacity" from="0.7" to="0" dur="2s" begin="1.66s"  repeatCount="indefinite"/>
-                </circle>
+              <g transform="translate(878, 80)">
+                <circle r="3" fill="#E07A5F" opacity="0.4"/>
               </g>
 
             </svg>
@@ -1203,6 +1248,7 @@
             <div class="flow-node-hit" data-node="5" style="left:73%;width:10.3%"   onclick="openNodeModal(5)"></div>
             <div class="flow-node-hit" data-node="6" style="left:89.7%;width:10.3%" onclick="openNodeModal(6)"></div>
           </div>
+          </div><!-- /fig-scroll-zone -->
           <p class="fig-caption">fig.01 &middot; refund flow &middot; before<span class="fig-hint">tap any node to explore</span></p>
         </div>
       </section>
@@ -1611,7 +1657,7 @@
         </div>
         <div id="flowModalContent"></div>
       </div>
-      <p class="flow-modal-disclosure">Under construction &middot; wireframe for reference only</p>
+      <p class="flow-modal-disclosure">Wireframe &middot; final screens in progress</p>
     </div>
   </div>
 
