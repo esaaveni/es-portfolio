@@ -337,12 +337,12 @@
     }
 
     .section p {
-      font-size: 15.5px;
+      font-size: 18px;
       line-height: 1.78;
       color: var(--ink);
-      max-width: 58ch;
+      max-width: 64ch;
       letter-spacing: 0.01em;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .section p:last-child {
@@ -357,7 +357,7 @@
        Below 1024px: sidenotes hidden, section reverts to 640px.
     ─────────────────────────────────────────────────────────── */
     .content .section.has-sidenote {
-      max-width: 860px;
+      max-width: 980px;
     }
 
     .section.has-sidenote .section-heading {
@@ -366,8 +366,8 @@
 
     .prose-row {
       display: grid;
-      grid-template-columns: 1fr 180px;
-      gap: 0 40px;
+      grid-template-columns: 1fr minmax(180px, 220px);
+      gap: 0 48px;
       align-items: start;
     }
 
@@ -382,16 +382,17 @@
     }
 
     .sidenote-label {
+      display: block;
       font-size: 9px;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--graphite);
       opacity: 0.5;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .sidenote p {
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.65;
       color: var(--graphite);
       max-width: none;
@@ -806,23 +807,13 @@
       opacity: 0.3;
     }
 
-    /* ── FIG-01 SCALE: full width of main.content column ──
-       Negative margins cancel .content's own padding on both sides.
-       No explicit width — block element expands naturally to fill the column.
-       40px symmetric padding keeps the diagram off the hard edges.
-       Works at any viewport width without vw math. */
+    /* ── FIG-01 SCALE: full content column width ──
+       Section has no max-width, so 100% = full content area.
+       All multimedia elements use this same reference width. */
     #fig01Wrap {
-      /* Full-bleed within the content column. Breaks out of centered 860px .section via vw math.
-         Section is now 860px (640 prose + 40 gap + 180 sidenote) — formula updated accordingly. */
-      width: calc(100vw - var(--side-w));
-      margin-left: calc(((100vw - var(--side-w) - 144px - 860px) / -2) - 64px);
-      /* ≥ 1440px: proportional padding (~15% of column) */
-      padding: 0 calc((100vw - var(--side-w)) * 0.15);
-    }
-
-    /* 1024px – 1440px: fixed padding, comfortable at mid-range viewports */
-    @media (max-width: 1440px) {
-      #fig01Wrap { padding: 0 48px; }
+      width: 100%;
+      margin: 36px 0;
+      padding: 0;
     }
 
     /* ≤ 1024px: collapse sidenote layout — section reverts to 640px, two-col grid becomes block.
@@ -832,9 +823,21 @@
       .content .section.has-sidenote { max-width: 640px; }
       .section.has-sidenote .section-heading { max-width: none; }
       .prose-row { display: block; }
-      .sidenote { margin-top: 16px; margin-bottom: 16px; }
+      .sidenote {
+        display: block;
+        border-left: none;
+        border-top: 1px solid var(--ash);
+        padding-left: 0;
+        padding-top: 16px;
+        margin-top: 28px;
+        margin-bottom: 0;
+      }
+      .sidenote-label { margin-bottom: 8px; }
+      .sidenote p { font-size: 12px; }
       #fig01Wrap {
-        margin-left: calc(((100vw - var(--side-w) - 144px - 640px) / -2) - 64px);
+        width: 100%;
+        margin: 28px 0;
+        padding: 0;
       }
     }
 
@@ -1112,22 +1115,47 @@
     ─────────────────────────────────────────────────────── */
     .voice-aside {
       font-style: italic;
-      background: linear-gradient(180deg, transparent 55%, rgba(224,122,95,0.18) 55%);
-      padding: 0 2px;
-      border-radius: 1px;
     }
 
     /* ── EXPANDABLE ANNOTATION ──────────────────────────────
-       Trigger: dotted underline on phrase
+       Trigger: warm highlight brush + ? icon
        Box: bordered frame, serif text, label, peach ×
     ─────────────────────────────────────────────────────── */
     .ann-trigger {
-      border-bottom: 1.5px dotted var(--graphite);
       cursor: pointer;
-      transition: border-color 0.15s;
     }
-    .ann-trigger:hover { border-color: var(--peach); }
-    .ann-trigger.open  { border-color: var(--peach); }
+    .ann-highlight {
+      background: linear-gradient(180deg, transparent 52%, rgba(224,122,95,0.18) 52%);
+      padding: 0 2px;
+      border-radius: 1px;
+      transition: background 0.2s;
+    }
+    .ann-trigger::after {
+      content: '?';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      line-height: 18px;
+      text-align: center;
+      border-radius: 50%;
+      border: 1.5px solid var(--peach);
+      background: transparent;
+      color: var(--peach);
+      font-size: 11px;
+      font-family: var(--sans);
+      font-style: normal;
+      font-weight: 600;
+      margin-left: 5px;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .ann-trigger:hover::after { opacity: 1; }
+    .ann-trigger.open::after  { opacity: 1; }
+    .ann-trigger:hover .ann-highlight { background: linear-gradient(180deg, transparent 52%, rgba(224,122,95,0.30) 52%); }
+    .ann-trigger.open  .ann-highlight { background: linear-gradient(180deg, transparent 52%, rgba(224,122,95,0.30) 52%); }
 
     .ann-block {
       display: grid;
@@ -1310,7 +1338,7 @@
         <div class="prose-row">
           <div>
             <p><strong>At LATAM, a fundamental strategic tension exists between revenue management and operational efficiency.</strong></p>
-          <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')">non-refundable fares are essential for driving airline revenue</span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket &mdash; <span class="voice-aside">or we, as designers, fail to make those limitations recognizable.</span></p>
+            <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')"><span class="ann-highlight">non-refundable fares are essential for driving airline revenue</span></span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket &mdash; <span class="voice-aside">or we, as designers, fail to make those limitations recognizable.</span></p>
             <div class="ann-block" id="ann-nr">
               <div class="ann-block-inner">
                 <div class="ann-box">
@@ -1321,15 +1349,12 @@
                 </div>
               </div>
             </div>
+            <p>Making these conditions clear isn&rsquo;t just a UX goal; it dictates our call center costs. And the confusion always starts at the exact same place: <span style="color:var(--peach);">the eligibility screen</span>.</p>
           </div>
           <aside class="sidenote">
-            <p>LATAM is the largest airline in Latin America and the 10th largest globally by seat capacity, transporting a
-              record 87.4 million passengers in 2025 &mdash; averaging nearly 250,000 travelers daily.</p>
+            <span class="sidenote-label">About the airline</span>
+            <p>LATAM is the largest airline in Latin America and the 10th largest globally by seat capacity, transporting a record 87.4 million passengers in 2025 &mdash; averaging nearly 250,000 travelers daily.</p>
           </aside>
-        </div>
-
-        <div class="prose-row">
-          <p>Making these conditions clear isn&rsquo;t just a UX goal; it dictates our call center costs. And the confusion always starts at the exact same place: <span style="color:var(--peach);">the eligibility screen</span>.</p>
         </div>
 
         <div class="fig-wrap" id="fig01Wrap">
