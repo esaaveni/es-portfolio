@@ -1122,40 +1122,12 @@
        Box: bordered frame, serif text, label, peach ×
     ─────────────────────────────────────────────────────── */
     .ann-trigger {
+      border-bottom: 1.5px dotted var(--graphite);
       cursor: pointer;
+      transition: border-color 0.15s;
     }
-    .ann-highlight {
-      background: linear-gradient(180deg, transparent 52%, rgba(224,122,95,0.18) 52%);
-      padding: 0 2px;
-      border-radius: 1px;
-      transition: background 0.2s;
-    }
-    .ann-trigger::after {
-      content: '?';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      line-height: 18px;
-      text-align: center;
-      border-radius: 50%;
-      border: 1.5px solid var(--peach);
-      background: transparent;
-      color: var(--peach);
-      font-size: 11px;
-      font-family: var(--sans);
-      font-style: normal;
-      font-weight: 600;
-      margin-left: 5px;
-      vertical-align: middle;
-      position: relative;
-      top: -1px;
-      opacity: 0.6;
-      transition: opacity 0.2s;
-    }
-    .ann-trigger:hover::after { opacity: 1; }
-    .ann-trigger.open::after  { opacity: 1; }
-    .ann-trigger:hover .ann-highlight { background: linear-gradient(180deg, transparent 52%, rgba(224,122,95,0.30) 52%); }
-    .ann-trigger.open  .ann-highlight { background: linear-gradient(180deg, transparent 52%, rgba(224,122,95,0.30) 52%); }
+    .ann-trigger:hover { border-color: var(--peach); }
+    .ann-trigger.open  { border-color: var(--peach); }
 
     .ann-block {
       display: grid;
@@ -1338,13 +1310,13 @@
         <div class="prose-row">
           <div>
             <p><strong>At LATAM, a fundamental strategic tension exists between revenue management and operational efficiency.</strong></p>
-            <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')"><span class="ann-highlight">non-refundable fares are essential for driving airline revenue</span></span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket &mdash; <span class="voice-aside">or we, as designers, fail to make those limitations recognizable.</span></p>
+            <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')">non-refundable fares are essential for driving airline revenue</span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket. <span class="voice-aside">Or we, as designers, fail to make those limitations recognizable.</span></p>
             <div class="ann-block" id="ann-nr">
               <div class="ann-block-inner">
                 <div class="ann-box">
                   <span class="ann-box-label">Why this matters</span>
                   <span class="ann-close" onclick="closeAnn('nr')">&#x2715;</span>
-                  <p>Non-refundable fares are the mechanism behind cheap tickets &mdash; they give airlines revenue certainty at the moment of booking, which is what makes discounted prices possible. That certainty has a price: US airlines collected $2.8 billion in cancellation fees in 2019, and still above $1 billion in 2023 &mdash; even after most major carriers had eliminated change fees.</p>
+                  <p>Non-refundable fares are the mechanism behind cheap tickets: they give airlines revenue certainty at the moment of booking, which is what makes discounted prices possible. That certainty has a price: US airlines collected $2.8 billion in cancellation fees in 2019, and still above $1 billion in 2023, even after most major carriers had eliminated change fees.</p>
                   <span class="ann-box-source"><a href="https://www.bts.gov/cancellation-change-fees" target="_blank" rel="noopener">Bureau of Transportation Statistics &middot; Cancellation Fees by Airline<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 8L8 2M8 2H4.5M8 2V5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></span>
                 </div>
               </div>
@@ -1353,7 +1325,7 @@
           </div>
           <aside class="sidenote">
             <span class="sidenote-label">About the airline</span>
-            <p>LATAM is the largest airline in Latin America and the 10th largest globally by seat capacity, transporting a record 87.4 million passengers in 2025 &mdash; averaging nearly 250,000 travelers daily.</p>
+            <p>LATAM is the largest airline in Latin America and the 10th largest globally by seat capacity, transporting a record 87.4 million passengers in 2025, averaging nearly 250,000 travelers daily.</p>
           </aside>
         </div>
 
