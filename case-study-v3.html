@@ -349,6 +349,56 @@
       margin-bottom: 0;
     }
 
+    /* ── SIDENOTE SYSTEM ──────────────────────────────────────
+       .has-sidenote: expands section to 860px (640 prose + 40 gap + 180 note).
+       .prose-row: 2-col grid — paragraph left, optional sidenote right.
+       Rows with no sidenote simply leave column 2 empty (intentional whitespace).
+       .section-heading stays pinned to 640px so it aligns with prose.
+       Below 1024px: sidenotes hidden, section reverts to 640px.
+    ─────────────────────────────────────────────────────────── */
+    .content .section.has-sidenote {
+      max-width: 860px;
+    }
+
+    .section.has-sidenote .section-heading {
+      max-width: 640px;
+    }
+
+    .prose-row {
+      display: grid;
+      grid-template-columns: 1fr 180px;
+      gap: 0 40px;
+      align-items: start;
+    }
+
+    /* p inside prose-row: inherit all .section p styles, but manage own bottom margin via row */
+    .prose-row p {
+      margin-bottom: 16px;
+    }
+
+    .sidenote {
+      border-left: 1px solid var(--ash);
+      padding-left: 18px;
+    }
+
+    .sidenote-label {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      opacity: 0.5;
+      margin-bottom: 8px;
+    }
+
+    .sidenote p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--graphite);
+      max-width: none;
+      letter-spacing: 0;
+      margin-bottom: 0;
+    }
+
     .section strong {
       font-weight: 500;
     }
@@ -762,9 +812,10 @@
        40px symmetric padding keeps the diagram off the hard edges.
        Works at any viewport width without vw math. */
     #fig01Wrap {
-      /* Full-bleed within the content column. Breaks out of centered 640px .section via vw math. */
+      /* Full-bleed within the content column. Breaks out of centered 860px .section via vw math.
+         Section is now 860px (640 prose + 40 gap + 180 sidenote) — formula updated accordingly. */
       width: calc(100vw - var(--side-w));
-      margin-left: calc(((100vw - var(--side-w) - 144px - 640px) / -2) - 64px);
+      margin-left: calc(((100vw - var(--side-w) - 144px - 860px) / -2) - 64px);
       /* ≥ 1440px: proportional padding (~15% of column) */
       padding: 0 calc((100vw - var(--side-w)) * 0.15);
     }
@@ -772,6 +823,19 @@
     /* 1024px – 1440px: fixed padding, comfortable at mid-range viewports */
     @media (max-width: 1440px) {
       #fig01Wrap { padding: 0 48px; }
+    }
+
+    /* ≤ 1024px: collapse sidenote layout — section reverts to 640px, two-col grid becomes block.
+       Sidenotes stay visible, flowing inline below their paragraph with the same border treatment.
+       Fig margin-left formula reverts to the 640px-section value. */
+    @media (max-width: 1024px) {
+      .content .section.has-sidenote { max-width: 640px; }
+      .section.has-sidenote .section-heading { max-width: none; }
+      .prose-row { display: block; }
+      .sidenote { margin-top: 16px; margin-bottom: 16px; }
+      #fig01Wrap {
+        margin-left: calc(((100vw - var(--side-w) - 144px - 640px) / -2) - 64px);
+      }
     }
 
     /* ── FIG-01 VISUAL: friction connectors heavier ── */
@@ -1041,6 +1105,100 @@
         letter-spacing: 0.02em;
       }
     }
+    /* ── VOICE ASIDE — highlight brush ──────────────────────
+       Warm background under the aside — like a pen stroke.
+       Italic signals author voice without competing with
+       surrounding elements.
+    ─────────────────────────────────────────────────────── */
+    .voice-aside {
+      font-style: italic;
+      background: linear-gradient(180deg, transparent 55%, rgba(224,122,95,0.18) 55%);
+      padding: 0 2px;
+      border-radius: 1px;
+    }
+
+    /* ── EXPANDABLE ANNOTATION ──────────────────────────────
+       Trigger: dotted underline on phrase
+       Box: bordered frame, serif text, label, peach ×
+    ─────────────────────────────────────────────────────── */
+    .ann-trigger {
+      border-bottom: 1.5px dotted var(--graphite);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .ann-trigger:hover { border-color: var(--peach); }
+    .ann-trigger.open  { border-color: var(--peach); }
+
+    .ann-block {
+      display: grid;
+      grid-template-rows: 0fr;
+      margin-top: 0; margin-bottom: 0;
+      transition: grid-template-rows 0.3s cubic-bezier(0.4,0,0.2,1),
+                  margin-top 0.3s, margin-bottom 0.3s;
+    }
+    .ann-block.open {
+      grid-template-rows: 1fr;
+      margin-top: 16px;
+      margin-bottom: 16px;
+    }
+    .ann-block-inner { overflow: hidden; }
+
+    .ann-box {
+      border: 1px solid var(--ash);
+      border-left: 3px solid var(--peach);
+      padding: 20px 24px;
+      position: relative;
+    }
+    .ann-box-label {
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--peach);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .ann-box p {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.65;
+      color: var(--ink);
+      max-width: none;
+      letter-spacing: 0;
+      margin-bottom: 0;
+    }
+    .ann-box-source {
+      display: block;
+      font-size: 13px;
+      color: var(--graphite);
+      opacity: 0.7;
+      margin-top: 20px;
+      font-style: italic;
+      font-family: var(--sans);
+    }
+
+    .ann-box-source a {
+      color: inherit;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.15s;
+    }
+    .ann-box-source a:hover { color: var(--peach); }
+    .ann-box-source a svg { flex-shrink: 0; transition: color 0.15s; }
+    .ann-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      cursor: pointer;
+      color: var(--peach);
+      opacity: 0.7;
+      font-size: 13px;
+      line-height: 1;
+      transition: opacity 0.15s;
+    }
+    .ann-close:hover { opacity: 1; }
+
   </style>
 </head>
 
@@ -1146,18 +1304,34 @@
     <!-- CONTENT -->
     <main class="content">
 
-      <section class="section" id="s01">
+      <section class="section has-sidenote" id="s01">
         <h2 class="section-heading">Context</h2>
-        <p>LATAM is the largest airline in Latin America and the 10th largest globally by seat capacity, transporting a
-          record 87.4 million passengers in 2025 &mdash; averaging nearly 250,000 travelers daily.</p>
-        <p>A fundamental strategic tension exists between the high volume of Call Center (CC) interactions and the
-          transparency of fare conditions. While non-refundable fares are a staple of revenue management, they
-          frequently become a source of operational friction when passengers fail to recognize the limitations of their
-          purchase &mdash; or we, as designers, failed to make it recognizable.</p>
-        <p>Clarity in these conditions is not merely a UX improvement; it is a critical lever for operational
-          efficiency, aimed at reducing the burden on support centers and mitigating passenger frustration at the point
-          of greatest friction: the eligibility pre-check screen &mdash; the first screen a passenger sees when they
-          initiate a refund request, before they&rsquo;ve committed any further effort.</p>
+
+        <div class="prose-row">
+          <div>
+            <p><strong>At LATAM, a fundamental strategic tension exists between revenue management and operational efficiency.</strong></p>
+          <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')">non-refundable fares are essential for driving airline revenue</span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket &mdash; <span class="voice-aside">or we, as designers, fail to make those limitations recognizable.</span></p>
+            <div class="ann-block" id="ann-nr">
+              <div class="ann-block-inner">
+                <div class="ann-box">
+                  <span class="ann-box-label">Why this matters</span>
+                  <span class="ann-close" onclick="closeAnn('nr')">&#x2715;</span>
+                  <p>Non-refundable fares are the mechanism behind cheap tickets &mdash; they give airlines revenue certainty at the moment of booking, which is what makes discounted prices possible. That certainty has a price: US airlines collected $2.8 billion in cancellation fees in 2019, and still above $1 billion in 2023 &mdash; even after most major carriers had eliminated change fees.</p>
+                  <span class="ann-box-source"><a href="https://www.bts.gov/cancellation-change-fees" target="_blank" rel="noopener">Bureau of Transportation Statistics &middot; Cancellation Fees by Airline<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 8L8 2M8 2H4.5M8 2V5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <aside class="sidenote">
+            <p>LATAM is the largest airline in Latin America and the 10th largest globally by seat capacity, transporting a
+              record 87.4 million passengers in 2025 &mdash; averaging nearly 250,000 travelers daily.</p>
+          </aside>
+        </div>
+
+        <div class="prose-row">
+          <p>Making these conditions clear isn&rsquo;t just a UX goal; it dictates our call center costs. And the confusion always starts at the exact same place: <span style="color:var(--peach);">the eligibility screen</span>.</p>
+        </div>
+
         <div class="fig-wrap" id="fig01Wrap">
           <div class="fig-scroll-zone">
           <div class="fig-flow-container" id="fig01Container">
@@ -1922,6 +2096,16 @@
       });
     }, { threshold: 0, rootMargin: '-108px 0px -75% 0px' });
     sections.forEach(s => secObs.observe(s));
+    function toggleAnn(id) {
+      const block    = document.getElementById('ann-' + id);
+      const trigger  = document.getElementById('ann-t-' + id);
+      block.classList.toggle('open');
+      trigger.classList.toggle('open');
+    }
+    function closeAnn(id) {
+      document.getElementById('ann-' + id).classList.remove('open');
+      document.getElementById('ann-t-' + id).classList.remove('open');
+    }
   </script>
 </body>
 
