@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@200;400;500&display=swap"
     rel="stylesheet">
   <style>
     :root {
@@ -512,7 +512,7 @@
 
     .chart-caption {
       font-size: 10px !important;
-      color: var(--graphite);
+      color: #444;
       margin-top: 12px;
       letter-spacing: 0.02em;
       max-width: none !important;
@@ -1114,8 +1114,43 @@
        Italic signals author voice without competing with
        surrounding elements.
     ─────────────────────────────────────────────────────── */
+    /* inline variant — s01 short aside */
     .voice-aside {
+      font-family: var(--serif);
       font-style: italic;
+      font-size: 19px;
+      color: var(--peach);
+      font-weight: 400;
+    }
+
+    /* pull variant — big sans light, ghost mark behind */
+    .voice-aside-pull {
+      position: relative;
+      padding: 24px 0;
+    }
+    .voice-aside-pull::before {
+      content: '\201C';
+      font-family: var(--serif);
+      font-size: 240px;
+      line-height: 1;
+      color: var(--ash);
+      position: absolute;
+      top: -24px;
+      left: -24px;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .voice-aside-pull p {
+      font-family: var(--sans);
+      font-style: normal;
+      font-size: 36px;
+      font-style: italic;
+      font-weight: 200;
+      line-height: 1.5;
+      color: #888;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 0;
     }
 
     /* ── EXPANDABLE ANNOTATION ──────────────────────────────
@@ -1311,7 +1346,10 @@
         <div class="prose-row">
           <div>
             <p><strong>At LATAM, a fundamental strategic tension exists between revenue management and operational efficiency.</strong></p>
-            <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')">non-refundable fares are essential for driving airline revenue</span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket. <span class="voice-aside">Or we, as designers, fail to make those limitations recognizable.</span></p>
+            <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')">non-refundable fares are essential for driving airline revenue</span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket.</p>
+            <div class="voice-aside-pull">
+              <p>Or we, as designers, fail to make those limitations recognizable.</p>
+            </div>
             <div class="ann-block" id="ann-nr">
               <div class="ann-block-inner">
                 <div class="ann-box">
@@ -1428,7 +1466,7 @@
       <section class="section has-sidenote" id="s02">
         <h2 class="section-heading">Problem</h2>
 
-        <p>Our customer satisfaction data showed a sustained decline concentrated in one category: <strong>dissatisfaction with refund policies.</strong></p>
+        <p>Survey data showed a sustained satisfaction score decline, concentrated in one category: <strong>dissatisfaction with refund policies.</strong></p>
 
         <div class="prose-row">
           <div>
@@ -1442,28 +1480,30 @@
 
         <div class="prose-row">
           <div>
-            <p>This friction triggered the moment they hit the eligibility screen, which functioned as a <span class="ann-trigger" id="ann-t-sc" onclick="toggleAnn('sc')">compliance shield and backend loading gate</span> rather than an informational tool. <span class="voice-aside">Passengers were so paralyzed by the vague, heavy warnings that they abandoned the digital flow entirely, terrified that clicking "Next" would instantly forfeit their money.</span></p>
-
+            <p>This friction triggered the moment they hit the eligibility screen, which functioned as a <span class="ann-trigger" id="ann-t-sc" onclick="toggleAnn('sc')">compliance shield and backend loading gate</span> rather than an informational tool.</p>
             <div class="ann-block" id="ann-sc">
-          <div class="ann-block-inner">
-            <div class="ann-box">
-              <span class="ann-box-label">Why the screen worked this way</span>
-              <span class="ann-close" onclick="closeAnn('sc')">&#x2715;</span>
-              <p>Because our post-purchase architecture was completely disconnected from the booking flow, Engineering used this screen as a forced delay to fetch fare rules, while Legal used it to clear liability. Neither system was optimized for clarity. I call this &#8220;business-centric design.&#8221;</p>
+              <div class="ann-block-inner">
+                <div class="ann-box">
+                  <span class="ann-box-label">Why the screen worked this way</span>
+                  <span class="ann-close" onclick="closeAnn('sc')">&#x2715;</span>
+                  <p>Because our post-purchase architecture was completely disconnected from the booking flow, Engineering used this screen as a forced delay to fetch fare rules, while Legal used it to clear liability. Neither system was optimized for clarity. I call this &#8220;business-centric design.&#8221;</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+            <div class="voice-aside-pull">
+              <p>Passengers were so paralyzed by the vague, heavy warnings that they abandoned the digital flow entirely, terrified that clicking &#8220;Next&#8221; would instantly forfeit their money.</p>
+            </div>
           </div>
           <!-- empty second column keeps ann-box same width as prose-row -->
         </div>
 
         <div class="chart-wrap">
-          <svg viewBox="0 0 680 440" xmlns="http://www.w3.org/2000/svg"
+          <svg viewBox="0 0 680 370" xmlns="http://www.w3.org/2000/svg"
             font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif">
 
             <!-- ── TITLE ── -->
             <text x="90" y="30" font-size="15" font-weight="700" fill="#111111" letter-spacing="-0.3">
-              Calls to contact center by fare type
+              Monthly calls to contact center by fare type
             </text>
 
             <!-- ── BASELINE ── -->
@@ -1495,7 +1535,7 @@
             <text x="160" y="174" font-size="10.5" fill="#1D3557" font-weight="600">215</text>
 
             <!-- ── divider ── -->
-            <line x1="90" y1="188" x2="520" y2="188" stroke="#F4F4F4" stroke-width="1" stroke-dasharray="2 3" />
+            <line x1="90" y1="188" x2="520" y2="188" stroke="#CCCCCC" stroke-width="1" stroke-dasharray="2 3" />
 
             <!-- PB TOP · 200 -->
             <line x1="90" y1="205" x2="140" y2="205" stroke="#EEEEEE" stroke-width="1" />
@@ -1527,13 +1567,9 @@
             <circle cx="97" cy="320" r="3" fill="#DADADA" />
             <text x="83" y="324" font-size="10.5" fill="#BBBBBB" text-anchor="end">PB</text>
 
-            <!-- ── SOURCE ── -->
-            <text x="90" y="410" font-size="9.5" fill="#CCCCCC">
-              Source: LATAM contact center call data · Clínica Métricas, June 2025
-            </text>
 
           </svg>
-          <p class="chart-caption">fig.01 &middot; calls to contact center by fare type &middot; June 2025</p>
+          <p class="chart-caption">Source: LATAM contact center call data &middot; Cl&iacute;nica M&eacute;tricas, June 2025</p>
         </div>
 
       </section>
