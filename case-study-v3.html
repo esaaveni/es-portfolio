@@ -1114,24 +1114,15 @@
        Italic signals author voice without competing with
        surrounding elements.
     ─────────────────────────────────────────────────────── */
-    /* inline variant — s01 short aside */
-    .voice-aside {
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: 19px;
-      color: var(--peach);
-      font-weight: 400;
-    }
-
-    /* pull variant — big sans light, ghost mark behind */
-    .voice-aside-pull {
+    /* author-voice — author's own thinking, breaking into the argument */
+    .author-voice {
       position: relative;
       padding: 24px 0;
     }
-    .voice-aside-pull::before {
-      content: '\201C';
+    .author-voice::before {
+      content: '\00B6';
       font-family: var(--serif);
-      font-size: 240px;
+      font-size: 96px;
       line-height: 1;
       color: var(--ash);
       position: absolute;
@@ -1140,11 +1131,10 @@
       z-index: 0;
       pointer-events: none;
     }
-    .voice-aside-pull p {
+    .author-voice p {
       font-family: var(--sans);
-      font-style: normal;
-      font-size: 36px;
       font-style: italic;
+      font-size: 36px;
       font-weight: 200;
       line-height: 1.5;
       color: #888;
@@ -1347,8 +1337,8 @@
           <div>
             <p><strong>At LATAM, a fundamental strategic tension exists between revenue management and operational efficiency.</strong></p>
             <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')">non-refundable fares are essential for driving airline revenue</span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket.</p>
-            <div class="voice-aside-pull">
-              <p>Or we, as designers, fail to make those limitations recognizable.</p>
+            <div class="author-voice">
+<p>Or we, as designers, fail to make those limitations recognizable.</p>
             </div>
             <div class="ann-block" id="ann-nr">
               <div class="ann-block-inner">
@@ -1490,8 +1480,8 @@
                 </div>
               </div>
             </div>
-            <div class="voice-aside-pull">
-              <p>Passengers were so paralyzed by the vague, heavy warnings that they abandoned the digital flow entirely, terrified that clicking &#8220;Next&#8221; would instantly forfeit their money.</p>
+            <div class="author-voice">
+<p>Passengers were so paralyzed by the vague, heavy warnings that they abandoned the digital flow entirely, terrified that clicking &#8220;Next&#8221; would instantly forfeit their money.</p>
             </div>
           </div>
           <!-- empty second column keeps ann-box same width as prose-row -->
