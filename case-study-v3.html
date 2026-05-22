@@ -1171,18 +1171,6 @@
       position: relative;
       padding: 24px 0;
     }
-    .author-voice::before {
-      content: '\00B6';
-      font-family: var(--serif);
-      font-size: 96px;
-      line-height: 1;
-      color: var(--ash);
-      position: absolute;
-      top: -24px;
-      left: -24px;
-      z-index: 0;
-      pointer-events: none;
-    }
     .author-voice p {
       font-family: var(--sans);
       font-style: italic;
@@ -1390,7 +1378,7 @@
             <p><strong>At LATAM, a fundamental strategic tension exists between revenue management and operational efficiency.</strong></p>
             <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')">non-refundable fares are essential for driving airline revenue</span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket.</p>
             <div class="author-voice">
-<p>Or we, as designers, fail to make those limitations recognizable.</p>
+              <p>Or we, as designers, fail to make those limitations recognizable.</p>
             </div>
             <div class="ann-block" id="ann-nr">
               <div class="ann-block-inner">
@@ -1532,11 +1520,12 @@
                 </div>
               </div>
             </div>
-            <div class="author-voice">
-<p>Passengers were so paralyzed by the vague, heavy warnings that they abandoned the digital flow entirely, terrified that clicking &#8220;Next&#8221; would instantly forfeit their money.</p>
-            </div>
           </div>
-          <!-- empty second column keeps ann-box same width as prose-row -->
+          <div></div>
+        </div>
+
+        <div class="author-voice">
+          <p>Some passengers were so paralyzed by the vague, heavy warnings that they abandoned the digital flow entirely, terrified that clicking &#8220;Next&#8221; would instantly forfeit their money.</p>
         </div>
 
         <!-- ═══════════════════════════════════════════════════
