@@ -551,6 +551,11 @@
       color: var(--ink);
       border-color: #999;
     }
+    .chart-frag {
+      padding: 28px;
+      background: #fff;
+      border: 1px solid var(--ash);
+    }
     .chart-frag svg {
       display: block;
       width: 100%;
@@ -1548,66 +1553,76 @@
 
           <!-- ── INFORMATION DESIGN VIEW (default) ── -->
           <div class="chart-frag" id="chartFrag">
-            <svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg"
+            <svg viewBox="0 0 800 510" xmlns="http://www.w3.org/2000/svg"
                  style="font-family:var(--sans);">
 
-              <!-- LIGHT · 1,447 · 37% · r=64 -->
-              <circle cx="170" cy="248" r="64" fill="#99cc33" fill-opacity="0.10" stroke="#99cc33" stroke-width="1.5"/>
-              <circle cx="170" cy="248" r="3" fill="#99cc33"/>
-              <line x1="170" y1="184" x2="170" y2="158" stroke="#99cc33" stroke-width="0.75" stroke-dasharray="2.5 3"/>
-              <text x="170" y="150" text-anchor="middle" font-size="9" fill="#99cc33" letter-spacing="0.15em" font-weight="600">LIGHT</text>
-              <text x="170" y="126" text-anchor="middle" font-size="30" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">1,447</text>
-              <line x1="170" y1="312" x2="170" y2="332" stroke="#99cc33" stroke-width="0.75"/>
-              <text x="170" y="356" text-anchor="middle" font-size="24" fill="#99cc33" font-weight="600">37%</text>
-              <text x="170" y="372" text-anchor="middle" font-size="9" fill="#888" letter-spacing="0.10em">OF ALL INBOUND CALLS</text>
+              <!-- ══════════════════════════════════════════════
+                   CLUSTER 1 — NON-REIMBURSABLE FARES
+                   Light · Basic · Standard  (full opacity)
+                   Label order: FARE NAME → NUMBER (consistent)
+              ══════════════════════════════════════════════ -->
 
-              <!-- BASIC · 950 · r=52 -->
-              <circle cx="360" cy="188" r="52" fill="#008bff" fill-opacity="0.08" stroke="#008bff" stroke-width="1.5"/>
-              <circle cx="360" cy="188" r="3" fill="#008bff"/>
-              <line x1="360" y1="136" x2="360" y2="110" stroke="#008bff" stroke-width="0.75" stroke-dasharray="2.5 3"/>
-              <text x="360" y="102" text-anchor="middle" font-size="9" fill="#008bff" letter-spacing="0.15em" font-weight="600">BASIC</text>
-              <text x="360" y="78" text-anchor="middle" font-size="26" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">950</text>
+              <!-- LIGHT · 1,447 · r=64 · #99cc33 -->
+              <circle cx="155" cy="250" r="64" fill="#99cc33" fill-opacity="0.10" stroke="#99cc33" stroke-width="1.5"/>
+              <circle cx="155" cy="250" r="3" fill="#99cc33"/>
+              <line x1="155" y1="156" x2="155" y2="186" stroke="#99cc33" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="155" y="114" text-anchor="middle" font-size="9" fill="#99cc33" letter-spacing="0.15em" font-weight="600">LIGHT</text>
+              <text x="155" y="148" text-anchor="middle" font-size="30" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">1,447</text>
+              <!-- 37% — Light's individual stat, below bubble -->
+              <line x1="155" y1="314" x2="155" y2="334" stroke="#99cc33" stroke-width="0.75"/>
+              <text x="155" y="356" text-anchor="middle" font-size="22" fill="#99cc33" font-weight="600">37%</text>
 
-              <!-- FULL · 575 · r=40 -->
-              <circle cx="490" cy="300" r="40" fill="#d236bb" fill-opacity="0.08" stroke="#d236bb" stroke-width="1.5"/>
-              <circle cx="490" cy="300" r="3" fill="#d236bb"/>
-              <line x1="530" y1="288" x2="552" y2="278" stroke="#d236bb" stroke-width="0.75" stroke-dasharray="2.5 3"/>
-              <text x="556" y="271" text-anchor="start" font-size="9" fill="#d236bb" letter-spacing="0.15em" font-weight="600">FULL</text>
-              <text x="556" y="289" text-anchor="start" font-size="22" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">575</text>
+              <!-- BASIC · 950 · r=52 · #008bff -->
+              <circle cx="325" cy="205" r="52" fill="#008bff" fill-opacity="0.08" stroke="#008bff" stroke-width="1.5"/>
+              <circle cx="325" cy="205" r="3" fill="#008bff"/>
+              <line x1="325" y1="118" x2="325" y2="153" stroke="#008bff" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="325" y="80" text-anchor="middle" font-size="9" fill="#008bff" letter-spacing="0.15em" font-weight="600">BASIC</text>
+              <text x="325" y="110" text-anchor="middle" font-size="26" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">950</text>
 
-              <!-- STANDARD · 215 · r=25 -->
-              <circle cx="590" cy="162" r="25" fill="#00b5ae" fill-opacity="0.10" stroke="#00b5ae" stroke-width="1.5"/>
-              <circle cx="590" cy="162" r="2.5" fill="#00b5ae"/>
-              <line x1="590" y1="137" x2="590" y2="115" stroke="#00b5ae" stroke-width="0.75" stroke-dasharray="2.5 3"/>
-              <text x="590" y="108" text-anchor="middle" font-size="9" fill="#00b5ae" letter-spacing="0.15em" font-weight="600">STANDARD</text>
-              <text x="590" y="86" text-anchor="middle" font-size="19" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">215</text>
+              <!-- STANDARD · 215 · r=25 · #00b5ae -->
+              <circle cx="445" cy="168" r="25" fill="#00b5ae" fill-opacity="0.10" stroke="#00b5ae" stroke-width="1.5"/>
+              <circle cx="445" cy="168" r="2.5" fill="#00b5ae"/>
+              <line x1="445" y1="116" x2="445" y2="143" stroke="#00b5ae" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="445" y="78" text-anchor="middle" font-size="9" fill="#00b5ae" letter-spacing="0.15em" font-weight="600">STANDARD</text>
+              <text x="445" y="108" text-anchor="middle" font-size="19" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">215</text>
 
-              <!-- PREMIUM BUSINESS · 200 · r=24 -->
-              <circle cx="628" cy="340" r="24" fill="#303030" fill-opacity="0.08" stroke="#404040" stroke-width="1.5"/>
-              <circle cx="628" cy="340" r="2.5" fill="#444"/>
-              <line x1="652" y1="330" x2="668" y2="322" stroke="#666" stroke-width="0.75" stroke-dasharray="2.5 3"/>
-              <text x="672" y="316" text-anchor="start" font-size="9" fill="#666" letter-spacing="0.12em" font-weight="600">PREMIUM</text>
-              <text x="672" y="328" text-anchor="start" font-size="9" fill="#666" letter-spacing="0.12em" font-weight="600">BUSINESS</text>
-              <text x="672" y="347" text-anchor="start" font-size="19" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">200</text>
+              <!-- CLUSTER FOOTER — spans Light → Standard -->
+              <line x1="88" y1="378" x2="474" y2="378" stroke="#E8E8E8" stroke-width="0.8"/>
+              <text x="281" y="394" text-anchor="middle" font-size="10" fill="#888" letter-spacing="0.10em" font-weight="600">67% OF CALLS</text>
+              <text x="281" y="408" text-anchor="middle" font-size="8.5" fill="#AAAAAA" letter-spacing="0.04em">from non-reimbursable fares</text>
 
-              <!-- OTHER · 180 · r=23 (subdued) -->
-              <circle cx="62" cy="450" r="23" fill="#E8E8E8" fill-opacity="0.6" stroke="#CCCCCC" stroke-width="1"/>
-              <circle cx="62" cy="450" r="2" fill="#BBBBBB"/>
-              <line x1="85" y1="443" x2="100" y2="436" stroke="#CCCCCC" stroke-width="0.75" stroke-dasharray="2.5 3"/>
-              <text x="104" y="430" text-anchor="start" font-size="9" fill="#BBBBBB" letter-spacing="0.12em">OTHER</text>
-              <text x="104" y="448" text-anchor="start" font-size="18" fill="#CCCCCC" font-weight="500" letter-spacing="-0.01em">180</text>
 
-              <!-- 67% annotation -->
-              <line x1="258" y1="420" x2="330" y2="420" stroke="#DDDDDD" stroke-width="0.8"/>
-              <text x="258" y="436" text-anchor="start" font-size="9" fill="#888" letter-spacing="0.10em" font-weight="500">67% OF CALLS</text>
-              <text x="258" y="450" text-anchor="start" font-size="9" fill="#AAAAAA" letter-spacing="0.04em">from non-reimbursable fares</text>
+              <!-- ══════════════════════════════════════════════
+                   CLUSTER 2 — OTHER FARE TYPES
+                   Full · Premium Business · Other
+                   Faded (out of scope for this experiment)
+              ══════════════════════════════════════════════ -->
+              <g opacity="0.38">
 
-              <!-- size reference key -->
-              <g transform="translate(580, 448)">
-                <circle cx="0" cy="0" r="12" fill="none" stroke="#DDDDDD" stroke-width="1"/>
-                <circle cx="26" cy="3" r="8" fill="none" stroke="#DDDDDD" stroke-width="1"/>
-                <text x="38" y="4" text-anchor="start" font-size="8.5" fill="#BBBBBB" letter-spacing="0.06em">circle area</text>
-                <text x="38" y="15" text-anchor="start" font-size="8.5" fill="#BBBBBB" letter-spacing="0.06em">= call volume</text>
+                <!-- FULL · 575 · r=40 · #d236bb -->
+                <circle cx="580" cy="262" r="40" fill="#d236bb" fill-opacity="0.08" stroke="#d236bb" stroke-width="1.5"/>
+                <circle cx="580" cy="262" r="3" fill="#d236bb"/>
+                <line x1="620" y1="252" x2="638" y2="244" stroke="#d236bb" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+                <text x="642" y="240" text-anchor="start" font-size="9" fill="#d236bb" letter-spacing="0.15em" font-weight="600">FULL</text>
+                <text x="642" y="258" text-anchor="start" font-size="19" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">575</text>
+
+                <!-- PREMIUM BUSINESS · 200 · r=24 · #303030 -->
+                <circle cx="660" cy="368" r="24" fill="#303030" fill-opacity="0.08" stroke="#404040" stroke-width="1.5"/>
+                <circle cx="660" cy="368" r="2.5" fill="#444"/>
+                <line x1="684" y1="360" x2="698" y2="352" stroke="#666" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+                <text x="702" y="348" text-anchor="start" font-size="9" fill="#666" letter-spacing="0.12em" font-weight="600">PREMIUM BIZ</text>
+                <text x="702" y="366" text-anchor="start" font-size="18" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">200</text>
+
+                <!-- OTHER · 180 · r=23 · gray -->
+                <circle cx="668" cy="160" r="23" fill="#E8E8E8" fill-opacity="0.6" stroke="#CCCCCC" stroke-width="1"/>
+                <circle cx="668" cy="160" r="2" fill="#BBBBBB"/>
+                <line x1="691" y1="154" x2="706" y2="147" stroke="#CCCCCC" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+                <text x="709" y="143" text-anchor="start" font-size="9" fill="#AAAAAA" letter-spacing="0.12em">OTHER</text>
+                <text x="709" y="160" text-anchor="start" font-size="18" fill="#BBBBBB" font-weight="500" letter-spacing="-0.01em">180</text>
+
+                <!-- out of scope label -->
+                <text x="638" y="452" text-anchor="middle" font-size="8" fill="#CCCCCC" letter-spacing="0.12em">OUT OF SCOPE</text>
+
               </g>
 
             </svg>
