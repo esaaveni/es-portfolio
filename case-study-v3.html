@@ -518,6 +518,53 @@
       max-width: none !important;
     }
 
+    /* ─ CHART TOGGLE ─ */
+    .chart-switchable {
+      margin: 28px 0;
+    }
+    .chart-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .chart-header-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .chart-toggle {
+      font-family: var(--sans);
+      font-size: 10px;
+      color: #999;
+      background: none;
+      border: 1px solid #E0E0E0;
+      padding: 4px 11px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      border-radius: 2px;
+      white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .chart-toggle:hover {
+      color: var(--ink);
+      border-color: #999;
+    }
+    .chart-frag svg {
+      display: block;
+      width: 100%;
+    }
+    .chart-boring {
+      padding: 28px;
+      background: #fff;
+      border: 1px solid var(--ash);
+    }
+    .chart-boring svg {
+      display: block;
+      width: 100%;
+    }
+
     /* ─ FIGURES ─ */
     .fig-wrap {
       margin: 28px 0;
@@ -1487,78 +1534,154 @@
           <!-- empty second column keeps ann-box same width as prose-row -->
         </div>
 
-        <div class="chart-wrap">
-          <svg viewBox="0 0 680 370" xmlns="http://www.w3.org/2000/svg"
-            font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif">
+        <!-- ═══════════════════════════════════════════════════
+             CHART — SWITCHABLE
+             Default: information design (Fragapane-style)
+             Toggle: engineering view (dot plot)
+        ═══════════════════════════════════════════════════ -->
+        <div class="chart-switchable">
 
-            <!-- ── TITLE ── -->
-            <text x="90" y="30" font-size="15" font-weight="700" fill="#111111" letter-spacing="-0.3">
-              Monthly calls to contact center by fare type
-            </text>
+          <div class="chart-header">
+            <p class="chart-header-title">Monthly calls to contact center by fare type</p>
+            <button class="chart-toggle" id="chartToggle" onclick="toggleChart()">↔ engineering view</button>
+          </div>
 
-            <!-- ── BASELINE ── -->
-            <line x1="90" y1="65" x2="90" y2="355" stroke="#CCCCCC" stroke-width="1.5" />
+          <!-- ── INFORMATION DESIGN VIEW (default) ── -->
+          <div class="chart-frag" id="chartFrag">
+            <svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg"
+                 style="font-family:var(--sans);">
 
-            <!-- LIGHT · 1447 -->
-            <line x1="90" y1="80" x2="472" y2="80" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="479" cy="80" r="7" fill="#1D3557" />
-            <text x="83" y="84" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Light</text>
-            <text x="491" y="77" font-size="10.5" fill="#1D3557" font-weight="600">1,447</text>
-            <text x="491" y="89" font-size="10" fill="#888888">37% of all inbound calls</text>
+              <!-- LIGHT · 1,447 · 37% · r=64 -->
+              <circle cx="170" cy="248" r="64" fill="#99cc33" fill-opacity="0.10" stroke="#99cc33" stroke-width="1.5"/>
+              <circle cx="170" cy="248" r="3" fill="#99cc33"/>
+              <line x1="170" y1="184" x2="170" y2="158" stroke="#99cc33" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="170" y="150" text-anchor="middle" font-size="9" fill="#99cc33" letter-spacing="0.15em" font-weight="600">LIGHT</text>
+              <text x="170" y="126" text-anchor="middle" font-size="30" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">1,447</text>
+              <line x1="170" y1="312" x2="170" y2="332" stroke="#99cc33" stroke-width="0.75"/>
+              <text x="170" y="356" text-anchor="middle" font-size="24" fill="#99cc33" font-weight="600">37%</text>
+              <text x="170" y="372" text-anchor="middle" font-size="9" fill="#888" letter-spacing="0.10em">OF ALL INBOUND CALLS</text>
 
-            <!-- BASIC · 950 -->
-            <line x1="90" y1="110" x2="338" y2="110" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="345" cy="110" r="7" fill="#1D3557" />
-            <text x="83" y="114" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Basic</text>
-            <text x="357" y="114" font-size="10.5" fill="#1D3557" font-weight="600">950</text>
+              <!-- BASIC · 950 · r=52 -->
+              <circle cx="360" cy="188" r="52" fill="#008bff" fill-opacity="0.08" stroke="#008bff" stroke-width="1.5"/>
+              <circle cx="360" cy="188" r="3" fill="#008bff"/>
+              <line x1="360" y1="136" x2="360" y2="110" stroke="#008bff" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="360" y="102" text-anchor="middle" font-size="9" fill="#008bff" letter-spacing="0.15em" font-weight="600">BASIC</text>
+              <text x="360" y="78" text-anchor="middle" font-size="26" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">950</text>
 
-            <!-- FULL · 575 -->
-            <line x1="90" y1="140" x2="239" y2="140" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="245" cy="140" r="5" fill="#8D99AE" />
-            <text x="83" y="144" font-size="12" fill="#888888" text-anchor="end">Full</text>
-            <text x="255" y="144" font-size="10.5" fill="#8D99AE">575</text>
+              <!-- FULL · 575 · r=40 -->
+              <circle cx="490" cy="300" r="40" fill="#d236bb" fill-opacity="0.08" stroke="#d236bb" stroke-width="1.5"/>
+              <circle cx="490" cy="300" r="3" fill="#d236bb"/>
+              <line x1="530" y1="288" x2="552" y2="278" stroke="#d236bb" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="556" y="271" text-anchor="start" font-size="9" fill="#d236bb" letter-spacing="0.15em" font-weight="600">FULL</text>
+              <text x="556" y="289" text-anchor="start" font-size="22" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">575</text>
 
-            <!-- STANDARD · 215 -->
-            <line x1="90" y1="170" x2="141" y2="170" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="148" cy="170" r="7" fill="#1D3557" />
-            <text x="83" y="174" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Standard</text>
-            <text x="160" y="174" font-size="10.5" fill="#1D3557" font-weight="600">215</text>
+              <!-- STANDARD · 215 · r=25 -->
+              <circle cx="590" cy="162" r="25" fill="#00b5ae" fill-opacity="0.10" stroke="#00b5ae" stroke-width="1.5"/>
+              <circle cx="590" cy="162" r="2.5" fill="#00b5ae"/>
+              <line x1="590" y1="137" x2="590" y2="115" stroke="#00b5ae" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="590" y="108" text-anchor="middle" font-size="9" fill="#00b5ae" letter-spacing="0.15em" font-weight="600">STANDARD</text>
+              <text x="590" y="86" text-anchor="middle" font-size="19" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">215</text>
 
-            <!-- ── divider ── -->
-            <line x1="90" y1="188" x2="520" y2="188" stroke="#CCCCCC" stroke-width="1" stroke-dasharray="2 3" />
+              <!-- PREMIUM BUSINESS · 200 · r=24 -->
+              <circle cx="628" cy="340" r="24" fill="#303030" fill-opacity="0.08" stroke="#404040" stroke-width="1.5"/>
+              <circle cx="628" cy="340" r="2.5" fill="#444"/>
+              <line x1="652" y1="330" x2="668" y2="322" stroke="#666" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="672" y="316" text-anchor="start" font-size="9" fill="#666" letter-spacing="0.12em" font-weight="600">PREMIUM</text>
+              <text x="672" y="328" text-anchor="start" font-size="9" fill="#666" letter-spacing="0.12em" font-weight="600">BUSINESS</text>
+              <text x="672" y="347" text-anchor="start" font-size="19" fill="#1A1A1A" font-weight="600" letter-spacing="-0.02em">200</text>
 
-            <!-- PB TOP · 200 -->
-            <line x1="90" y1="205" x2="140" y2="205" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="144" cy="205" r="3" fill="#DADADA" />
-            <text x="83" y="209" font-size="10.5" fill="#BBBBBB" text-anchor="end">PB Top</text>
+              <!-- OTHER · 180 · r=23 (subdued) -->
+              <circle cx="62" cy="450" r="23" fill="#E8E8E8" fill-opacity="0.6" stroke="#CCCCCC" stroke-width="1"/>
+              <circle cx="62" cy="450" r="2" fill="#BBBBBB"/>
+              <line x1="85" y1="443" x2="100" y2="436" stroke="#CCCCCC" stroke-width="0.75" stroke-dasharray="2.5 3"/>
+              <text x="104" y="430" text-anchor="start" font-size="9" fill="#BBBBBB" letter-spacing="0.12em">OTHER</text>
+              <text x="104" y="448" text-anchor="start" font-size="18" fill="#CCCCCC" font-weight="500" letter-spacing="-0.01em">180</text>
 
-            <!-- OTHER · 180 -->
-            <line x1="90" y1="228" x2="135" y2="228" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="138" cy="228" r="3" fill="#DADADA" />
-            <text x="83" y="232" font-size="10.5" fill="#BBBBBB" text-anchor="end">Other</text>
+              <!-- 67% annotation -->
+              <line x1="258" y1="420" x2="330" y2="420" stroke="#DDDDDD" stroke-width="0.8"/>
+              <text x="258" y="436" text-anchor="start" font-size="9" fill="#888" letter-spacing="0.10em" font-weight="500">67% OF CALLS</text>
+              <text x="258" y="450" text-anchor="start" font-size="9" fill="#AAAAAA" letter-spacing="0.04em">from non-reimbursable fares</text>
 
-            <!-- PE PLUS · 140 -->
-            <line x1="90" y1="251" x2="124" y2="251" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="128" cy="251" r="3" fill="#DADADA" />
-            <text x="83" y="255" font-size="10.5" fill="#BBBBBB" text-anchor="end">PE Plus</text>
+              <!-- size reference key -->
+              <g transform="translate(580, 448)">
+                <circle cx="0" cy="0" r="12" fill="none" stroke="#DDDDDD" stroke-width="1"/>
+                <circle cx="26" cy="3" r="8" fill="none" stroke="#DDDDDD" stroke-width="1"/>
+                <text x="38" y="4" text-anchor="start" font-size="8.5" fill="#BBBBBB" letter-spacing="0.06em">circle area</text>
+                <text x="38" y="15" text-anchor="start" font-size="8.5" fill="#BBBBBB" letter-spacing="0.06em">= call volume</text>
+              </g>
 
-            <!-- PE · 75 -->
-            <line x1="90" y1="274" x2="108" y2="274" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="110" cy="274" r="3" fill="#DADADA" />
-            <text x="83" y="278" font-size="10.5" fill="#BBBBBB" text-anchor="end">PE</text>
+            </svg>
+          </div>
 
-            <!-- PLUS · 30 -->
-            <line x1="90" y1="297" x2="96" y2="297" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="98" cy="297" r="3" fill="#DADADA" />
-            <text x="83" y="301" font-size="10.5" fill="#BBBBBB" text-anchor="end">Plus</text>
+          <!-- ── ENGINEERING VIEW (hidden by default) ── -->
+          <div class="chart-boring" id="chartBoring" style="display:none">
+            <svg viewBox="0 0 680 370" xmlns="http://www.w3.org/2000/svg"
+              font-family="-apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif">
 
-            <!-- PB · 25 -->
-            <line x1="90" y1="320" x2="94" y2="320" stroke="#EEEEEE" stroke-width="1" />
-            <circle cx="97" cy="320" r="3" fill="#DADADA" />
-            <text x="83" y="324" font-size="10.5" fill="#BBBBBB" text-anchor="end">PB</text>
+              <!-- ── BASELINE ── -->
+              <line x1="90" y1="65" x2="90" y2="355" stroke="#CCCCCC" stroke-width="1.5" />
 
+              <!-- LIGHT · 1447 -->
+              <line x1="90" y1="80" x2="472" y2="80" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="479" cy="80" r="7" fill="#1D3557" />
+              <text x="83" y="84" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Light</text>
+              <text x="491" y="77" font-size="10.5" fill="#1D3557" font-weight="600">1,447</text>
+              <text x="491" y="89" font-size="10" fill="#888888">37% of all inbound calls</text>
 
-          </svg>
+              <!-- BASIC · 950 -->
+              <line x1="90" y1="110" x2="338" y2="110" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="345" cy="110" r="7" fill="#1D3557" />
+              <text x="83" y="114" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Basic</text>
+              <text x="357" y="114" font-size="10.5" fill="#1D3557" font-weight="600">950</text>
+
+              <!-- FULL · 575 -->
+              <line x1="90" y1="140" x2="239" y2="140" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="245" cy="140" r="5" fill="#8D99AE" />
+              <text x="83" y="144" font-size="12" fill="#888888" text-anchor="end">Full</text>
+              <text x="255" y="144" font-size="10.5" fill="#8D99AE">575</text>
+
+              <!-- STANDARD · 215 -->
+              <line x1="90" y1="170" x2="141" y2="170" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="148" cy="170" r="7" fill="#1D3557" />
+              <text x="83" y="174" font-size="12" font-weight="600" fill="#111111" text-anchor="end">Standard</text>
+              <text x="160" y="174" font-size="10.5" fill="#1D3557" font-weight="600">215</text>
+
+              <!-- ── divider ── -->
+              <line x1="90" y1="188" x2="520" y2="188" stroke="#CCCCCC" stroke-width="1" stroke-dasharray="2 3" />
+
+              <!-- PB TOP · 200 -->
+              <line x1="90" y1="205" x2="140" y2="205" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="144" cy="205" r="3" fill="#DADADA" />
+              <text x="83" y="209" font-size="10.5" fill="#BBBBBB" text-anchor="end">PB Top</text>
+
+              <!-- OTHER · 180 -->
+              <line x1="90" y1="228" x2="135" y2="228" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="138" cy="228" r="3" fill="#DADADA" />
+              <text x="83" y="232" font-size="10.5" fill="#BBBBBB" text-anchor="end">Other</text>
+
+              <!-- PE PLUS · 140 -->
+              <line x1="90" y1="251" x2="124" y2="251" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="128" cy="251" r="3" fill="#DADADA" />
+              <text x="83" y="255" font-size="10.5" fill="#BBBBBB" text-anchor="end">PE Plus</text>
+
+              <!-- PE · 75 -->
+              <line x1="90" y1="274" x2="108" y2="274" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="110" cy="274" r="3" fill="#DADADA" />
+              <text x="83" y="278" font-size="10.5" fill="#BBBBBB" text-anchor="end">PE</text>
+
+              <!-- PLUS · 30 -->
+              <line x1="90" y1="297" x2="96" y2="297" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="98" cy="297" r="3" fill="#DADADA" />
+              <text x="83" y="301" font-size="10.5" fill="#BBBBBB" text-anchor="end">Plus</text>
+
+              <!-- PB · 25 -->
+              <line x1="90" y1="320" x2="94" y2="320" stroke="#EEEEEE" stroke-width="1" />
+              <circle cx="97" cy="320" r="3" fill="#DADADA" />
+              <text x="83" y="324" font-size="10.5" fill="#BBBBBB" text-anchor="end">PB</text>
+
+            </svg>
+          </div>
+
           <p class="chart-caption">Source: LATAM contact center call data &middot; Cl&iacute;nica M&eacute;tricas, June 2025</p>
         </div>
 
@@ -2135,6 +2258,23 @@
     function closeAnn(id) {
       document.getElementById('ann-' + id).classList.remove('open');
       document.getElementById('ann-t-' + id).classList.remove('open');
+    }
+
+    /* ── CHART TOGGLE ── */
+    function toggleChart() {
+      const frag   = document.getElementById('chartFrag');
+      const boring = document.getElementById('chartBoring');
+      const btn    = document.getElementById('chartToggle');
+      const showingFrag = frag.style.display !== 'none';
+      if (showingFrag) {
+        frag.style.display   = 'none';
+        boring.style.display = 'block';
+        btn.textContent      = '↔ information design';
+      } else {
+        frag.style.display   = 'block';
+        boring.style.display = 'none';
+        btn.textContent      = '↔ engineering view';
+      }
     }
   </script>
 </body>
