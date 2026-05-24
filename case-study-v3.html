@@ -627,46 +627,52 @@
 
     /* ── HOTSPOTS — ring animates via SVG animate (no transform-origin issues) ── */
 
-    /* ── FLOW MODAL ── */
-    .flow-modal-overlay {
+    /* ── FLOW OVERLAY (full-screen) ── */
+    .flow-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0);
+      background: rgba(10,10,10,0);
       z-index: 800;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s var(--ease);
+      overflow: hidden;
+      transition: background 0.35s var(--ease);
+      user-select: none;
+      -webkit-user-select: none;
     }
-    .flow-modal-overlay.open {
-      display: flex;
-      background: rgba(15,15,15,0.82);
+    .flow-overlay.open {
+      display: block;
+      background: rgba(10,10,10,0.90);
     }
-    .flow-modal {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      transform: translateY(20px);
+    /* Stage: centered in viewport, no box, no borders */
+    .flow-stage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, calc(-50% + 24px));
+      width: min(600px, 96vw);
       opacity: 0;
       transition: transform 0.4s var(--ease), opacity 0.4s var(--ease);
-      max-height: 92vh;
-      overflow-y: auto;
-      overflow-x: hidden;
-      scrollbar-width: none;
     }
-    .flow-modal::-webkit-scrollbar { display: none; }
-    .flow-modal-overlay.open .flow-modal {
-      transform: translateY(0);
+    .flow-overlay.open .flow-stage {
       opacity: 1;
+      transform: translate(-50%, -50%);
     }
-    .flow-modal-label {
+    /* Node badge — figure caption at bottom */
+    .flow-node-badge {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
       font-size: 10px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.35);
+      white-space: nowrap;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.4s var(--ease) 0.2s;
     }
+    .flow-overlay.open .flow-node-badge { opacity: 1; }
     /* ── LO-FI PHONE FRAME ── */
     .flow-lofi-phone {
       width: 300px;
@@ -683,29 +689,54 @@
       border: none;
       border-radius: 0;
       box-shadow: none;
-      width: min(380px, 88vw);
-    }
-    .flow-lofi-phone.has-screen img {
-      width: 100%;
-      display: block;
-      border-radius: 12px;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.55);
-    }
-    .lofi-status {
-      height: 32px;
-      background: var(--ink);
-      flex-shrink: 0;
+      width: auto;
     }
     .flow-lofi-phone.has-screen .lofi-status,
     .flow-lofi-phone.has-screen .lofi-nav { display: none; }
 
-    /* ── ANNOTATION SYSTEM ── */
-    .ann-wrap {
+    /* ── ANNOTATION CANVAS SYSTEM ── */
+    /* Canvas is wider than the phone — annotations live in surrounding space */
+    .ann-canvas {
       position: relative;
-      width: 100%;
+      width: min(600px, 96vw);
+      /* height set inline per node */
     }
-    .ann-wrap img {
-      width: 100%;
+    /* Phone bezel — centered in canvas, fixed viewport */
+    .ann-frame {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 56px;
+      width: 338px;
+      border-radius: 30px;
+      background: #111114;
+      padding: 10px 9px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.65),
+                  inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+    /* Pill notch */
+    .ann-frame::before {
+      content: '';
+      display: block;
+      width: 52px;
+      height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin: 0 auto 8px;
+    }
+    /* Fixed-height scrollable screen viewport */
+    .ann-frame-screen {
+      width: 320px;
+      height: 650px;
+      border-radius: 22px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
+      background: white;
+    }
+    .ann-frame-screen::-webkit-scrollbar { display: none; }
+    .ann-frame-screen img {
+      width: 320px;
       display: block;
     }
     .ann-svg {
@@ -715,20 +746,6 @@
       height: 100%;
       pointer-events: none;
       overflow: visible;
-    }
-    .ann-chip {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(20,20,20,0.72);
-      color: #fff;
-      font-family: 'Caveat', cursive;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 4px;
-      pointer-events: none;
-      letter-spacing: 0.01em;
     }
     .lofi-nav {
       height: 44px;
@@ -822,29 +839,23 @@
       background: rgba(224,122,95,0.14);
     }
 
-    .flow-modal-disclosure {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.65);
-      text-align: center;
-      margin-top: 12px;
-    }
-
-    .flow-modal-close {
+    /* Close button — fixed top-right corner */
+    .flow-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      z-index: 20;
       background: none;
       border: none;
-      color: rgba(255,255,255,0.5);
-      font-size: 24px;
+      color: rgba(255,255,255,0.50);
+      font-size: 20px;
       cursor: pointer;
       line-height: 1;
-      padding: 8px;
-      position: absolute;
-      top: -44px;
-      right: 0;
+      padding: 14px;
+      pointer-events: auto;
       transition: color 0.2s;
     }
-    .flow-modal-close:hover { color: #fff; }
+    .flow-close-btn:hover { color: #fff; }
 
     .fig-caption {
       padding: 24px 0 0;
@@ -1995,20 +2006,12 @@
     </main>
   </div>
 
-  <!-- ══ NODE MODAL (lo-fi) ══ -->
-  <div class="flow-modal-overlay" id="flowModalOverlay" onclick="closeFlowModal()">
-    <div class="flow-modal" onclick="event.stopPropagation()">
-      <button class="flow-modal-close" onclick="closeFlowModal()">&#x2715;</button>
-      <p class="flow-modal-label" id="flowModalLabel"></p>
-      <div class="flow-lofi-phone">
-        <div class="lofi-status"></div>
-        <div class="lofi-nav">
-          <div class="lofi-nav-bar" style="width:56px"></div>
-          <div class="lofi-nav-bar" style="width:24px;margin-left:auto"></div>
-        </div>
-        <div id="flowModalContent"></div>
-      </div>
-      <p class="flow-modal-disclosure">Wireframe &middot; final screens in progress</p>
+  <!-- ══ NODE OVERLAY (full-screen annotation canvas) ══ -->
+  <div class="flow-overlay" id="flowOverlay" onclick="closeFlowModal()">
+    <button class="flow-close-btn" onclick="closeFlowModal()">&#x2715;</button>
+    <p class="flow-node-badge" id="flowNodeBadge"></p>
+    <div class="flow-stage" id="flowStage" onclick="event.stopPropagation()">
+      <!-- ann-canvas injected here by JS -->
     </div>
   </div>
 
@@ -2041,120 +2044,197 @@
 
     if (fig01) flowObs.observe(fig01);
 
-    /* ── NODE MODAL (lo-fi) ── */
-    const flowModalOverlay = document.getElementById('flowModalOverlay');
-    const flowModalLabel   = document.getElementById('flowModalLabel');
-    const flowModalContent = document.getElementById('flowModalContent');
+    /* ── NODE OVERLAY ── */
+    const flowOverlay   = document.getElementById('flowOverlay');
+    const flowNodeBadge = document.getElementById('flowNodeBadge');
+    const flowStage     = document.getElementById('flowStage');
 
     const nodeData = {
+
+      // Canvas: 600×618  |  phone 220×506  |  phone x=[190,410]  y=[56,562]
+      // Screen: 850×1954 (sidebar menu — "Devolución de pasajes" ~68% down image → canvas y≈400)
+      // Canvas: 600×786 (uniform)  |  frame 338×670px  |  screen window x=[140,460] y=[66,716]
+      // Screen 850×1954 @ 320px wide = 735px tall
+      // "Volver"              → canvas y≈140
+      // "Devolución de pasajes" → canvas y≈585
       1: {
-        label: '01 · My trips',
+        label: '01 · My trip — entry point',
         screen: true,
-        html: `<div class="ann-wrap">
-          <img src="original-flow/2.mytryp-level-two.png" alt="My trips menu">
-          <div class="ann-chip">← from My trips booking</div>
-          <svg class="ann-svg" viewBox="0 0 850 1954" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- irregular circle around "Devolución de pasajes" row -->
-            <path d="M68,1355 C120,1318 740,1312 808,1362 C848,1392 842,1488 795,1510 C710,1538 115,1532 62,1494 C22,1468 18,1385 68,1355 Z"
-              stroke="#E07A5F" stroke-width="6" fill="rgba(224,122,95,0.08)" stroke-linecap="round"/>
-            <!-- curved arrow from label -->
-            <path d="M640,1570 C640,1610 580,1630 520,1600" stroke="#E07A5F" stroke-width="5" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-            <text x="650" y="1565" font-family="Caveat, cursive" font-size="52" fill="#E07A5F" font-weight="600">tap here</text>
+        html: `<div class="ann-canvas" style="height:786px">
+          <div class="ann-frame">
+            <div class="ann-frame-screen">
+              <img src="original-flow/2.mytryp-level-two.png" alt="My trips menu">
+            </div>
+          </div>
+          <svg class="ann-svg" viewBox="0 0 600 786" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- Circle on "Devolución de pasajes" -->
+            <path d="M148,571 C195,560 390,560 458,569 C476,577 476,593 458,598 C390,608 195,608 148,598 C130,591 130,579 148,571 Z"
+              stroke="#E07A5F" stroke-width="2.5" fill="rgba(224,122,95,0.08)" stroke-linecap="round"/>
+
+            <!-- LEFT: arrow curves up to Volver caret, text below phone -->
+            <path d="M73,277 C94,236 126,196 172,160" stroke="#E07A5F" stroke-width="1.5" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <text x="-94" y="300" font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="400">Menu opens after</text>
+            <text x="-94" y="336" font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="400">clicking "manage trip"</text>
+            <text x="-94" y="372" font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="400">at the previous step</text>
+
+            <!-- RIGHT TOP: "??" + question -->
+            <text x="524" y="96"  font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="600">??</text>
+            <text x="520" y="144" font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="400">why is refund</text>
+            <text x="526" y="190" font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="400">so far down</text>
+            <text x="522" y="236" font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="400">the hierarchy?</text>
+            <path d="M526,250 C510,320 488,400 296,490" stroke="#E07A5F" stroke-width="1.5" stroke-dasharray="4 3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+
+            <!-- RIGHT BOTTOM -->
+            <text x="494" y="576" font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="400">the user has to tap here</text>
+            <text x="494" y="622" font-family="Caveat, cursive" font-size="28" fill="#E07A5F" font-weight="400">to begin the flow</text>
+
           </svg>
         </div>`
       },
+
+      // Screen 375×812 @ 320px wide = 693px tall (viewport 650px, clips footer ~43px)
+      // Spinner center: header 56px, content center = 56+(812-56)/2=434px orig → display y=370 → canvas y=436
       2: {
         label: '02 · Loading fare rules',
         screen: true,
-        html: `<div class="ann-wrap">
-          <img src="original-flow/2.fare-rules-loader.png" alt="Fare rules loader">
-          <svg class="ann-svg" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- arrow pointing at spinner -->
-            <path d="M260,340 C290,360 290,390 268,408" stroke="#E07A5F" stroke-width="3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-            <text x="168" y="330" font-family="Caveat, cursive" font-size="22" fill="#E07A5F" font-weight="600">~3–5 sec wait</text>
+        html: `<div class="ann-canvas" style="height:786px">
+          <div class="ann-frame">
+            <div class="ann-frame-screen">
+              <img src="original-flow/2.fare-rules-loader.png" alt="Fare rules loader">
+            </div>
+          </div>
+          <svg class="ann-svg" viewBox="0 0 600 786" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- LEFT: wait time -->
+            <text x="10" y="421" font-family="Caveat, cursive" font-size="21" fill="#E07A5F" font-weight="600">~3–5 sec</text>
+            <path d="M108,425 C120,429 128,432 131,436" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <!-- RIGHT: context -->
+            <text x="472" y="422" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">fetching fare</text>
+            <text x="472" y="441" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">rules from API</text>
+            <path d="M470,431 C468,433 467,435 469,436" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
           </svg>
         </div>`
       },
+
+      // Screen 360×1114 @ 320px wide = 990px tall — scrolls heavily
+      // Fare block orig ~y=[450,750] → display y=[400,667] → canvas y=[466,733]
       3: {
         label: '03 · Eligibility — friction point',
         screen: true,
-        html: `<div class="ann-wrap">
-          <img src="original-flow/3.elegibility_screen.png" alt="Eligibility screen">
-          <svg class="ann-svg" viewBox="0 0 360 1114" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- bracket on left side highlighting the conditions block -->
-            <path d="M28,420 L14,420 L14,870 L28,870" stroke="#E07A5F" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <!-- label -->
-            <path d="M12,645 C-10,645 -18,600 10,580" stroke="#E07A5F" stroke-width="3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-            <text x="28" y="560" font-family="Caveat, cursive" font-size="22" fill="#E07A5F" font-weight="600" transform="rotate(-4,28,560)">no refund</text>
-            <text x="28" y="584" font-family="Caveat, cursive" font-size="22" fill="#E07A5F" font-weight="600" transform="rotate(-4,28,584)">clarity here</text>
+        html: `<div class="ann-canvas" style="height:786px">
+          <div class="ann-frame">
+            <div class="ann-frame-screen">
+              <img src="original-flow/3.elegibility_screen.png" alt="Eligibility screen">
+            </div>
+          </div>
+          <svg class="ann-svg" viewBox="0 0 600 786" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- LEFT bracket along frame edge -->
+            <path d="M123,466 L115,466 L115,680 L123,680" stroke="#E07A5F" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <text x="10" y="556" font-family="Caveat, cursive" font-size="18" fill="#E07A5F" font-weight="400">fare conditions</text>
+            <text x="10" y="576" font-family="Caveat, cursive" font-size="18" fill="#E07A5F" font-weight="600">no ticket refund</text>
+            <path d="M108,566 C112,574 114,580 115,590" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <!-- RIGHT: small print note -->
+            <text x="472" y="622" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">verdict buried</text>
+            <text x="472" y="641" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">in one line</text>
+            <path d="M470,631 C468,635 467,638 469,640" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
           </svg>
         </div>`
       },
+
+      // Screen 375×812 @ 320px — same as node 2, spinner at canvas y≈436
       4: {
         label: '04 · Calculating refund',
         screen: true,
-        html: `<div class="ann-wrap">
-          <img src="original-flow/4.calculate-loader.png" alt="Calculate loader">
-          <svg class="ann-svg" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M260,340 C290,360 290,390 268,408" stroke="#E07A5F" stroke-width="3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-            <text x="148" y="330" font-family="Caveat, cursive" font-size="22" fill="#E07A5F" font-weight="600">another wait</text>
+        html: `<div class="ann-canvas" style="height:786px">
+          <div class="ann-frame">
+            <div class="ann-frame-screen">
+              <img src="original-flow/4.calculate-loader.png" alt="Calculate loader">
+            </div>
+          </div>
+          <svg class="ann-svg" viewBox="0 0 600 786" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- LEFT: second wait -->
+            <text x="10" y="420" font-family="Caveat, cursive" font-size="21" fill="#E07A5F" font-weight="600">another wait</text>
+            <path d="M118,424 C124,428 128,432 131,436" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <!-- RIGHT: question -->
+            <text x="472" y="416" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">why not batch</text>
+            <text x="472" y="435" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">with step 2?</text>
+            <path d="M470,425 C468,430 467,433 469,436" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
           </svg>
         </div>`
       },
+
+      // Screen 375×812 @ 320px
+      // "Dinero a devolver" orig y≈430 → display y=367 → canvas y=433
+      // "Tasas de embarque" orig y≈510 → display y=435 → canvas y=501
       5: {
         label: '05 · Refund breakdown',
         screen: true,
-        html: `<div class="ann-wrap">
-          <img src="original-flow/5.refund-details-m.png" alt="Refund details screen">
-          <svg class="ann-svg" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- arrow pointing at the CLP 0 values -->
-            <path d="M295,475 C320,468 335,462 332,447" stroke="#E07A5F" stroke-width="3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-            <text x="192" y="490" font-family="Caveat, cursive" font-size="20" fill="#E07A5F" font-weight="600">ticket = nothing</text>
+        html: `<div class="ann-canvas" style="height:786px">
+          <div class="ann-frame">
+            <div class="ann-frame-screen">
+              <img src="original-flow/5.refund-details-m.png" alt="Refund details screen">
+            </div>
+          </div>
+          <svg class="ann-svg" viewBox="0 0 600 786" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- LEFT: ticket zero -->
+            <text x="10" y="426" font-family="Caveat, cursive" font-size="19" fill="#E07A5F" font-weight="600">ticket → CLP 0</text>
+            <path d="M120,430 C126,431 129,432 131,433" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <!-- RIGHT: only taxes -->
+            <text x="472" y="492" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">only boarding</text>
+            <text x="472" y="511" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">taxes returned</text>
+            <path d="M470,501 C468,501 467,501 469,501" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <!-- BOTTOM note -->
+            <text x="194" y="754" font-family="Caveat, cursive" font-size="16" fill="#E07A5F" font-weight="400">6 screens for CLP 15.396</text>
+            <path d="M260,746 C272,726 280,706 284,686" stroke="#E07A5F" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
           </svg>
         </div>`
       },
+
+      // Screen 360×822 @ 320px wide = 731px tall (viewport 650px, scrolls ~81px)
+      // Headline orig ~y=200 → display y=178 → canvas y=244
+      // Amount orig ~y=350 → display y=311 → canvas y=377
       6: {
         label: '06 · Confirmation',
         screen: true,
-        html: `<div class="ann-wrap">
-          <img src="original-flow/5.refund-complete.png" alt="Refund complete screen">
-          <svg class="ann-svg" viewBox="0 0 360 822" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- underline + label under the title -->
-            <path d="M62,390 C120,412 240,412 298,390" stroke="#E07A5F" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-            <text x="90" y="425" font-family="Caveat, cursive" font-size="20" fill="#E07A5F" font-weight="600">6 steps to get here</text>
+        html: `<div class="ann-canvas" style="height:786px">
+          <div class="ann-frame">
+            <div class="ann-frame-screen">
+              <img src="original-flow/5.refund-complete.png" alt="Refund complete screen">
+            </div>
+          </div>
+          <svg class="ann-svg" viewBox="0 0 600 786" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- LEFT: step count -->
+            <text x="10" y="236" font-family="Caveat, cursive" font-size="19" fill="#E07A5F" font-weight="600">6 screens</text>
+            <text x="10" y="258" font-family="Caveat, cursive" font-size="19" fill="#E07A5F" font-weight="400">to reach this</text>
+            <path d="M108,246 C118,246 126,245 131,244" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <!-- RIGHT: amount -->
+            <text x="472" y="368" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">only boarding</text>
+            <text x="472" y="387" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="600">CLP 15.396</text>
+            <path d="M470,377 C468,374 467,372 469,370" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
           </svg>
         </div>`
       }
-    };
 
-    const flowPhone = document.querySelector('.flow-lofi-phone');
-    const flowDisclosure = document.querySelector('.flow-modal-disclosure');
+    };
 
     function openNodeModal(nodeId) {
       const data = nodeData[nodeId];
       if (!data) return;
-      flowModalLabel.textContent = data.label;
-      flowModalContent.innerHTML = data.html;
-      if (data.screen) {
-        flowPhone.classList.add('has-screen');
-        flowDisclosure.style.display = 'none';
-      } else {
-        flowPhone.classList.remove('has-screen');
-        flowDisclosure.style.display = '';
-      }
-      flowModalOverlay.style.display = 'flex';
+      flowNodeBadge.textContent = data.label;
+      flowStage.innerHTML = data.html;
+      flowOverlay.style.display = 'block';
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => flowModalOverlay.classList.add('open'));
+        requestAnimationFrame(() => flowOverlay.classList.add('open'));
       });
       document.body.style.overflow = 'hidden';
     }
 
     function closeFlowModal() {
-      flowModalOverlay.classList.remove('open');
+      flowOverlay.classList.remove('open');
       setTimeout(() => {
-        flowModalOverlay.style.display = 'none';
-        flowModalContent.innerHTML = '';
-      }, 380);
+        flowOverlay.style.display = 'none';
+        flowStage.innerHTML = '';
+      }, 400);
       document.body.style.overflow = '';
     }
 
