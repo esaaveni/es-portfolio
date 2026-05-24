@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: white; }
+    .screen { width: 375px; min-height: 812px; background: white; display: flex; flex-direction: column; }
+
+    /* Header */
+    .header { background: #1a1a4d; color: white; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .header-logo { display: flex; align-items: center; gap: 8px; }
+    .logo-icon { width: 32px; height: 32px; }
+    .user-btn { border: 1px solid rgba(255,255,255,0.4); color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; background: transparent; display: flex; align-items: center; gap: 6px; }
+
+    /* Back */
+    .back { padding: 14px 16px; color: #e11b23; font-size: 14px; display: flex; align-items: center; gap: 4px; }
+    .back svg { width: 16px; height: 16px; }
+
+    /* Content */
+    .content { padding: 0 16px 24px; flex: 1; }
+
+    /* Fare block */
+    .fare-block { border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    .fare-header { background: #f5f5f5; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .fare-header-title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+    .fare-row { padding: 12px 16px; border-top: 1px solid #f0f0f0; }
+    .fare-route { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+    .fare-tag { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .fare-bar { width: 3px; height: 16px; background: #008bff; border-radius: 2px; flex-shrink: 0; }
+    .fare-name { font-size: 13px; font-weight: 600; color: #008bff; }
+    .fare-note { font-size: 12px; color: #888; display: flex; align-items: flex-start; gap: 6px; margin-top: 4px; }
+    .fare-note-icon { font-size: 14px; flex-shrink: 0; }
+
+    /* Divider */
+    .divider { height: 1px; background: #f0f0f0; margin: 0 16px; }
+
+    /* Refund breakdown */
+    .section-title { font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 20px 0 12px; }
+    .payment-method { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .visa-badge { background: #1a1f71; color: white; font-size: 9px; font-weight: 800; padding: 3px 6px; border-radius: 3px; letter-spacing: 0.05em; }
+    .payment-label { font-size: 13px; color: #1a1a1a; }
+
+    .line-item { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; }
+    .line-label { font-size: 13px; color: #1a1a1a; }
+    .line-sub { font-size: 11px; color: #aaa; }
+    .line-value { font-size: 13px; color: #1a1a1a; }
+    .line-value.zero { color: #bbb; }
+
+    .line-divider { height: 1px; background: #f0f0f0; margin: 6px 0; }
+
+    .total-row { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0 4px; }
+    .total-label { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+    .total-value { font-size: 17px; font-weight: 700; color: #1a1a1a; }
+    .total-note { font-size: 11px; color: #aaa; margin-bottom: 20px; }
+
+    /* CTA */
+    .cta { background: #e11b23; color: white; border: none; border-radius: 8px; width: 100%; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+
+    /* Footer */
+    .footer { background: #f5f5f5; padding: 24px 16px; text-align: center; margin-top: auto; }
+    .footer-logo { font-size: 18px; font-weight: 800; color: #1a1a4d; }
+    .footer-copy { font-size: 11px; color: #aaa; margin-top: 8px; }
+  </style>
+</head>
+<body>
+<div class="screen">
+
+  <div class="header">
+    <div class="header-logo">
+      <svg class="logo-icon" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="15" font-size="11" font-weight="800" fill="white" font-family="Arial">LATAM</text>
+      </svg>
+    </div>
+    <div class="user-btn">Usuario <span>▾</span></div>
+  </div>
+
+  <div class="back">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="#e11b23" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Volver
+  </div>
+
+  <div class="content">
+
+    <!-- Fare conditions block -->
+    <div class="fare-block">
+      <div class="fare-header">
+        <span class="fare-header-title">Tu viaje de ida y vuelta</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 10l4-4 4 4" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="fare-row">
+        <div class="fare-route">Santiago de Chile a Antofagasta</div>
+        <div class="fare-tag">
+          <div class="fare-bar"></div>
+          <span class="fare-name">Tarifa Basic</span>
+        </div>
+        <div class="fare-note">
+          <span class="fare-note-icon">↩</span>
+          <span>Sólo permite la devolución de las tasas de embarque.</span>
+        </div>
+      </div>
+      <div class="fare-row">
+        <div class="fare-route">Antofagasta a Santiago de Chile</div>
+        <div class="fare-tag">
+          <div class="fare-bar"></div>
+          <span class="fare-name">Tarifa Basic</span>
+        </div>
+        <div class="fare-note">
+          <span class="fare-note-icon">↩</span>
+          <span>Sólo permite la devolución de las tasas de embarque.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Refund breakdown -->
+    <div class="section-title">Devolución a tu tarjeta:</div>
+
+    <div class="payment-method">
+      <span class="visa-badge">VISA</span>
+      <span class="payment-label">Visa **** 6623</span>
+    </div>
+
+    <div class="line-item">
+      <span class="line-label">Dinero a devolver por pasaje</span>
+      <span class="line-value zero">CLP 0</span>
+    </div>
+    <div class="line-item">
+      <div>
+        <div class="line-label">Complementos de vuelo</div>
+        <div class="line-sub">Asientos, equipaje y/u otros.</div>
+      </div>
+      <span class="line-value zero">CLP 0</span>
+    </div>
+    <div class="line-item">
+      <span class="line-label">Tasas de embarque</span>
+      <span class="line-value">CLP 15.396</span>
+    </div>
+
+    <div class="line-divider"></div>
+
+    <div class="total-row">
+      <span class="total-label">Total a devolver</span>
+      <span class="total-value">CLP 15.396</span>
+    </div>
+    <div class="total-note">El dinero se verá reflejado en tu tarjeta según los plazos de tu banco.</div>
+
+    <button class="cta">Solicitar devolución</button>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-logo">LATAM AIRLINES</div>
+    <div class="footer-copy">Copyright Text</div>
+  </div>
+
+</div>
+</body>
+</html>

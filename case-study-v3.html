@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@200;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@200;400;500&family=Caveat:wght@400;600&display=swap"
     rel="stylesheet">
   <style>
     :root {
@@ -651,7 +651,12 @@
       transform: translateY(20px);
       opacity: 0;
       transition: transform 0.4s var(--ease), opacity 0.4s var(--ease);
+      max-height: 92vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: none;
     }
+    .flow-modal::-webkit-scrollbar { display: none; }
     .flow-modal-overlay.open .flow-modal {
       transform: translateY(0);
       opacity: 1;
@@ -673,10 +678,57 @@
       display: flex;
       flex-direction: column;
     }
+    .flow-lofi-phone.has-screen {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      width: min(380px, 88vw);
+    }
+    .flow-lofi-phone.has-screen img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.55);
+    }
     .lofi-status {
       height: 32px;
       background: var(--ink);
       flex-shrink: 0;
+    }
+    .flow-lofi-phone.has-screen .lofi-status,
+    .flow-lofi-phone.has-screen .lofi-nav { display: none; }
+
+    /* ── ANNOTATION SYSTEM ── */
+    .ann-wrap {
+      position: relative;
+      width: 100%;
+    }
+    .ann-wrap img {
+      width: 100%;
+      display: block;
+    }
+    .ann-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .ann-chip {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(20,20,20,0.72);
+      color: #fff;
+      font-family: 'Caveat', cursive;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 4px;
+      pointer-events: none;
+      letter-spacing: 0.01em;
     }
     .lofi-nav {
       height: 44px;
@@ -1269,6 +1321,14 @@
 </head>
 
 <body>
+<!-- global SVG defs for annotation markers -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
+  <defs>
+    <marker id="arr-ann" markerWidth="8" markerHeight="6" refX="6" refY="3" orient="auto">
+      <path d="M1 1 L6 3 L1 5" stroke="#E07A5F" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+</svg>
 
   <!-- ══ NAV ══ -->
   <nav>
@@ -1988,91 +2048,100 @@
 
     const nodeData = {
       1: {
-        label: '01 · Refund request',
-        html: `<div class="lofi-body">
-          <div class="lofi-row title"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-row long"></div>
-          <div class="lofi-row medium"></div>
-          <div class="lofi-row short"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-divider"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-row long"></div>
-          <div class="lofi-row medium"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-block peach"></div>
+        label: '01 · My trips',
+        screen: true,
+        html: `<div class="ann-wrap">
+          <img src="original-flow/2.mytryp-level-two.png" alt="My trips menu">
+          <div class="ann-chip">← from My trips booking</div>
+          <svg class="ann-svg" viewBox="0 0 850 1954" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- irregular circle around "Devolución de pasajes" row -->
+            <path d="M68,1355 C120,1318 740,1312 808,1362 C848,1392 842,1488 795,1510 C710,1538 115,1532 62,1494 C22,1468 18,1385 68,1355 Z"
+              stroke="#E07A5F" stroke-width="6" fill="rgba(224,122,95,0.08)" stroke-linecap="round"/>
+            <!-- curved arrow from label -->
+            <path d="M640,1570 C640,1610 580,1630 520,1600" stroke="#E07A5F" stroke-width="5" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <text x="650" y="1565" font-family="Caveat, cursive" font-size="52" fill="#E07A5F" font-weight="600">tap here</text>
+          </svg>
         </div>`
       },
       2: {
-        label: '02 · Processing',
-        html: `<div class="lofi-body lofi-center" style="gap:14px">
-          <div class="lofi-spinner"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-row medium"></div>
-          <div class="lofi-row short"></div>
+        label: '02 · Loading fare rules',
+        screen: true,
+        html: `<div class="ann-wrap">
+          <img src="original-flow/2.fare-rules-loader.png" alt="Fare rules loader">
+          <svg class="ann-svg" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- arrow pointing at spinner -->
+            <path d="M260,340 C290,360 290,390 268,408" stroke="#E07A5F" stroke-width="3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <text x="168" y="330" font-family="Caveat, cursive" font-size="22" fill="#E07A5F" font-weight="600">~3–5 sec wait</text>
+          </svg>
         </div>`
       },
       3: {
-        label: '03 · Eligibility check — friction point',
-        html: `<div class="lofi-body">
-          <div class="lofi-badge"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-row long"></div>
-          <div class="lofi-row full"></div>
-          <div class="lofi-row medium"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-divider"></div>
-          <div class="lofi-row long"></div>
-          <div class="lofi-divider"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-block outline"></div>
-          <div class="lofi-block peach"></div>
+        label: '03 · Eligibility — friction point',
+        screen: true,
+        html: `<div class="ann-wrap">
+          <img src="original-flow/3.elegibility_screen.png" alt="Eligibility screen">
+          <svg class="ann-svg" viewBox="0 0 360 1114" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- bracket on left side highlighting the conditions block -->
+            <path d="M28,420 L14,420 L14,870 L28,870" stroke="#E07A5F" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- label -->
+            <path d="M12,645 C-10,645 -18,600 10,580" stroke="#E07A5F" stroke-width="3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <text x="28" y="560" font-family="Caveat, cursive" font-size="22" fill="#E07A5F" font-weight="600" transform="rotate(-4,28,560)">no refund</text>
+            <text x="28" y="584" font-family="Caveat, cursive" font-size="22" fill="#E07A5F" font-weight="600" transform="rotate(-4,28,584)">clarity here</text>
+          </svg>
         </div>`
       },
       4: {
         label: '04 · Calculating refund',
-        html: `<div class="lofi-body lofi-center" style="gap:14px">
-          <div class="lofi-spinner"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-row medium"></div>
-          <div class="lofi-row short"></div>
+        screen: true,
+        html: `<div class="ann-wrap">
+          <img src="original-flow/4.calculate-loader.png" alt="Calculate loader">
+          <svg class="ann-svg" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M260,340 C290,360 290,390 268,408" stroke="#E07A5F" stroke-width="3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <text x="148" y="330" font-family="Caveat, cursive" font-size="22" fill="#E07A5F" font-weight="600">another wait</text>
+          </svg>
         </div>`
       },
       5: {
-        label: '05 · Refund result',
-        html: `<div class="lofi-body">
-          <div class="lofi-row title"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-amount">$0.00</div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-row long"></div>
-          <div class="lofi-row medium"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-block outline"></div>
-          <div class="lofi-block peach"></div>
+        label: '05 · Refund breakdown',
+        screen: true,
+        html: `<div class="ann-wrap">
+          <img src="original-flow/5.refund-details-m.png" alt="Refund details screen">
+          <svg class="ann-svg" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- arrow pointing at the CLP 0 values -->
+            <path d="M295,475 C320,468 335,462 332,447" stroke="#E07A5F" stroke-width="3" stroke-linecap="round" marker-end="url(#arr-ann)"/>
+            <text x="192" y="490" font-family="Caveat, cursive" font-size="20" fill="#E07A5F" font-weight="600">ticket = nothing</text>
+          </svg>
         </div>`
       },
       6: {
         label: '06 · Confirmation',
-        html: `<div class="lofi-body lofi-center" style="gap:14px">
-          <div class="lofi-check">✓</div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-row medium"></div>
-          <div class="lofi-row short"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-row short"></div>
-          <div class="lofi-spacer"></div>
-          <div class="lofi-block peach"></div>
+        screen: true,
+        html: `<div class="ann-wrap">
+          <img src="original-flow/5.refund-complete.png" alt="Refund complete screen">
+          <svg class="ann-svg" viewBox="0 0 360 822" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- underline + label under the title -->
+            <path d="M62,390 C120,412 240,412 298,390" stroke="#E07A5F" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <text x="90" y="425" font-family="Caveat, cursive" font-size="20" fill="#E07A5F" font-weight="600">6 steps to get here</text>
+          </svg>
         </div>`
       }
     };
+
+    const flowPhone = document.querySelector('.flow-lofi-phone');
+    const flowDisclosure = document.querySelector('.flow-modal-disclosure');
 
     function openNodeModal(nodeId) {
       const data = nodeData[nodeId];
       if (!data) return;
       flowModalLabel.textContent = data.label;
       flowModalContent.innerHTML = data.html;
+      if (data.screen) {
+        flowPhone.classList.add('has-screen');
+        flowDisclosure.style.display = 'none';
+      } else {
+        flowPhone.classList.remove('has-screen');
+        flowDisclosure.style.display = '';
+      }
       flowModalOverlay.style.display = 'flex';
       requestAnimationFrame(() => {
         requestAnimationFrame(() => flowModalOverlay.classList.add('open'));
