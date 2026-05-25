@@ -770,21 +770,24 @@
       transition: opacity 0.15s;
     }
     .flow-panel-body::-webkit-scrollbar { display: none; }
-    /* When panel opens: collapse to 475px single-column, panel fills the rest */
+    /* When panel opens: slide layout left without width change (no text reflow) */
     .page-grid {
-      width: 100%;
-      transition: width 0.42s cubic-bezier(0.25,0.1,0.25,1);
+      transition: transform 0.42s cubic-bezier(0.25,0.1,0.25,1);
     }
     body.panel-open .page-grid {
-      width: 475px;
-      grid-template-columns: 1fr;
+      transform: translateX(-242px);
+    }
+    /* Fade sidebar — no display:none, avoids layout change */
+    .sidebar {
+      transition: opacity 0.3s;
     }
     body.panel-open .sidebar {
-      display: none;
+      opacity: 0;
+      pointer-events: none;
     }
+    /* Left-align sections in content column — repositions, does NOT reflow text */
     body.panel-open .content {
-      padding-left: 32px;
-      padding-right: 32px;
+      align-items: flex-start;
     }
 
     /* Active node highlight */
