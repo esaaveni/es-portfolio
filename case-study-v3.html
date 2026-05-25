@@ -795,6 +795,13 @@
     .flow-modal-strip svg { width: 75%; max-width: 775px; height: auto; display: block; }
     /* Overlay rects for strip node interaction */
     .strip-node-overlay { transition: fill 0.15s; }
+    @keyframes node-bloom {
+      from { clip-path: circle(0% at var(--ox,9%) var(--oy,87%)); }
+      to   { clip-path: circle(140% at var(--ox,9%) var(--oy,87%)); }
+    }
+    .strip-node-overlay.blooming {
+      animation: node-bloom 260ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
 
     /* 3-col body: [arrow] [center col] [arrow] */
     .flow-modal-body {
@@ -2502,6 +2509,21 @@
     }
 
     /* ── DESKTOP FULL-SCREEN MODAL ── */
+    /* Bloom origin: orange dot x% within each node's overlay bounding box.
+       Dot SVG coords: N1(8,80) N2(169,80) N3(361,80) N4(524,80) N5(716,80) N6(878,80)
+       Overlay = node rect expanded -3px each side → x_ov = node.x-3, w_ov = node.w+6
+       ox% = (dot.x - x_ov) / w_ov   oy% = (80 - (node.y-3)) / (node.h+6) ≈ 87% for all */
+    const BLOOM_OX = { 1:'9.5%', 2:'7.4%', 3:'9.4%', 4:'7.4%', 5:'9.4%', 6:'9.5%' };
+    const BLOOM_OY = '87%';
+
+    function triggerBloom(ov, nodeIdx) {
+      ov.classList.remove('blooming');
+      ov.style.setProperty('--ox', BLOOM_OX[nodeIdx] || '9%');
+      ov.style.setProperty('--oy', BLOOM_OY);
+      void ov.getBoundingClientRect(); // force reflow
+      ov.classList.add('blooming');
+    }
+
     function buildFlowStrip(activeNode) {
       const strip = document.getElementById('flowModalStrip');
       const origSvg = document.getElementById('fig01Svg');
@@ -2531,11 +2553,17 @@
         ov.setAttribute('height', h + 6);
         ov.setAttribute('rx', rx + 2);
         ov.setAttribute('fill',   i === activeNode ? 'rgba(224,122,95,0.15)' : 'transparent');
-        ov.setAttribute('stroke', i === activeNode ? '#E07A5F' : 'transparent');
-        ov.setAttribute('stroke-width', '2');
+        ov.setAttribute('stroke', 'transparent');
+        ov.setAttribute('stroke-width', '0');
         ov.setAttribute('class', 'strip-node-overlay');
         ov.dataset.node = i;
         ov.style.cursor = 'pointer';
+        if (i === activeNode) {
+          ov.style.setProperty('--ox', BLOOM_OX[i] || '9%');
+          ov.style.setProperty('--oy', BLOOM_OY);
+          // Delay one frame so the element is in the DOM before animating
+          requestAnimationFrame(() => { ov.classList.add('blooming'); });
+        }
         ov.addEventListener('mouseenter', function() {
           if (parseInt(this.dataset.node) !== currentNode)
             this.setAttribute('fill', 'rgba(26,26,26,0.08)');
@@ -2558,8 +2586,14 @@
     function updateStripOverlays(activeNode) {
       document.querySelectorAll('#flowModalStrip .strip-node-overlay').forEach(ov => {
         const n = parseInt(ov.dataset.node);
-        ov.setAttribute('fill',   n === activeNode ? 'rgba(224,122,95,0.15)' : 'transparent');
-        ov.setAttribute('stroke', n === activeNode ? '#E07A5F' : 'transparent');
+        if (n === activeNode) {
+          ov.setAttribute('fill', 'rgba(224,122,95,0.15)');
+          triggerBloom(ov, n);
+        } else {
+          ov.setAttribute('fill', 'transparent');
+          ov.classList.remove('blooming');
+        }
+        ov.setAttribute('stroke', 'transparent');
       });
     }
 
