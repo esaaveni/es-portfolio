@@ -771,10 +771,12 @@
       transition: opacity 0.15s;
     }
     .flow-panel-body::-webkit-scrollbar { display: none; }
-    /* Shift content left when panel opens */
-    body.panel-open .content {
-      padding-right: calc(80px + 400px);
-      transition: padding-right 0.42s cubic-bezier(0.25,0.1,0.25,1);
+    /* Push entire layout left when panel opens — re-centers content in remaining space */
+    .page-grid {
+      transition: transform 0.42s cubic-bezier(0.25,0.1,0.25,1);
+    }
+    body.panel-open .page-grid {
+      transform: translateX(-200px);
     }
 
     /* Active node highlight */
