@@ -673,6 +673,200 @@
       transition: opacity 0.4s var(--ease) 0.2s;
     }
     .flow-overlay.open .flow-node-badge { opacity: 1; }
+    /* Prev / Next navigation */
+    .flow-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.22);
+      font-size: 32px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 16px 20px;
+      transition: color 0.2s, opacity 0.2s;
+      z-index: 10;
+    }
+    .flow-nav-btn:hover { color: rgba(255,255,255,0.7); }
+    .flow-nav-btn.prev { left: 12px; }
+    .flow-nav-btn.next { right: 12px; }
+    .flow-nav-btn:disabled { opacity: 0; pointer-events: none; }
+    /* Caption for loader screens (nodes 2, 4) */
+    .flow-caption {
+      text-align: center;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.32);
+      margin-top: 16px;
+    }
+
+    /* ── SIDE PANEL (desktop) ── */
+    .flow-panel {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 400px;
+      background: #0e0e10;
+      transform: translateX(100%);
+      transition: transform 0.42s cubic-bezier(0.25,0.1,0.25,1);
+      z-index: 700;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -12px 0 48px rgba(0,0,0,0.35);
+    }
+    .flow-panel.open { transform: translateX(0); }
+    .flow-panel-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .flow-panel-label {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .flow-panel-controls { display: flex; align-items: center; gap: 4px; }
+    .flow-exp-btn {
+      background: rgba(255,255,255,0.06);
+      border: none;
+      color: rgba(255,255,255,0.4);
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .flow-exp-btn:hover { background: rgba(255,255,255,0.12); color: white; }
+    .flow-exp-btn:disabled { opacity: 0.2; pointer-events: none; }
+    .flow-exp-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.25);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 6px;
+      margin-left: 8px;
+      transition: color 0.15s;
+      line-height: 1;
+    }
+    .flow-exp-close:hover { color: rgba(255,255,255,0.7); }
+    .flow-panel-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 28px 0 16px;
+      scrollbar-width: none;
+      transition: opacity 0.15s;
+    }
+    .flow-panel-body::-webkit-scrollbar { display: none; }
+    /* Shift content left when panel opens */
+    body.panel-open .content {
+      padding-right: calc(80px + 400px);
+      transition: padding-right 0.42s cubic-bezier(0.25,0.1,0.25,1);
+    }
+
+    /* Active node highlight */
+    .flow-node-hit.active::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border: 2px solid var(--peach);
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .flow-node-hit { position: absolute; top: 0; height: 100%; cursor: pointer; }
+
+    /* ── MOBILE BOTTOM SHEET ── */
+    .flow-sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 799;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .flow-sheet-backdrop.open { opacity: 1; pointer-events: auto; }
+    .flow-sheet {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #0e0e10;
+      border-radius: 20px 20px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.25,0.1,0.25,1);
+      z-index: 800;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .flow-sheet.open { transform: translateY(0); }
+    .flow-sheet-handle {
+      width: 36px; height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      margin: 12px auto 0;
+      flex-shrink: 0;
+    }
+    .flow-sheet-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .flow-sheet-label {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .flow-sheet-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      padding: 20px 0 8px;
+      scrollbar-width: none;
+    }
+    .flow-sheet-body::-webkit-scrollbar { display: none; }
+    .flow-sheet-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 20px 20px;
+      flex-shrink: 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .flow-sheet-nav-btn {
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: rgba(255,255,255,0.5);
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .flow-sheet-nav-btn:hover { background: rgba(255,255,255,0.14); color: white; }
+    .flow-sheet-nav-btn:disabled { opacity: 0.2; pointer-events: none; }
     /* ── LO-FI PHONE FRAME ── */
     .flow-lofi-phone {
       width: 300px;
@@ -1448,9 +1642,6 @@
           <div>
             <p><strong>At LATAM, a fundamental strategic tension exists between revenue management and operational efficiency.</strong></p>
             <p>While <span class="ann-trigger" id="ann-t-nr" onclick="toggleAnn('nr')">non-refundable fares are essential for driving airline revenue</span>, they become a massive source of call center friction when passengers fail to recognize the limitations of their ticket.</p>
-            <div class="author-voice">
-              <p>Or we, as designers, fail to make those limitations recognizable.</p>
-            </div>
             <div class="ann-block" id="ann-nr">
               <div class="ann-block-inner">
                 <div class="ann-box">
@@ -1460,6 +1651,9 @@
                   <span class="ann-box-source"><a href="https://www.bts.gov/cancellation-change-fees" target="_blank" rel="noopener">Bureau of Transportation Statistics &middot; Cancellation Fees by Airline<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 8L8 2M8 2H4.5M8 2V5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></span>
                 </div>
               </div>
+            </div>
+            <div class="author-voice">
+              <p>Or we, as designers, fail to make those limitations recognizable.</p>
             </div>
             <p>Making these conditions clear isn&rsquo;t just a UX goal; it dictates our call center costs. And the confusion always starts at the exact same place: <span style="color:var(--peach);">the eligibility screen</span>.</p>
           </div>
@@ -1552,16 +1746,18 @@
 
             </svg>
             <!-- node hit areas — positioned over each box in the flow -->
-            <div class="flow-node-hit" data-node="1" style="left:0%;width:10.4%"    onclick="openNodeModal(1)"></div>
-            <div class="flow-node-hit" data-node="2" style="left:16.7%;width:13.4%" onclick="openNodeModal(2)"></div>
-            <div class="flow-node-hit" data-node="3" style="left:36.5%;width:10.3%" onclick="openNodeModal(3)"></div>
-            <div class="flow-node-hit" data-node="4" style="left:53.2%;width:13.4%" onclick="openNodeModal(4)"></div>
-            <div class="flow-node-hit" data-node="5" style="left:73%;width:10.3%"   onclick="openNodeModal(5)"></div>
-            <div class="flow-node-hit" data-node="6" style="left:89.7%;width:10.3%" onclick="openNodeModal(6)"></div>
+            <div class="flow-node-hit" data-node="1" style="left:0%;width:10.4%"    onclick="openNodeFlow(1)"></div>
+            <div class="flow-node-hit" data-node="2" style="left:16.7%;width:13.4%" onclick="openNodeFlow(2)"></div>
+            <div class="flow-node-hit" data-node="3" style="left:36.5%;width:10.3%" onclick="openNodeFlow(3)"></div>
+            <div class="flow-node-hit" data-node="4" style="left:53.2%;width:13.4%" onclick="openNodeFlow(4)"></div>
+            <div class="flow-node-hit" data-node="5" style="left:73%;width:10.3%"   onclick="openNodeFlow(5)"></div>
+            <div class="flow-node-hit" data-node="6" style="left:89.7%;width:10.3%" onclick="openNodeFlow(6)"></div>
           </div>
           </div><!-- /fig-scroll-zone -->
           <p class="fig-caption">fig.01 &middot; refund flow &middot; before<span class="fig-hint">tap any node to explore</span></p>
         </div>
+
+
       </section>
 
       <section class="section has-sidenote" id="s02">
@@ -2007,11 +2203,31 @@
   </div>
 
   <!-- ══ NODE OVERLAY (full-screen annotation canvas) ══ -->
-  <div class="flow-overlay" id="flowOverlay" onclick="closeFlowModal()">
-    <button class="flow-close-btn" onclick="closeFlowModal()">&#x2715;</button>
-    <p class="flow-node-badge" id="flowNodeBadge"></p>
-    <div class="flow-stage" id="flowStage" onclick="event.stopPropagation()">
-      <!-- ann-canvas injected here by JS -->
+  <!-- ── MOBILE BOTTOM SHEET ── -->
+  <!-- ── SIDE PANEL (desktop) ── -->
+  <div class="flow-panel" id="flowPanel">
+    <div class="flow-panel-bar">
+      <span class="flow-panel-label" id="flowPanelLabel"></span>
+      <div class="flow-panel-controls">
+        <button class="flow-exp-btn" id="flowPanelPrev" onclick="navigateFlow(-1)">&#8249;</button>
+        <button class="flow-exp-btn" id="flowPanelNext" onclick="navigateFlow(1)">&#8250;</button>
+        <button class="flow-exp-close" onclick="closeNodeFlow()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="flow-panel-body" id="flowPanelBody"></div>
+  </div>
+
+  <div class="flow-sheet-backdrop" id="flowSheetBackdrop" onclick="closeNodeFlow()"></div>
+  <div class="flow-sheet" id="flowSheet">
+    <div class="flow-sheet-handle"></div>
+    <div class="flow-sheet-bar">
+      <span class="flow-sheet-label" id="flowSheetLabel"></span>
+      <button class="flow-exp-close" onclick="closeNodeFlow()">&#x2715;</button>
+    </div>
+    <div class="flow-sheet-body" id="flowSheetBody"></div>
+    <div class="flow-sheet-nav">
+      <button class="flow-sheet-nav-btn" id="flowSheetPrev" onclick="navigateFlow(-1)">&#8249;</button>
+      <button class="flow-sheet-nav-btn" id="flowSheetNext" onclick="navigateFlow(1)">&#8250;</button>
     </div>
   </div>
 
@@ -2104,16 +2320,8 @@
               <img src="original-flow/2.fare-rules-loader.png" alt="Fare rules loader">
             </div>
           </div>
-          <svg class="ann-svg" viewBox="0 0 600 786" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- LEFT: wait time -->
-            <text x="10" y="421" font-family="Caveat, cursive" font-size="21" fill="#E07A5F" font-weight="600">~3–5 sec</text>
-            <path d="M108,425 C120,429 128,432 131,436" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-            <!-- RIGHT: context -->
-            <text x="472" y="422" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">fetching fare</text>
-            <text x="472" y="441" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">rules from API</text>
-            <path d="M470,431 C468,433 467,435 469,436" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-          </svg>
-        </div>`
+        </div>
+        <p class="flow-caption">~3–5 sec wait &middot; fetching fare rules from API</p>`
       },
 
       // Screen 360×1114 @ 320px wide = 990px tall — scrolls heavily
@@ -2151,16 +2359,8 @@
               <img src="original-flow/4.calculate-loader.png" alt="Calculate loader">
             </div>
           </div>
-          <svg class="ann-svg" viewBox="0 0 600 786" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- LEFT: second wait -->
-            <text x="10" y="420" font-family="Caveat, cursive" font-size="21" fill="#E07A5F" font-weight="600">another wait</text>
-            <path d="M118,424 C124,428 128,432 131,436" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-            <!-- RIGHT: question -->
-            <text x="472" y="416" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">why not batch</text>
-            <text x="472" y="435" font-family="Caveat, cursive" font-size="17" fill="#E07A5F" font-weight="400">with step 2?</text>
-            <path d="M470,425 C468,430 467,433 469,436" stroke="#E07A5F" stroke-width="2" stroke-linecap="round" marker-end="url(#arr-ann)"/>
-          </svg>
-        </div>`
+        </div>
+        <p class="flow-caption">another wait &middot; why not batch this with step 2?</p>`
       },
 
       // Screen 375×812 @ 320px
@@ -2217,29 +2417,107 @@
 
     };
 
-    function openNodeModal(nodeId) {
-      const data = nodeData[nodeId];
-      if (!data) return;
-      flowNodeBadge.textContent = data.label;
-      flowStage.innerHTML = data.html;
-      flowOverlay.style.display = 'block';
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => flowOverlay.classList.add('open'));
+    let currentNode = 1;
+    const totalNodes = Object.keys(nodeData).length;
+    const isMobileFlow = () => window.innerWidth <= 860;
+
+    function nodeLabel(n) {
+      return String(n).padStart(2,'0') + ' / 0' + totalNodes + ' · ' + nodeData[n].label.replace(/^\d+ · /,'');
+    }
+
+    function setActiveHit(n) {
+      document.querySelectorAll('.flow-node-hit').forEach(el => {
+        el.classList.toggle('active', parseInt(el.dataset.node) === n);
       });
+    }
+
+    function openNodeFlow(n) {
+      if (!nodeData[n]) return;
+      currentNode = n;
+      setActiveHit(n);
+      if (isMobileFlow()) {
+        openSheet(n);
+      } else {
+        openPanel(n);
+      }
+    }
+
+    /* ── DESKTOP SIDE PANEL ── */
+    function openPanel(n) {
+      document.getElementById('flowPanelBody').innerHTML = nodeData[n].html;
+      document.getElementById('flowPanelLabel').textContent = nodeLabel(n);
+      updatePanelNav();
+      document.getElementById('flowPanel').classList.add('open');
+      document.body.classList.add('panel-open');
+    }
+
+    function updatePanelNav() {
+      document.getElementById('flowPanelPrev').disabled = currentNode <= 1;
+      document.getElementById('flowPanelNext').disabled = currentNode >= totalNodes;
+    }
+
+    /* ── MOBILE SHEET ── */
+    function openSheet(n) {
+      document.getElementById('flowSheetBody').innerHTML = nodeData[n].html;
+      document.getElementById('flowSheetLabel').textContent = nodeLabel(n);
+      updateSheetNav();
+      document.getElementById('flowSheet').classList.add('open');
+      document.getElementById('flowSheetBackdrop').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
 
-    function closeFlowModal() {
-      flowOverlay.classList.remove('open');
-      setTimeout(() => {
-        flowOverlay.style.display = 'none';
-        flowStage.innerHTML = '';
-      }, 400);
+    function updateSheetNav() {
+      document.getElementById('flowSheetPrev').disabled = currentNode <= 1;
+      document.getElementById('flowSheetNext').disabled = currentNode >= totalNodes;
+    }
+
+    /* ── SHARED NAVIGATION ── */
+    function navigateFlow(dir) {
+      const next = currentNode + dir;
+      if (!nodeData[next]) return;
+      currentNode = next;
+      setActiveHit(next);
+      if (isMobileFlow()) {
+        const body = document.getElementById('flowSheetBody');
+        body.style.opacity = '0';
+        setTimeout(() => {
+          body.innerHTML = nodeData[next].html;
+          body.style.opacity = '';
+          document.getElementById('flowSheetLabel').textContent = nodeLabel(next);
+          updateSheetNav();
+        }, 150);
+      } else {
+        const body = document.getElementById('flowPanelBody');
+        body.style.opacity = '0';
+        setTimeout(() => {
+          body.innerHTML = nodeData[next].html;
+          body.style.opacity = '';
+          document.getElementById('flowPanelLabel').textContent = nodeLabel(next);
+          updatePanelNav();
+        }, 150);
+      }
+    }
+
+    function closeNodeFlow() {
+      document.getElementById('flowPanel').classList.remove('open');
+      document.body.classList.remove('panel-open');
+      document.getElementById('flowSheet').classList.remove('open');
+      document.getElementById('flowSheetBackdrop').classList.remove('open');
       document.body.style.overflow = '';
+      setActiveHit(0);
+      setTimeout(() => {
+        document.getElementById('flowPanelBody').innerHTML = '';
+        document.getElementById('flowSheetBody').innerHTML = '';
+      }, 420);
     }
 
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeFlowModal();
+      const expOpen = document.getElementById('flowPanel').classList.contains('open');
+      const sheetOpen = document.getElementById('flowSheet').classList.contains('open');
+      if (!expOpen && !sheetOpen) return;
+      if (e.key === 'Escape') closeNodeFlow();
+      if (e.key === 'ArrowRight') navigateFlow(1);
+      if (e.key === 'ArrowLeft') navigateFlow(-1);
     });
 
     const titleBar = document.getElementById('titleBar');
