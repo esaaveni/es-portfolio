@@ -704,48 +704,32 @@
     }
 
     /* ── SIDE PANEL (desktop) ── */
-    /* ── SIDE PANEL — card, inset from edges, matches lo-fi demo ── */
-    .flow-panel {
-      position: fixed;
-      top: 24px;
-      bottom: 24px;
-      left: 499px;   /* 475 content width + 24 gap */
-      right: 24px;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #0e0e10;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.25);
-      /* closed: invisible + nudged right */
-      opacity: 0;
-      transform: translateX(16px);
-      pointer-events: none;
-      transition: opacity 0.36s cubic-bezier(0.25,0.1,0.25,1),
-                  transform 0.36s cubic-bezier(0.25,0.1,0.25,1);
-      z-index: 700;
-      display: flex;
-      flex-direction: column;
+    /* ── INLINE FLOW EXPANSION (desktop) ── */
+    .flow-expansion {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.44s cubic-bezier(0.25,0.1,0.25,1);
+      margin-top: 2px;
     }
-    .flow-panel.open {
-      opacity: 1;
-      transform: translateX(0);
-      pointer-events: auto;
-    }
-    .flow-panel-bar {
+    .flow-expansion.open { grid-template-rows: 1fr; }
+    .flow-exp-inner { overflow: hidden; }
+    .flow-exp-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 20px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      flex-shrink: 0;
+      padding: 14px 20px 12px;
+      background: #0e0e10;
+      border-radius: 12px 12px 0 0;
+      margin-top: 8px;
     }
-    .flow-panel-label {
+    .flow-exp-label {
       font-family: var(--sans);
       font-size: 10px;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.35);
     }
-    .flow-panel-controls { display: flex; align-items: center; gap: 4px; }
+    .flow-exp-controls { display: flex; align-items: center; gap: 4px; }
     .flow-exp-btn {
       background: rgba(255,255,255,0.06);
       border: none;
@@ -772,30 +756,14 @@
       line-height: 1;
     }
     .flow-exp-close:hover { color: rgba(255,255,255,0.7); }
-    .flow-panel-body {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
+    .flow-exp-screen {
+      background: #0e0e10;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding: 28px 0 16px;
-      scrollbar-width: none;
+      padding: 20px 0 28px;
+      border-radius: 0 0 12px 12px;
       transition: opacity 0.15s;
     }
-    .flow-panel-body::-webkit-scrollbar { display: none; }
-
-    /* Content push — transform keeps text at same width (no reflow) */
-    body { overflow-x: hidden; }
-    .page-grid {
-      transition: transform 0.36s cubic-bezier(0.25,0.1,0.25,1);
-    }
-    body.panel-open .page-grid {
-      transform: translateX(-242px);
-    }
-    /* Sidebar: fade out, no layout change */
-    .sidebar { transition: opacity 0.25s; }
-    body.panel-open .sidebar { opacity: 0; pointer-events: none; }
 
     /* Active node — same tint as hover, no competing outline */
     .flow-node-hit.active { background: rgba(26,26,26,0.07); }
@@ -1771,6 +1739,20 @@
           <p class="fig-caption">fig.01 &middot; refund flow &middot; before<span class="fig-hint">tap any node to explore</span></p>
         </div>
 
+        <!-- ── INLINE EXPANSION (desktop) ── -->
+        <div class="flow-expansion" id="flowExpansion">
+          <div class="flow-exp-inner">
+            <div class="flow-exp-bar">
+              <span class="flow-exp-label" id="flowExpLabel"></span>
+              <div class="flow-exp-controls">
+                <button class="flow-exp-btn" id="flowExpPrev" onclick="navigateFlow(-1)">&#8249;</button>
+                <button class="flow-exp-btn" id="flowExpNext" onclick="navigateFlow(1)">&#8250;</button>
+                <button class="flow-exp-close" onclick="closeNodeFlow()">&#x2715;</button>
+              </div>
+            </div>
+            <div class="flow-exp-screen" id="flowExpScreen"></div>
+          </div>
+        </div>
 
       </section>
 
@@ -2216,21 +2198,7 @@
     </main>
   </div>
 
-  <!-- ══ NODE OVERLAY (full-screen annotation canvas) ══ -->
   <!-- ── MOBILE BOTTOM SHEET ── -->
-  <!-- ── SIDE PANEL (desktop) ── -->
-  <div class="flow-panel" id="flowPanel">
-    <div class="flow-panel-bar">
-      <span class="flow-panel-label" id="flowPanelLabel"></span>
-      <div class="flow-panel-controls">
-        <button class="flow-exp-btn" id="flowPanelPrev" onclick="navigateFlow(-1)">&#8249;</button>
-        <button class="flow-exp-btn" id="flowPanelNext" onclick="navigateFlow(1)">&#8250;</button>
-        <button class="flow-exp-close" onclick="closeNodeFlow()">&#x2715;</button>
-      </div>
-    </div>
-    <div class="flow-panel-body" id="flowPanelBody"></div>
-  </div>
-
   <div class="flow-sheet-backdrop" id="flowSheetBackdrop" onclick="closeNodeFlow()"></div>
   <div class="flow-sheet" id="flowSheet">
     <div class="flow-sheet-handle"></div>
@@ -2452,22 +2420,23 @@
       if (isMobileFlow()) {
         openSheet(n);
       } else {
-        openPanel(n);
+        openExpansion(n);
       }
     }
 
-    /* ── DESKTOP SIDE PANEL ── */
-    function openPanel(n) {
-      document.getElementById('flowPanelBody').innerHTML = nodeData[n].html;
-      document.getElementById('flowPanelLabel').textContent = nodeLabel(n);
-      updatePanelNav();
-      document.getElementById('flowPanel').classList.add('open');
-      document.body.classList.add('panel-open');
+    /* ── DESKTOP INLINE EXPANSION ── */
+    function openExpansion(n) {
+      document.getElementById('flowExpScreen').innerHTML = nodeData[n].html;
+      document.getElementById('flowExpLabel').textContent = nodeLabel(n);
+      updateExpNav();
+      const exp = document.getElementById('flowExpansion');
+      exp.classList.add('open');
+      setTimeout(() => exp.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
     }
 
-    function updatePanelNav() {
-      document.getElementById('flowPanelPrev').disabled = currentNode <= 1;
-      document.getElementById('flowPanelNext').disabled = currentNode >= totalNodes;
+    function updateExpNav() {
+      document.getElementById('flowExpPrev').disabled = currentNode <= 1;
+      document.getElementById('flowExpNext').disabled = currentNode >= totalNodes;
     }
 
     /* ── MOBILE SHEET ── */
@@ -2501,32 +2470,31 @@
           updateSheetNav();
         }, 150);
       } else {
-        const body = document.getElementById('flowPanelBody');
-        body.style.opacity = '0';
+        const screen = document.getElementById('flowExpScreen');
+        screen.style.opacity = '0';
         setTimeout(() => {
-          body.innerHTML = nodeData[next].html;
-          body.style.opacity = '';
-          document.getElementById('flowPanelLabel').textContent = nodeLabel(next);
-          updatePanelNav();
+          screen.innerHTML = nodeData[next].html;
+          screen.style.opacity = '';
+          document.getElementById('flowExpLabel').textContent = nodeLabel(next);
+          updateExpNav();
         }, 150);
       }
     }
 
     function closeNodeFlow() {
-      document.getElementById('flowPanel').classList.remove('open');
-      document.body.classList.remove('panel-open');
+      document.getElementById('flowExpansion').classList.remove('open');
       document.getElementById('flowSheet').classList.remove('open');
       document.getElementById('flowSheetBackdrop').classList.remove('open');
       document.body.style.overflow = '';
       setActiveHit(0);
       setTimeout(() => {
-        document.getElementById('flowPanelBody').innerHTML = '';
+        document.getElementById('flowExpScreen').innerHTML = '';
         document.getElementById('flowSheetBody').innerHTML = '';
-      }, 420);
+      }, 440);
     }
 
     document.addEventListener('keydown', e => {
-      const expOpen = document.getElementById('flowPanel').classList.contains('open');
+      const expOpen = document.getElementById('flowExpansion').classList.contains('open');
       const sheetOpen = document.getElementById('flowSheet').classList.contains('open');
       if (!expOpen && !sheetOpen) return;
       if (e.key === 'Escape') closeNodeFlow();
