@@ -704,18 +704,32 @@
     }
 
     /* ── SIDE PANEL (desktop) ── */
+    /* ── SIDE PANEL — card, inset from edges, matches lo-fi demo ── */
     .flow-panel {
       position: fixed;
-      top: 0; left: 475px; right: 0; bottom: 0;
+      top: 24px;
+      bottom: 24px;
+      left: 499px;   /* 475 content width + 24 gap */
+      right: 24px;
+      border-radius: 16px;
+      overflow: hidden;
       background: #0e0e10;
-      transform: translateX(100%);
-      transition: transform 0.42s cubic-bezier(0.25,0.1,0.25,1);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.25);
+      /* closed: invisible + nudged right */
+      opacity: 0;
+      transform: translateX(16px);
+      pointer-events: none;
+      transition: opacity 0.36s cubic-bezier(0.25,0.1,0.25,1),
+                  transform 0.36s cubic-bezier(0.25,0.1,0.25,1);
       z-index: 700;
       display: flex;
       flex-direction: column;
-      box-shadow: -12px 0 48px rgba(0,0,0,0.35);
     }
-    .flow-panel.open { transform: translateX(0); }
+    .flow-panel.open {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
     .flow-panel-bar {
       display: flex;
       align-items: center;
@@ -770,25 +784,18 @@
       transition: opacity 0.15s;
     }
     .flow-panel-body::-webkit-scrollbar { display: none; }
-    /* When panel opens: slide layout left without width change (no text reflow) */
+
+    /* Content push — transform keeps text at same width (no reflow) */
+    body { overflow-x: hidden; }
     .page-grid {
-      transition: transform 0.42s cubic-bezier(0.25,0.1,0.25,1);
+      transition: transform 0.36s cubic-bezier(0.25,0.1,0.25,1);
     }
     body.panel-open .page-grid {
       transform: translateX(-242px);
     }
-    /* Fade sidebar — no display:none, avoids layout change */
-    .sidebar {
-      transition: opacity 0.3s;
-    }
-    body.panel-open .sidebar {
-      opacity: 0;
-      pointer-events: none;
-    }
-    /* Left-align sections in content column — repositions, does NOT reflow text */
-    body.panel-open .content {
-      align-items: flex-start;
-    }
+    /* Sidebar: fade out, no layout change */
+    .sidebar { transition: opacity 0.25s; }
+    body.panel-open .sidebar { opacity: 0; pointer-events: none; }
 
     /* Active node highlight */
     .flow-node-hit.active::after {
