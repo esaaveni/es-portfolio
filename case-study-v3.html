@@ -797,15 +797,9 @@
     .sidebar { transition: opacity 0.25s; }
     body.panel-open .sidebar { opacity: 0; pointer-events: none; }
 
-    /* Active node highlight */
-    .flow-node-hit.active::after {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border: 2px solid var(--peach);
-      border-radius: 8px;
-      pointer-events: none;
-    }
+    /* Active node — same tint as hover, no competing outline */
+    .flow-node-hit.active { background: rgba(26,26,26,0.07); }
+    .flow-node-hit[data-node="3"].active { background: rgba(224,122,95,0.14); }
     .flow-node-hit { position: absolute; top: 0; height: 100%; cursor: pointer; }
 
     /* ── MOBILE BOTTOM SHEET ── */
