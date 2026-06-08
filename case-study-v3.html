@@ -1165,6 +1165,39 @@
       color: var(--graphite);
     }
 
+    /* ─ RELATED EXPERIMENT ─ */
+    .related-block {
+      padding: 32px 0 48px;
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+    }
+
+    .related-label {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--graphite);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .related-link {
+      font-family: var(--sans);
+      font-size: 15px;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px solid var(--ash);
+      padding-bottom: 1px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .related-link:hover {
+      color: var(--peach);
+      border-color: var(--peach);
+    }
+
     /* ─ FOOTER ─ */
     footer {
       border-top: 1px solid var(--ash);
@@ -2261,6 +2294,11 @@
           <li><strong>Project Manager</strong><span>Business context</span></li>
         </ul>
       </section>
+
+      <div class="related-block">
+        <span class="related-label">Related experiment</span>
+        <a href="exchange-refund.html" class="related-link">Access &mdash; Exchange &amp; Refund A/B &nbsp;&rarr;</a>
+      </div>
 
     </main>
   </div>
