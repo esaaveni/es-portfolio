@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Interactive Touch Table — Esteban Saavedra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --ink: #1A1A1A;
+      --graphite: #5C5C5C;
+      --ash: #E5E4E0;
+      --peach: #E07A5F;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+      --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+      --nav-h: 60px;
+      --bar-h: 48px;
+      --side-w: 210px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      z-index: 200;
+      transition: padding 0.3s var(--ease);
+    }
+    nav.scrolled { padding-bottom: 8px; }
+
+    .nav-logo svg { height: 18px; width: auto; display: block; }
+    .nav-left { display: flex; align-items: baseline; gap: 14px; }
+    .nav-name { font-size: 11px; color: var(--graphite); letter-spacing: 0.04em; }
+    .nav-right { display: flex; align-items: center; gap: 36px; }
+    .nav-link {
+      font-size: 12px; color: var(--peach);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: opacity 0.3s var(--ease);
+    }
+    .nav-link-muted { color: var(--ink); }
+    .nav-link:hover { opacity: 0.65; }
+
+    /* ══════════════════════════════
+       COMPACT TITLE BAR
+    ══════════════════════════════ */
+    .title-bar {
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0;
+      height: var(--bar-h);
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px 0 calc(var(--side-w) + 48px);
+      z-index: 190;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--bar-h)));
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+      pointer-events: none;
+    }
+    .title-bar.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      padding: 0 48px;
+    }
+    .bar-text {
+      display: flex; align-items: baseline;
+      gap: 10px; overflow: hidden; flex: 1; min-width: 0;
+    }
+    .bar-title {
+      font-family: var(--serif); font-size: 18px; font-weight: 400;
+      letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; flex-shrink: 0;
+    }
+    .bar-dek {
+      font-family: var(--serif); font-size: 18px; font-weight: 300; font-style: italic;
+      color: var(--graphite); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .bar-section {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); white-space: nowrap; flex-shrink: 0;
+      margin-left: 24px; transition: opacity 0.3s var(--ease);
+    }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      margin-top: var(--nav-h);
+      padding: 3rem;
+      display: flex; flex-direction: column; justify-content: center;
+      border-bottom: 1px solid var(--ash);
+    }
+    .hero-meta {
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--graphite); margin-bottom: .5rem;
+    }
+    .hero-title {
+      font-family: var(--serif); font-size: clamp(48px, 7vw, 92px);
+      font-weight: 300; line-height: 1.04; letter-spacing: -0.025em;
+      max-width: 740px; margin-bottom: 8px;
+    }
+    .hero-sub {
+      font-family: var(--serif); font-size: clamp(22px, 3vw, 38px);
+      font-weight: 300; font-style: italic; color: var(--graphite);
+      margin-top: 0.5em; margin-bottom: 2.5rem; letter-spacing: -0.01em;
+    }
+    .hero-strip {
+      display: flex; gap: 2rem; font-size: 11px; color: var(--graphite);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border-top: 1px solid var(--ash); padding-top: 1.5rem;
+    }
+
+    /* ══════════════════════════════
+       TWO-COLUMN LAYOUT
+    ══════════════════════════════ */
+    .page-grid { display: grid; grid-template-columns: var(--side-w) 1fr; }
+
+    .sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + var(--bar-h));
+      height: calc(100vh - var(--nav-h) - var(--bar-h));
+      overflow-y: auto;
+      padding: 40px 0 40px 40px;
+      border-right: 1px solid var(--ash);
+      scrollbar-width: none;
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar-item {
+      display: block; text-decoration: none;
+      padding: 8px 0 8px 12px;
+      border-left: 1.5px solid transparent;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--graphite); opacity: 0.38; line-height: 1.35;
+      transition: opacity 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+    .sidebar-item:hover { opacity: 0.65; }
+    .sidebar-item.active { opacity: 1; color: var(--ink); border-left-color: var(--ink); }
+
+    .content {
+      padding: 0 80px 160px 64px;
+      scroll-margin-top: calc(var(--nav-h) + var(--bar-h));
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .content .section { width: 100%; max-width: 640px; }
+
+    .section {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--ash);
+      scroll-margin-top: calc(var(--nav-h) + var(--bar-h) + 24px);
+    }
+    .section:first-child { padding-top: 40px; }
+    .section:last-child { border-bottom: none; }
+
+    .section-heading {
+      font-family: var(--serif); font-size: 26px; font-weight: 400;
+      letter-spacing: -0.01em; line-height: 1.15; color: var(--ink); margin-bottom: 24px;
+    }
+    .section p {
+      font-size: 15.5px; line-height: 1.78; color: var(--ink);
+      max-width: 58ch; letter-spacing: 0.01em; margin-bottom: 16px;
+    }
+    .section p:last-child { margin-bottom: 0; }
+    .section strong { font-weight: 500; }
+
+    /* ─ HYPOTHESIS ─ */
+    .hypothesis {
+      border-left: 1px solid var(--ash);
+      padding: 22px 26px; margin: 24px 0;
+    }
+    .hypothesis .h-tag {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--graphite); display: block; margin-bottom: 14px;
+    }
+    .hypothesis .h-text {
+      font-family: var(--serif); font-size: 18px; font-style: italic;
+      font-weight: 300; line-height: 1.55; color: var(--ink);
+      margin-bottom: 6px; max-width: none;
+    }
+    .hypothesis .h-bridge {
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--graphite); margin: 10px 0;
+    }
+
+    /* ─ TIER BLOCKS ─ */
+    .tier { border-left: 1px solid var(--ash); padding: 14px 20px; margin: 12px 0; }
+    .tier-title {
+      font-size: 13px !important; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); margin-bottom: 7px;
+    }
+    .tier p {
+      font-size: 14px; color: var(--graphite);
+      line-height: 1.65; max-width: none; margin: 0; letter-spacing: 0.01em;
+    }
+
+    /* ─ METRICS GRID ─ */
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--ash); margin: 24px 0; max-width: 520px;
+    }
+    .metric-cell { background: var(--paper); padding: 24px 22px; }
+    .metric-number {
+      font-family: var(--serif); font-size: 52px; font-weight: 300;
+      line-height: 1; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 8px;
+    }
+    .metric-label { font-size: 11px; color: var(--graphite); line-height: 1.5; letter-spacing: 0.01em; }
+
+    /* ─ CHART ─ */
+    .fig { margin: 28px 0; }
+    .fig img { width: 100%; display: block; border: 1px solid var(--ash); }
+
+    .chart-wrap {
+      margin: 28px 0; padding: 28px; background: #fff; border: 1px solid var(--ash);
+    }
+    .chart-wrap svg { display: block; width: 100%; }
+    .chart-caption {
+      font-size: 10px !important; color: var(--graphite);
+      margin-top: 12px; letter-spacing: 0.02em; max-width: none !important;
+    }
+
+    /* ─ TAKEAWAY ─ */
+    .takeaway { margin: 20px 0; }
+    .takeaway-title {
+      font-size: 13px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--graphite); margin-bottom: 7px;
+    }
+
+    /* ─ TEAM LIST ─ */
+    .team-list { list-style: none; padding: 0; }
+    .team-list li {
+      display: flex; gap: 20px; padding: 11px 0;
+      border-bottom: 1px solid var(--ash);
+      font-size: 14px; letter-spacing: 0.01em;
+    }
+    .team-list li:first-child { border-top: 1px solid var(--ash); }
+    .team-list li strong { font-weight: 500; min-width: 180px; flex-shrink: 0; }
+    .team-list li span { color: var(--graphite); }
+
+    /* ─ FOOTNOTE ─ */
+    .footnote {
+      font-size: 11px !important; color: var(--graphite); letter-spacing: 0.01em;
+      line-height: 1.6; margin-top: 32px !important;
+      border-top: 1px solid var(--ash); padding-top: 16px;
+    }
+
+    /* ─ FOOTER ─ */
+    footer {
+      border-top: 1px solid var(--ash); padding: 36px 80px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-logo svg { height: 15px; width: auto; opacity: 0.3; }
+
+    /* ─ RESPONSIVE ─ */
+    @media (max-width: 860px) {
+      .page-grid { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .title-bar.visible { padding: 0 20px !important; }
+      .content { padding: 0 32px 120px; }
+      footer { padding: 32px; }
+      .hero { padding: 2rem 32px 2.5rem; }
+      .hero-title { font-size: clamp(40px, 10vw, 64px); }
+      .hero-sub { font-size: clamp(18px, 5vw, 28px); margin-bottom: 1.75rem; }
+      .hero-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem; padding-top: 30px; }
+    }
+
+    /* ── MOBILE PROGRESS BAR ── */
+    .mob-progress {
+      display: block; position: fixed;
+      top: calc(var(--nav-h) + var(--bar-h)); left: 0; right: 0;
+      height: 2px; background: var(--ash); z-index: 185; pointer-events: none;
+      opacity: 0; transform: translateY(calc(-1 * var(--bar-h)));
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+    }
+    .mob-progress-fill { height: 100%; width: 0%; background: var(--ink); transition: width 0.2s ease; }
+    .mob-progress.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── MOBILE FLOATING CHIP ── */
+    .mob-chip {
+      display: none; position: fixed;
+      bottom: 120px; right: 20px;
+      background: var(--ink); color: #fff;
+      font-family: var(--sans); font-size: 11px; letter-spacing: 0.04em;
+      border-radius: 20px; padding: 9px 16px; cursor: pointer; z-index: 300;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transition: transform 0.2s var(--ease), opacity 0.3s var(--ease);
+      white-space: nowrap;
+    }
+    .mob-chip:active { transform: scale(0.96); }
+    .mob-chip.visible { display: block; }
+
+    /* ── MOBILE BOTTOM SHEET ── */
+    .mob-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0); z-index: 400; transition: background 0.3s;
+    }
+    .mob-overlay.open { background: rgba(0,0,0,0.3); }
+    .mob-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: var(--paper); border-radius: 16px 16px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1);
+      max-height: 70vh; overflow-y: auto;
+    }
+    .mob-sheet.open { transform: translateY(0); }
+    .mob-sheet-handle {
+      width: 32px; height: 3px; background: var(--ash);
+      border-radius: 2px; margin: 12px auto 10px;
+    }
+    .mob-sheet-title {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); padding: 0 20px 10px;
+    }
+    .mob-sheet-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+      border-top: 1px solid var(--ash); cursor: pointer;
+      transition: background 0.15s; text-decoration: none;
+    }
+    .mob-sheet-item:active { background: var(--ash); }
+    .mob-sheet-num {
+      font-size: 10px; color: var(--graphite); width: 20px;
+      letter-spacing: 0.08em; flex-shrink: 0; font-variant-numeric: tabular-nums;
+    }
+    .mob-sheet-name { font-size: 13px; color: var(--ink); flex: 1; }
+    .mob-sheet-item.active-section .mob-sheet-num { color: var(--ink); font-weight: 500; }
+    .mob-sheet-item.active-section .mob-sheet-name { font-weight: 600; }
+    .mob-sheet-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--ink); opacity: 0; flex-shrink: 0;
+    }
+    .mob-sheet-item.active-section .mob-sheet-dot { opacity: 1; }
+
+    @media (min-width: 861px) {
+      .mob-chip, .mob-overlay, .mob-progress,
+      .mob-menu-btn, .mob-drawer, .mob-drawer-overlay { display: none !important; }
+    }
+    @media (max-width: 860px) {
+      .bar-section { display: none; }
+      .nav-right { display: none; }
+      nav { padding: 0 20px; }
+
+      .mob-menu-btn {
+        display: flex; flex-direction: column; justify-content: center; gap: 5px;
+        width: 48px; height: 48px; background: none; border: none;
+        cursor: pointer; padding: 12px; margin-right: -12px;
+      }
+      .mob-menu-btn span {
+        display: block; width: 22px; height: 1.5px;
+        background: var(--ink); border-radius: 1px;
+        transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+      }
+      .mob-menu-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+      .mob-menu-btn.open span:nth-child(2) { opacity: 0; }
+      .mob-menu-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+      .mob-drawer-overlay {
+        display: block; position: fixed; inset: 0;
+        background: rgba(0,0,0,0); z-index: 450; pointer-events: none;
+        transition: background 0.35s var(--ease);
+      }
+      .mob-drawer-overlay.open { background: rgba(0,0,0,0.25); pointer-events: auto; }
+
+      .mob-drawer {
+        display: flex; flex-direction: column;
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: 72vw; max-width: 280px;
+        background: var(--paper); z-index: 500;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1);
+        padding: calc(var(--nav-h) + 32px) 32px 48px;
+        border-left: 1px solid var(--ash);
+      }
+      .mob-drawer.open { transform: translateX(0); }
+      .mob-drawer-label {
+        font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--graphite); margin-bottom: 20px;
+      }
+      .mob-drawer-link {
+        font-family: var(--serif); font-size: 22px; font-weight: 300;
+        color: var(--ink); text-decoration: none; line-height: 1.3;
+        display: block; margin-bottom: 16px; transition: opacity 0.2s;
+      }
+      .mob-drawer-link:last-child { margin-bottom: 0; }
+      .mob-drawer-link:active { opacity: 0.5; }
+      .mob-drawer-contact { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+      .mob-drawer-msg {
+        font-family: var(--serif); font-size: 15px; font-weight: 300; font-style: italic;
+        line-height: 1.5; color: var(--graphite);
+      }
+      .mob-drawer-email { font-size: 12px; color: var(--peach); text-decoration: none; letter-spacing: 0.02em; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ NAV ══ -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">
+        <svg width="73" height="41" viewBox="0 0 73 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z" fill="black"/>
+          <path d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z" fill="#1A1A1A"/>
+        </svg>
+      </a>
+      <span class="nav-name">esteban saavedra nilo</span>
+    </div>
+    <div class="nav-right">
+      <a href="index.html" class="nav-link nav-link-muted">Work</a>
+      <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="nav-link nav-link-muted">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:1px" xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+      <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+    </div>
+    <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Open menu" onclick="mobToggleDrawer()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══ MOBILE DRAWER ══ -->
+  <div class="mob-drawer-overlay" id="mobDrawerOverlay" onclick="mobCloseDrawer()"></div>
+  <div class="mob-drawer" id="mobDrawer">
+    <p class="mob-drawer-label">Esteban Saavedra</p>
+    <a href="index.html" class="mob-drawer-link" onclick="mobCloseDrawer()">Work</a>
+    <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="mob-drawer-link" onclick="mobCloseDrawer()">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:2px" xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+    <div class="mob-drawer-contact">
+      <p class="mob-drawer-msg">Open to new projects &mdash;<br>I&rsquo;d love to hear from you.</p>
+      <a href="mailto:esaaveni@gmail.com" class="mob-drawer-email">esaaveni@gmail.com</a>
+    </div>
+  </div>
+
+  <!-- ══ MOBILE PROGRESS BAR ══ -->
+  <div class="mob-progress" id="mobProgress"><div class="mob-progress-fill" id="mobProgressFill"></div></div>
+
+  <!-- ══ MOBILE FLOATING CHIP ══ -->
+  <div class="mob-chip" id="mobChip" onclick="mobOpenSheet()"></div>
+
+  <!-- ══ MOBILE BOTTOM SHEET ══ -->
+  <div class="mob-overlay" id="mobOverlay" onclick="mobCloseSheet()">
+    <div class="mob-sheet" id="mobSheet" onclick="event.stopPropagation()">
+      <div class="mob-sheet-handle"></div>
+      <div class="mob-sheet-title">Jump to section</div>
+      <div id="mobSheetItems"></div>
+    </div>
+  </div>
+
+  <!-- ══ COMPACT TITLE BAR ══ -->
+  <div class="title-bar" id="titleBar">
+    <div class="bar-text">
+      <span class="bar-title">Touch Table</span>
+      <span class="bar-dek">True &middot; Interactive retail</span>
+    </div>
+    <span class="bar-section" id="barSection">01 &middot; context</span>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="hero">
+    <p class="hero-meta">True Corp &nbsp;&middot;&nbsp; Lead Innovation &nbsp;&middot;&nbsp; Bangkok &nbsp;&middot;&nbsp; 2018&ndash;2019</p>
+    <h1 class="hero-title">The Interactive Touch Table</h1>
+    <p class="hero-sub">An end-to-end self-service retail experience &mdash; hardware, software, and the store around them</p>
+    <div class="hero-strip">
+      <span>Physical computing</span>
+      <span>Field research</span>
+      <span>Rapid prototyping</span>
+      <span>Hardware R&amp;D</span>
+      <span>UI for big screens</span>
+    </div>
+  </section>
+
+  <!-- ══ TWO-COLUMN GRID ══ -->
+  <div class="page-grid">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <a href="#s01" class="sidebar-item" data-s="s01">01&nbsp; context</a>
+      <a href="#s02" class="sidebar-item" data-s="s02">02&nbsp; problem</a>
+      <a href="#s03" class="sidebar-item" data-s="s03">03&nbsp; research</a>
+      <a href="#s04" class="sidebar-item" data-s="s04">04&nbsp; solution</a>
+      <a href="#s05" class="sidebar-item" data-s="s05">05&nbsp; prototyping</a>
+      <a href="#s06" class="sidebar-item" data-s="s06">06&nbsp; ui design</a>
+      <a href="#s07" class="sidebar-item" data-s="s07">07&nbsp; execution</a>
+      <a href="#s08" class="sidebar-item" data-s="s08">08&nbsp; outcome</a>
+      <a href="#s09" class="sidebar-item" data-s="s09">09&nbsp; takeaways</a>
+      <a href="#s10" class="sidebar-item" data-s="s10">10&nbsp; my role &amp; team</a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- ── 01 · CONTEXT ── -->
+      <section class="section" id="s01">
+        <h2 class="section-heading">Context</h2>
+        <p>True Group is the second-largest telecom in Thailand. TrueMove&nbsp;H &mdash; our client &mdash;
+          generated 72% of the group&rsquo;s 2018 revenue and added two million subscribers that year, reaching
+          29.2 million users. Their flagship stores carried an interactive touch table meant to be the
+          centerpiece of the retail experience.</p>
+        <p>True came to Lead Innovation with a deceptively simple brief: create a &ldquo;wow&rdquo; self-service
+          in-store experience that helps people decide which phone to buy, brings in new customers, and takes
+          load off the floor staff. For Lead Innovation, it was also a strategic bet &mdash; a door into a new
+          market.</p>
+        <p>What made this project different from a screen redesign: the product was a piece of furniture. The
+          design surface included the hardware, the software, the store layout, and the bodies of the people
+          standing around it.</p>
+      </section>
+
+      <!-- ── 02 · PROBLEM ── -->
+      <section class="section" id="s02">
+        <h2 class="section-heading">Problem</h2>
+        <p>The existing table didn&rsquo;t work &mdash; not as software, and not as a place. Watching it in the
+          store, the failure had five distinct layers:</p>
+        <div class="tier">
+          <p class="tier-title">Location &middot; isolated</p>
+          <p>The table sat away from the natural path customers walked. People didn&rsquo;t avoid it &mdash;
+            they never reached it.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Ergonomics &middot; oversized</p>
+          <p>At 120&nbsp;cm deep, the far side of the screen was physically out of reach. Content lived where
+            hands couldn&rsquo;t go.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Interactions &middot; disconnected</p>
+          <p>Touch targets responded to no recognizable logic. Nothing on the table related to the physical
+            phones on display two meters away.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Content &middot; uninteresting</p>
+          <p>Static spec sheets &mdash; the same information printed on the shelf card, now requiring more
+            effort to read.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Performance &middot; poor</p>
+          <p>Lag long enough that users assumed the table was broken and walked away.</p>
+        </div>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/01-problem-oversized-table.jpg" alt="The original touch table in a True store: oversized, dark, and ignored by customers walking past" loading="lazy">
+          <figcaption class="chart-caption">fig.01 &middot; the original table in situ &mdash; isolated from the customer path, screen dark, used as a phone-call lean</figcaption>
+        </figure>
+      </section>
+
+      <!-- ── 03 · RESEARCH ── -->
+      <section class="section" id="s03">
+        <h2 class="section-heading">Research</h2>
+        <p>We started in the stores, not in the office. Direct observation: how people moved through the space,
+          what they did with their hands, where they stopped, what made them lean in or walk past. The target
+          population was concentrated &mdash; young adults 18&ndash;29 and middle youth 30&ndash;44 made up 64%
+          of prepaid customers and potential new subscribers.</p>
+        <p>The ergonomic analysis did the heaviest lifting. Mapping reach distances on the existing table
+          against Fitts&rsquo;s Law made the core failure measurable: the distance and size of targets meant the
+          table was slow <em>by geometry</em>, before any software ran. No interface redesign could fix a
+          surface the human arm couldn&rsquo;t serve.</p>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/02-research-fitts-law.jpg" alt="Field photo of the original table annotated with start and finish reach points for Fitts's Law analysis" loading="lazy">
+          <figcaption class="chart-caption">fig.02 &middot; reach analysis on the original table &mdash; target distance annotated directly on the field photo</figcaption>
+        </figure>
+
+        <p>This reframed the brief. The client asked for better content on the table. The research said the
+          table itself &mdash; its size, position, and relationship to the physical phones &mdash; was the
+          product.</p>
+      </section>
+
+      <!-- ── 04 · SOLUTION ── -->
+      <section class="section" id="s04">
+        <h2 class="section-heading">Solution</h2>
+        <div class="hypothesis">
+          <span class="h-tag">concept</span>
+          <p class="h-text">A self-service touch point built around the physical phone &mdash; place a real device on the table</p>
+          <p class="h-bridge">and</p>
+          <p class="h-text">the table recognizes it and surfaces its story: camera, battery, performance &mdash; compare two phones side by side by placing them side by side.</p>
+        </div>
+        <p>The concept inverted the old table&rsquo;s logic. Instead of asking customers to navigate menus to
+          find a phone they were already holding, the phone itself became the controller. Object recognition
+          through conductive markers let the table know which device was on the glass and where.</p>
+        <p>We scoped it in two phases. Phase one: the features people actually compare when buying a phone
+          &mdash; camera, battery, screen, performance. Phase two: tailor-made sales packages built from the
+          customer&rsquo;s selection. This kept the first release focused on the decision moment, not the full
+          sales funnel.</p>
+        <p>Ergonomics drove the physical spec: a narrower table, content zones within natural reach, and
+          interaction areas placed where two people could stand side by side &mdash; because phone buying, we
+          saw in the stores, is rarely a solo activity.</p>
+      </section>
+
+      <!-- ── 05 · PROTOTYPING ── -->
+      <section class="section" id="s05">
+        <h2 class="section-heading">Prototyping</h2>
+        <p>Before any code, we built the table out of paper. A 1:1 board mock of the surface, paper radial
+          menus, real phones as props &mdash; and people walking up to it cold. Rapid paper prototyping
+          identified seven distinct interaction patterns users naturally tried, including the two that survived
+          to production: <em>compare by proximity</em> (two phones placed near each other trigger comparison)
+          and <em>compare on full screen</em>.</p>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/03-board-prototype.jpg" alt="1:1 board prototype of the table surface with paper radial menus and real phones placed on marked zones" loading="lazy">
+          <figcaption class="chart-caption">fig.03 &middot; 1:1 board prototype &mdash; paper radial controls, real phones, real reach distances</figcaption>
+        </figure>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/04-prototype-testing.jpg" alt="A test participant standing at the full-size prototype table during a moderated session" loading="lazy">
+          <figcaption class="chart-caption">fig.04 &middot; moderated testing on the full-size mock &mdash; body position and reach observed before a single screen was built</figcaption>
+        </figure>
+
+        <p>Testing at full physical scale mattered more than visual fidelity. A clickable on-screen prototype
+          can&rsquo;t tell you that a control sits four centimeters past a comfortable reach, or that two users
+          sharing the table block each other&rsquo;s zones. The paper table could.</p>
+      </section>
+
+      <!-- ── 06 · UI DESIGN ── -->
+      <section class="section" id="s06">
+        <h2 class="section-heading">UI design</h2>
+        <p>The main UI challenge wasn&rsquo;t visual &mdash; it was structural. Phone lineups change every few
+          weeks, each device ships with different specs and marketing content, and the table had to absorb all
+          of it without a redesign. I built the interface as a layered system: gradient background, illustration,
+          pattern, content, and control layers &mdash; each independently replaceable as devices rotated.</p>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/07-ui-layers.jpg" alt="Exploded diagram of the five UI layers: gradient background, illustration, pattern, content, and control" loading="lazy">
+          <figcaption class="chart-caption">fig.05 &middot; the five-layer content architecture &mdash; marketing content rotates without touching the interaction layer</figcaption>
+        </figure>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/08-ui-screen.jpg" alt="Production UI screen in Thai showing the dual-camera feature story with radial control menus on both sides" loading="lazy">
+          <figcaption class="chart-caption">fig.06 &middot; production screen &mdash; feature storytelling with radial controls placed at each user&rsquo;s natural reach position</figcaption>
+        </figure>
+
+        <p>Radial menus anchored to where the phone sat &mdash; not to screen edges &mdash; so controls always
+          appeared at the user&rsquo;s hand. Designing for a horizontal 4K surface that two people read from
+          opposite sides forced decisions no mobile pattern library covers: text orientation, ownership zones,
+          and what happens when two interactions collide.</p>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/06-wireframing.jpg" alt="Working session: designing the comparison screen in Sketch on a large display with paper phone mocks on the desk" loading="lazy">
+          <figcaption class="chart-caption">fig.07 &middot; wireframing the compare flow &mdash; paper props from the prototype table stayed on the desk through UI design</figcaption>
+        </figure>
+      </section>
+
+      <!-- ── 07 · EXECUTION ── -->
+      <section class="section" id="s07">
+        <h2 class="section-heading">Execution &mdash; the breaking point</h2>
+        <p>Object recognition was the heart of the concept, and it nearly killed the project. I was responsible
+          for researching conductive materials, proposing hardware specifications, and overseeing the
+          development process &mdash; territory far outside a typical product design role.</p>
+        <p>Midway through, the honest internal assessment was: <em>&ldquo;we might be involved in a project we
+          could not handle.&rdquo;</em> The recognition markers &mdash; conductive pads the table senses through
+          the glass &mdash; had to be precise to the millimeter, durable enough for retail abuse, and cheap
+          enough to attach to every display phone. Off-the-shelf options didn&rsquo;t exist.</p>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/05-marker-spec-sketch.jpg" alt="Hand-drawn specification sketch of the conductive marker: 6cm ring, three contact dots, tolerances annotated in millimeters" loading="lazy">
+          <figcaption class="chart-caption">fig.08 &middot; conductive marker spec &mdash; 6&nbsp;cm ring, three contact points, 0.2&nbsp;mm tolerance, sketched by hand before sourcing a producer</figcaption>
+        </figure>
+
+        <p>We designed the markers ourselves &mdash; geometry, contact-point layout, tolerances &mdash; and I
+          found a local producer capable of manufacturing them. The sketch above is the actual spec that went
+          to the supplier. Iterating on physical samples against the capacitive sensing was slow, unglamorous
+          work, and it was the difference between a concept video and a product in a store.</p>
+      </section>
+
+      <!-- ── 08 · OUTCOME ── -->
+      <section class="section" id="s08">
+        <h2 class="section-heading">Outcome</h2>
+        <p>The table shipped. By mid-2019 it was live in True&rsquo;s flagship store &mdash; positioned on the
+          customer path this time, sized to human reach, with real phones driving the interaction.</p>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/09-final-in-store.jpg" alt="Two customers at the production table in a True store, one placing a phone on the surface to trigger the comparison view" loading="lazy">
+          <figcaption class="chart-caption">fig.09 &middot; the production table in True&rsquo;s flagship store, 2019 &mdash; two users, two phones, comparison triggered by placement</figcaption>
+        </figure>
+
+        <p>In the Facebook interview deck I built a year later, I titled this case &ldquo;story of a successful
+          failure.&rdquo; Both words are accurate. The product shipped and worked &mdash; people walked up,
+          placed phones, compared, stayed. And the project repeatedly exceeded what we knew how to do, forcing
+          us to either learn fast or scale back. Phase two &mdash; the tailor-made sales packages &mdash; never
+          shipped; the recognition hardware consumed the budget and the calendar.</p>
+        <p>This project predates my experimentation practice &mdash; there was no A/B framework, no instrumented
+          funnel. The evidence here is the shipped product and the process that got it there. The discipline of
+          measuring came later; the discipline of diagnosing started here.</p>
+      </section>
+
+      <!-- ── 09 · TAKEAWAYS ── -->
+      <section class="section" id="s09">
+        <h2 class="section-heading">Takeaways</h2>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Ergonomics is the first interface</h3>
+          <p>The original table failed by geometry before it failed by software. Reach, height, and position
+            decided what was usable; pixels only operated inside that envelope. Since this project, &ldquo;can
+            the body do this comfortably?&rdquo; comes before &ldquo;is this screen clear?&rdquo;</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Prototype at the scale of the problem</h3>
+          <p>Paper radial menus on a 1:1 board found issues no high-fidelity screen prototype could: blocked
+            reach zones, two-user collisions, controls drifting out of hand range. Fidelity should match the
+            riskiest dimension &mdash; here, that dimension was physical.</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Feasibility is a design material</h3>
+          <p>&ldquo;We might be involved in a project we could not handle&rdquo; was the most useful sentence
+            anyone said. Naming it forced the phase split, the descope of phase two, and the hand-built marker
+            spec. Treating feasibility as something to design with &mdash; not something engineering reports
+            back later &mdash; is what got the table out of the lab.</p>
+        </div>
+      </section>
+
+      <!-- ── 10 · MY ROLE & TEAM ── -->
+      <section class="section" id="s10">
+        <h2 class="section-heading">My role &amp; team</h2>
+        <p>Senior Product Designer at Lead Innovation, end to end: field research and ergonomic analysis,
+          interaction concept, 1:1 prototyping, UI design for the big-screen surface, and &mdash; unusually
+          &mdash; hardware R&amp;D: conductive material research, marker specification, and supplier sourcing
+          for the object-recognition system.</p>
+        <ul class="team-list">
+          <li><strong>Development team</strong><span>Object recognition software &middot; table application</span></li>
+          <li><strong>Hardware supplier</strong><span>Conductive marker production &middot; from my spec</span></li>
+          <li><strong>True retail team</strong><span>Store access &middot; device lineup &middot; content</span></li>
+          <li><strong>Lead Innovation</strong><span>Project direction &middot; client relationship</span></li>
+        </ul>
+        <p style="margin-top: 40px; font-size: 15.5px; line-height: 1.78; color: var(--ink);">
+          Building something that doesn&rsquo;t fit a pattern library?<br>
+          <a href="mailto:esaaveni@gmail.com" style="color: var(--peach); text-decoration: none;">esaaveni@gmail.com</a>
+        </p>
+        <p class="footnote">
+          Source: Facebook Interview Portfolio 2020 deck &middot; Esteban-Saavedra-2025-Projects-Examples.pptx
+          (slides 48&ndash;65) &middot; original field photos and prototypes, 2018&ndash;2019<br>
+          No instrumented metrics existed for this product &mdash; none are claimed.<br>
+          Last updated: 2026-06-09
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <span class="footer-logo">
+      <svg width="73" height="41" viewBox="0 0 73 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z" fill="black"/>
+        <path d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z" fill="#1A1A1A"/>
+      </svg>
+    </span>
+    <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+  </footer>
+
+  <script>
+    const titleBar   = document.getElementById('titleBar');
+    const sidebar    = document.getElementById('sidebar');
+    const barSection = document.getElementById('barSection');
+    const hero       = document.getElementById('hero');
+    const items      = document.querySelectorAll('.sidebar-item');
+    const sections   = document.querySelectorAll('.section[id]');
+
+    const mobProgress     = document.getElementById('mobProgress');
+    const mobProgressFill = document.getElementById('mobProgressFill');
+    const mobChip         = document.getElementById('mobChip');
+    const mobOverlay      = document.getElementById('mobOverlay');
+    const mobSheet        = document.getElementById('mobSheet');
+    const mobSheetItems   = document.getElementById('mobSheetItems');
+    const mobMenuBtn      = document.getElementById('mobMenuBtn');
+    const mobDrawer       = document.getElementById('mobDrawer');
+    const mobDrawerOverlay= document.getElementById('mobDrawerOverlay');
+
+    let activeSection = null;
+    const isMobile = () => window.innerWidth <= 860;
+
+    function mobToggleDrawer() { mobDrawer.classList.contains('open') ? mobCloseDrawer() : mobOpenDrawer(); }
+    function mobOpenDrawer() {
+      mobDrawer.classList.add('open'); mobDrawerOverlay.classList.add('open');
+      mobMenuBtn.classList.add('open'); mobMenuBtn.setAttribute('aria-label','Close menu');
+    }
+    function mobCloseDrawer() {
+      mobDrawer.classList.remove('open'); mobDrawerOverlay.classList.remove('open');
+      mobMenuBtn.classList.remove('open'); mobMenuBtn.setAttribute('aria-label','Open menu');
+    }
+
+    function buildMobSheet() {
+      mobSheetItems.innerHTML = '';
+      items.forEach(item => {
+        const a = document.createElement('a');
+        a.className = 'mob-sheet-item' + (item.dataset.s === activeSection ? ' active-section' : '');
+        a.href = item.getAttribute('href');
+        a.innerHTML = `<span class="mob-sheet-num">${item.textContent.trim().split(' ')[0]}</span>
+          <span class="mob-sheet-name">${item.textContent.trim().split(/\s+/).slice(1).join(' ')}</span>
+          <div class="mob-sheet-dot"></div>`;
+        a.onclick = () => mobCloseSheet();
+        mobSheetItems.appendChild(a);
+      });
+    }
+    function mobOpenSheet() {
+      buildMobSheet();
+      mobOverlay.style.display = 'block';
+      requestAnimationFrame(() => { mobOverlay.classList.add('open'); mobSheet.classList.add('open'); });
+    }
+    function mobCloseSheet() {
+      mobOverlay.classList.remove('open'); mobSheet.classList.remove('open');
+      setTimeout(() => { mobOverlay.style.display = 'none'; }, 350);
+    }
+
+    function updateProgress() {
+      if (!isMobile()) return;
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      mobProgressFill.style.width = (docH > 0 ? Math.min(100, (window.scrollY / docH) * 100) : 0) + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+
+    const navEl = document.querySelector('nav');
+    window.addEventListener('scroll', () => { navEl.classList.toggle('scrolled', window.scrollY > 10); }, { passive: true });
+    window.addEventListener('scroll', () => { if (!isMobile()) return; mobChip.classList.toggle('visible', window.scrollY > 50); }, { passive: true });
+
+    const heroObs = new IntersectionObserver((entries) => {
+      const gone = !entries[0].isIntersecting;
+      titleBar.classList.toggle('visible', gone);
+      sidebar.classList.toggle('visible', gone);
+      if (isMobile()) mobProgress.classList.toggle('visible', gone);
+    }, { threshold: 0 });
+    heroObs.observe(hero);
+
+    const secObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        activeSection = e.target.id;
+        items.forEach(item => item.classList.toggle('active', item.dataset.s === activeSection));
+        const active = document.querySelector(`.sidebar-item[data-s="${activeSection}"]`);
+        if (active) {
+          const txt = active.textContent.trim().replace(/\s+/, ' · ');
+          barSection.innerHTML = txt;
+          if (isMobile()) mobChip.textContent = txt + ' ↑';
+        }
+      });
+    }, { threshold: 0, rootMargin: '-108px 0px -75% 0px' });
+    sections.forEach(s => secObs.observe(s));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KTB NetBank — Esteban Saavedra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --paper: #ffffff;
+      --ink: #1A1A1A;
+      --graphite: #5C5C5C;
+      --ash: #E5E4E0;
+      --peach: #E07A5F;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+      --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+      --nav-h: 60px;
+      --bar-h: 48px;
+      --side-w: 210px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      z-index: 200;
+      transition: padding 0.3s var(--ease);
+    }
+    nav.scrolled { padding-bottom: 8px; }
+
+    .nav-logo svg { height: 18px; width: auto; display: block; }
+    .nav-left { display: flex; align-items: baseline; gap: 14px; }
+    .nav-name { font-size: 11px; color: var(--graphite); letter-spacing: 0.04em; }
+    .nav-right { display: flex; align-items: center; gap: 36px; }
+    .nav-link {
+      font-size: 12px; color: var(--peach);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: opacity 0.3s var(--ease);
+    }
+    .nav-link-muted { color: var(--ink); }
+    .nav-link:hover { opacity: 0.65; }
+
+    /* ══════════════════════════════
+       COMPACT TITLE BAR
+    ══════════════════════════════ */
+    .title-bar {
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0;
+      height: var(--bar-h);
+      background: var(--paper);
+      border-bottom: 1px solid var(--ash);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px 0 calc(var(--side-w) + 48px);
+      z-index: 190;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--bar-h)));
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+      pointer-events: none;
+    }
+    .title-bar.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+      padding: 0 48px;
+    }
+    .bar-text {
+      display: flex; align-items: baseline;
+      gap: 10px; overflow: hidden; flex: 1; min-width: 0;
+    }
+    .bar-title {
+      font-family: var(--serif); font-size: 18px; font-weight: 400;
+      letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; flex-shrink: 0;
+    }
+    .bar-dek {
+      font-family: var(--serif); font-size: 18px; font-weight: 300; font-style: italic;
+      color: var(--graphite); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .bar-section {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); white-space: nowrap; flex-shrink: 0;
+      margin-left: 24px; transition: opacity 0.3s var(--ease);
+    }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      margin-top: var(--nav-h);
+      padding: 3rem;
+      display: flex; flex-direction: column; justify-content: center;
+      border-bottom: 1px solid var(--ash);
+    }
+    .hero-meta {
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--graphite); margin-bottom: .5rem;
+    }
+    .hero-title {
+      font-family: var(--serif); font-size: clamp(48px, 7vw, 92px);
+      font-weight: 300; line-height: 1.04; letter-spacing: -0.025em;
+      max-width: 740px; margin-bottom: 8px;
+    }
+    .hero-sub {
+      font-family: var(--serif); font-size: clamp(22px, 3vw, 38px);
+      font-weight: 300; font-style: italic; color: var(--graphite);
+      margin-top: 0.5em; margin-bottom: 2.5rem; letter-spacing: -0.01em;
+    }
+    .hero-strip {
+      display: flex; gap: 2rem; font-size: 11px; color: var(--graphite);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border-top: 1px solid var(--ash); padding-top: 1.5rem;
+    }
+
+    /* ══════════════════════════════
+       TWO-COLUMN LAYOUT
+    ══════════════════════════════ */
+    .page-grid { display: grid; grid-template-columns: var(--side-w) 1fr; }
+
+    .sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + var(--bar-h));
+      height: calc(100vh - var(--nav-h) - var(--bar-h));
+      overflow-y: auto;
+      padding: 40px 0 40px 40px;
+      border-right: 1px solid var(--ash);
+      scrollbar-width: none;
+    }
+    .sidebar::-webkit-scrollbar { display: none; }
+
+    .sidebar-item {
+      display: block; text-decoration: none;
+      padding: 8px 0 8px 12px;
+      border-left: 1.5px solid transparent;
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--graphite); opacity: 0.38; line-height: 1.35;
+      transition: opacity 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+    .sidebar-item:hover { opacity: 0.65; }
+    .sidebar-item.active { opacity: 1; color: var(--ink); border-left-color: var(--ink); }
+
+    .content {
+      padding: 0 80px 160px 64px;
+      scroll-margin-top: calc(var(--nav-h) + var(--bar-h));
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .content .section { width: 100%; max-width: 640px; }
+
+    .section {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--ash);
+      scroll-margin-top: calc(var(--nav-h) + var(--bar-h) + 24px);
+    }
+    .section:first-child { padding-top: 40px; }
+    .section:last-child { border-bottom: none; }
+
+    .section-heading {
+      font-family: var(--serif); font-size: 26px; font-weight: 400;
+      letter-spacing: -0.01em; line-height: 1.15; color: var(--ink); margin-bottom: 24px;
+    }
+    .section p {
+      font-size: 15.5px; line-height: 1.78; color: var(--ink);
+      max-width: 58ch; letter-spacing: 0.01em; margin-bottom: 16px;
+    }
+    .section p:last-child { margin-bottom: 0; }
+    .section strong { font-weight: 500; }
+
+    /* ─ HYPOTHESIS ─ */
+    .hypothesis {
+      border-left: 1px solid var(--ash);
+      padding: 22px 26px; margin: 24px 0;
+    }
+    .hypothesis .h-tag {
+      font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--graphite); display: block; margin-bottom: 14px;
+    }
+    .hypothesis .h-text {
+      font-family: var(--serif); font-size: 18px; font-style: italic;
+      font-weight: 300; line-height: 1.55; color: var(--ink);
+      margin-bottom: 6px; max-width: none;
+    }
+    .hypothesis .h-bridge {
+      font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--graphite); margin: 10px 0;
+    }
+
+    /* ─ TIER BLOCKS ─ */
+    .tier { border-left: 1px solid var(--ash); padding: 14px 20px; margin: 12px 0; }
+    .tier-title {
+      font-size: 13px !important; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); margin-bottom: 7px;
+    }
+    .tier p {
+      font-size: 14px; color: var(--graphite);
+      line-height: 1.65; max-width: none; margin: 0; letter-spacing: 0.01em;
+    }
+
+    /* ─ METRICS GRID ─ */
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--ash); margin: 24px 0; max-width: 520px;
+    }
+    .metric-cell { background: var(--paper); padding: 24px 22px; }
+    .metric-number {
+      font-family: var(--serif); font-size: 52px; font-weight: 300;
+      line-height: 1; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 8px;
+    }
+    .metric-label { font-size: 11px; color: var(--graphite); line-height: 1.5; letter-spacing: 0.01em; }
+
+    /* ─ CHART ─ */
+    .fig { margin: 28px 0; }
+    .fig img { width: 100%; display: block; border: 1px solid var(--ash); }
+
+    .chart-wrap {
+      margin: 28px 0; padding: 28px; background: #fff; border: 1px solid var(--ash);
+    }
+    .chart-wrap svg { display: block; width: 100%; }
+    .chart-caption {
+      font-size: 10px !important; color: var(--graphite);
+      margin-top: 12px; letter-spacing: 0.02em; max-width: none !important;
+    }
+
+    /* ─ TAKEAWAY ─ */
+    .takeaway { margin: 20px 0; }
+    .takeaway-title {
+      font-size: 13px; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--graphite); margin-bottom: 7px;
+    }
+
+    /* ─ TEAM LIST ─ */
+    .team-list { list-style: none; padding: 0; }
+    .team-list li {
+      display: flex; gap: 20px; padding: 11px 0;
+      border-bottom: 1px solid var(--ash);
+      font-size: 14px; letter-spacing: 0.01em;
+    }
+    .team-list li:first-child { border-top: 1px solid var(--ash); }
+    .team-list li strong { font-weight: 500; min-width: 180px; flex-shrink: 0; }
+    .team-list li span { color: var(--graphite); }
+
+    /* ─ FOOTNOTE ─ */
+    .footnote {
+      font-size: 11px !important; color: var(--graphite); letter-spacing: 0.01em;
+      line-height: 1.6; margin-top: 32px !important;
+      border-top: 1px solid var(--ash); padding-top: 16px;
+    }
+
+    /* ─ FOOTER ─ */
+    footer {
+      border-top: 1px solid var(--ash); padding: 36px 80px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-logo svg { height: 15px; width: auto; opacity: 0.3; }
+
+    /* ─ RESPONSIVE ─ */
+    @media (max-width: 860px) {
+      .page-grid { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .title-bar.visible { padding: 0 20px !important; }
+      .content { padding: 0 32px 120px; }
+      footer { padding: 32px; }
+      .hero { padding: 2rem 32px 2.5rem; }
+      .hero-title { font-size: clamp(40px, 10vw, 64px); }
+      .hero-sub { font-size: clamp(18px, 5vw, 28px); margin-bottom: 1.75rem; }
+      .hero-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 1.5rem; padding-top: 30px; }
+    }
+
+    /* ── MOBILE PROGRESS BAR ── */
+    .mob-progress {
+      display: block; position: fixed;
+      top: calc(var(--nav-h) + var(--bar-h)); left: 0; right: 0;
+      height: 2px; background: var(--ash); z-index: 185; pointer-events: none;
+      opacity: 0; transform: translateY(calc(-1 * var(--bar-h)));
+      transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+    }
+    .mob-progress-fill { height: 100%; width: 0%; background: var(--ink); transition: width 0.2s ease; }
+    .mob-progress.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── MOBILE FLOATING CHIP ── */
+    .mob-chip {
+      display: none; position: fixed;
+      bottom: 120px; right: 20px;
+      background: var(--ink); color: #fff;
+      font-family: var(--sans); font-size: 11px; letter-spacing: 0.04em;
+      border-radius: 20px; padding: 9px 16px; cursor: pointer; z-index: 300;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transition: transform 0.2s var(--ease), opacity 0.3s var(--ease);
+      white-space: nowrap;
+    }
+    .mob-chip:active { transform: scale(0.96); }
+    .mob-chip.visible { display: block; }
+
+    /* ── MOBILE BOTTOM SHEET ── */
+    .mob-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0); z-index: 400; transition: background 0.3s;
+    }
+    .mob-overlay.open { background: rgba(0,0,0,0.3); }
+    .mob-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: var(--paper); border-radius: 16px 16px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1);
+      max-height: 70vh; overflow-y: auto;
+    }
+    .mob-sheet.open { transform: translateY(0); }
+    .mob-sheet-handle {
+      width: 32px; height: 3px; background: var(--ash);
+      border-radius: 2px; margin: 12px auto 10px;
+    }
+    .mob-sheet-title {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--graphite); padding: 0 20px 10px;
+    }
+    .mob-sheet-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+      border-top: 1px solid var(--ash); cursor: pointer;
+      transition: background 0.15s; text-decoration: none;
+    }
+    .mob-sheet-item:active { background: var(--ash); }
+    .mob-sheet-num {
+      font-size: 10px; color: var(--graphite); width: 20px;
+      letter-spacing: 0.08em; flex-shrink: 0; font-variant-numeric: tabular-nums;
+    }
+    .mob-sheet-name { font-size: 13px; color: var(--ink); flex: 1; }
+    .mob-sheet-item.active-section .mob-sheet-num { color: var(--ink); font-weight: 500; }
+    .mob-sheet-item.active-section .mob-sheet-name { font-weight: 600; }
+    .mob-sheet-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--ink); opacity: 0; flex-shrink: 0;
+    }
+    .mob-sheet-item.active-section .mob-sheet-dot { opacity: 1; }
+
+    @media (min-width: 861px) {
+      .mob-chip, .mob-overlay, .mob-progress,
+      .mob-menu-btn, .mob-drawer, .mob-drawer-overlay { display: none !important; }
+    }
+    @media (max-width: 860px) {
+      .bar-section { display: none; }
+      .nav-right { display: none; }
+      nav { padding: 0 20px; }
+
+      .mob-menu-btn {
+        display: flex; flex-direction: column; justify-content: center; gap: 5px;
+        width: 48px; height: 48px; background: none; border: none;
+        cursor: pointer; padding: 12px; margin-right: -12px;
+      }
+      .mob-menu-btn span {
+        display: block; width: 22px; height: 1.5px;
+        background: var(--ink); border-radius: 1px;
+        transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+      }
+      .mob-menu-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+      .mob-menu-btn.open span:nth-child(2) { opacity: 0; }
+      .mob-menu-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+      .mob-drawer-overlay {
+        display: block; position: fixed; inset: 0;
+        background: rgba(0,0,0,0); z-index: 450; pointer-events: none;
+        transition: background 0.35s var(--ease);
+      }
+      .mob-drawer-overlay.open { background: rgba(0,0,0,0.25); pointer-events: auto; }
+
+      .mob-drawer {
+        display: flex; flex-direction: column;
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: 72vw; max-width: 280px;
+        background: var(--paper); z-index: 500;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.25,0.1,0.25,1);
+        padding: calc(var(--nav-h) + 32px) 32px 48px;
+        border-left: 1px solid var(--ash);
+      }
+      .mob-drawer.open { transform: translateX(0); }
+      .mob-drawer-label {
+        font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+        color: var(--graphite); margin-bottom: 20px;
+      }
+      .mob-drawer-link {
+        font-family: var(--serif); font-size: 22px; font-weight: 300;
+        color: var(--ink); text-decoration: none; line-height: 1.3;
+        display: block; margin-bottom: 16px; transition: opacity 0.2s;
+      }
+      .mob-drawer-link:last-child { margin-bottom: 0; }
+      .mob-drawer-link:active { opacity: 0.5; }
+      .mob-drawer-contact { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+      .mob-drawer-msg {
+        font-family: var(--serif); font-size: 15px; font-weight: 300; font-style: italic;
+        line-height: 1.5; color: var(--graphite);
+      }
+      .mob-drawer-email { font-size: 12px; color: var(--peach); text-decoration: none; letter-spacing: 0.02em; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ NAV ══ -->
+  <nav>
+    <div class="nav-left">
+      <a href="index.html" class="nav-logo">
+        <svg width="73" height="41" viewBox="0 0 73 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z" fill="black"/>
+          <path d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z" fill="#1A1A1A"/>
+        </svg>
+      </a>
+      <span class="nav-name">esteban saavedra nilo</span>
+    </div>
+    <div class="nav-right">
+      <a href="index.html" class="nav-link nav-link-muted">Work</a>
+      <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="nav-link nav-link-muted">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:1px" xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+      <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+    </div>
+    <button class="mob-menu-btn" id="mobMenuBtn" aria-label="Open menu" onclick="mobToggleDrawer()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══ MOBILE DRAWER ══ -->
+  <div class="mob-drawer-overlay" id="mobDrawerOverlay" onclick="mobCloseDrawer()"></div>
+  <div class="mob-drawer" id="mobDrawer">
+    <p class="mob-drawer-label">Esteban Saavedra</p>
+    <a href="index.html" class="mob-drawer-link" onclick="mobCloseDrawer()">Work</a>
+    <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="mob-drawer-link" onclick="mobCloseDrawer()">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:2px" xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
+    <div class="mob-drawer-contact">
+      <p class="mob-drawer-msg">Open to new projects &mdash;<br>I&rsquo;d love to hear from you.</p>
+      <a href="mailto:esaaveni@gmail.com" class="mob-drawer-email">esaaveni@gmail.com</a>
+    </div>
+  </div>
+
+  <!-- ══ MOBILE PROGRESS BAR ══ -->
+  <div class="mob-progress" id="mobProgress"><div class="mob-progress-fill" id="mobProgressFill"></div></div>
+
+  <!-- ══ MOBILE FLOATING CHIP ══ -->
+  <div class="mob-chip" id="mobChip" onclick="mobOpenSheet()"></div>
+
+  <!-- ══ MOBILE BOTTOM SHEET ══ -->
+  <div class="mob-overlay" id="mobOverlay" onclick="mobCloseSheet()">
+    <div class="mob-sheet" id="mobSheet" onclick="event.stopPropagation()">
+      <div class="mob-sheet-handle"></div>
+      <div class="mob-sheet-title">Jump to section</div>
+      <div id="mobSheetItems"></div>
+    </div>
+  </div>
+
+  <!-- ══ COMPACT TITLE BAR ══ -->
+  <div class="title-bar" id="titleBar">
+    <div class="bar-text">
+      <span class="bar-title">KTB NetBank</span>
+      <span class="bar-dek">From research to product</span>
+    </div>
+    <span class="bar-section" id="barSection">01 &middot; context</span>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="hero">
+    <p class="hero-meta">Krungthai Bank &nbsp;&middot;&nbsp; Bangkok &nbsp;&middot;&nbsp; 2017</p>
+    <h1 class="hero-title">KTB NetBank</h1>
+    <p class="hero-sub">Turning a strategy agency&rsquo;s research into a working mobile banking experience &mdash; architecture, flows, and validation</p>
+    <div class="hero-strip">
+      <span>Mobile banking</span>
+      <span>Information architecture</span>
+      <span>Flow design</span>
+      <span>Usability testing</span>
+      <span>Design guidelines</span>
+    </div>
+  </section>
+
+  <!-- ══ TWO-COLUMN GRID ══ -->
+  <div class="page-grid">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <a href="#s01" class="sidebar-item" data-s="s01">01&nbsp; context</a>
+      <a href="#s02" class="sidebar-item" data-s="s02">02&nbsp; the handoff gap</a>
+      <a href="#s03" class="sidebar-item" data-s="s03">03&nbsp; architecture</a>
+      <a href="#s04" class="sidebar-item" data-s="s04">04&nbsp; flow design</a>
+      <a href="#s05" class="sidebar-item" data-s="s05">05&nbsp; validation</a>
+      <a href="#s06" class="sidebar-item" data-s="s06">06&nbsp; system</a>
+      <a href="#s07" class="sidebar-item" data-s="s07">07&nbsp; takeaways</a>
+      <a href="#s08" class="sidebar-item" data-s="s08">08&nbsp; my role &amp; team</a>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- ── 01 · CONTEXT ── -->
+      <section class="section" id="s01">
+        <h2 class="section-heading">Context</h2>
+        <p>Krungthai Bank (KTB) is one of Thailand&rsquo;s largest banks, state-owned and serving tens of
+          millions of customers. In 2017 the bank was rebuilding its NetBank mobile experience, and the
+          strategy agency DINN had delivered the upstream work: customer research, strategic direction, and a
+          brand foundation.</p>
+        <p>Research reports don&rsquo;t move money. Someone has to translate strategic findings into an
+          information architecture, screen flows, interaction rules, and a system developers can build &mdash;
+          and then prove with real users that the translation worked. That was our job.</p>
+
+        <figure class="fig">
+          <img src="assets/ktb/01-brand-values-workshop.jpg" alt="Brand values workshop room: walls and conference table covered in hundreds of printed images being sorted by the team" loading="lazy">
+          <figcaption class="chart-caption">fig.01 &middot; brand values workshop &mdash; grounding the product team in the same material the strategy was built from</figcaption>
+        </figure>
+      </section>
+
+      <!-- ── 02 · THE HANDOFF GAP ── -->
+      <section class="section" id="s02">
+        <h2 class="section-heading">The handoff gap</h2>
+        <p>The gap between &ldquo;research says users want simpler payments&rdquo; and a payment flow a Thai
+          grandmother can complete is where most bank app redesigns die. The research was solid; what
+          didn&rsquo;t exist yet was the structural decisions: what lives on the home screen, how accounts,
+          payments, and products relate, what happens at every error state.</p>
+        <p>We treated DINN&rsquo;s research as constraints, not suggestions &mdash; every architecture decision
+          had to trace back to a finding. Where the research was silent, we marked it as an assumption to be
+          tested rather than guessing silently. The usability protocol later in the project existed precisely
+          to catch those marked assumptions.</p>
+      </section>
+
+      <!-- ── 03 · ARCHITECTURE ── -->
+      <section class="section" id="s03">
+        <h2 class="section-heading">Architecture</h2>
+        <p>The new information architecture was drafted by hand, on paper, against the research &mdash; balance
+          and filtering, payments, products, and a &ldquo;Dreams&rdquo; section for savings goals where the bank
+          suggests amounts from the user&rsquo;s actual cash flow. Sketching the map before any screen design
+          forced the structural argument to happen early, when changing it was free.</p>
+
+        <figure class="fig">
+          <img src="assets/ktb/02-ia-map-sketch.jpg" alt="Hand-drawn information architecture map for the new app: home, balance, payments, products, dreams and lifestyle sections with annotations" loading="lazy">
+          <figcaption class="chart-caption">fig.02 &middot; the new app&rsquo;s IA, drafted by hand against DINN&rsquo;s research &mdash; including the savings-goal logic annotated at right</figcaption>
+        </figure>
+      </section>
+
+      <!-- ── 04 · FLOW DESIGN ── -->
+      <section class="section" id="s04">
+        <h2 class="section-heading">Flow design &mdash; Send Money</h2>
+        <p>Send Money was the highest-stakes flow in the app &mdash; the one customers use most and trust
+          least. The flow covered sending to other people, to the user&rsquo;s own accounts, adding accounts,
+          and scheduling transactions, with every screen state and decision branch documented in a single
+          annotated diagram.</p>
+
+        <figure class="fig">
+          <img src="assets/ktb/03-send-money-flow.jpg" alt="Complete annotated Send Money flow diagram: account selection, recipient, amount entry, confirmation, and success states with branch logic" loading="lazy">
+          <figcaption class="chart-caption">fig.03 &middot; the Send Money flow &mdash; every branch from account selection to confirmation, annotated for development</figcaption>
+        </figure>
+
+        <p>The diagram was the contract between design and development. Each annotation answered a question a
+          developer would otherwise have to guess: what happens when the recipient isn&rsquo;t found, when the
+          amount exceeds the balance, when the user edits a saved contact mid-flow.</p>
+      </section>
+
+      <!-- ── 05 · VALIDATION ── -->
+      <section class="section" id="s05">
+        <h2 class="section-heading">Validation</h2>
+        <p>We wrote and ran a two-day moderated usability protocol against the working design. Day one: icon
+          findability, registration, login, look and feel, sending money to others, and payments. Day two:
+          transfers to own accounts &mdash; including adding an account and scheduling a transaction &mdash;
+          top-up, and paying from favorites.</p>
+        <p>Findings were graded on a declared severity scale before testing began:</p>
+        <div class="tier">
+          <p class="tier-title">Critical</p>
+          <p>The app doesn&rsquo;t work if this is ignored. Must be solved.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Important</p>
+          <p>It works, but it&rsquo;s genuinely difficult to use. Solve to improve performance and satisfaction.</p>
+        </div>
+        <div class="tier">
+          <p class="tier-title">Basic</p>
+          <p>Doesn&rsquo;t affect functionality, but annoys users and erodes satisfaction.</p>
+        </div>
+        <p>Measured outcomes per task: completion rate, average time, and a satisfaction questionnaire covering
+          label comprehension, language, navigation flow, interactive elements, and system feedback. A second
+          round of testing focused specifically on the critical issues from round one and verified the design
+          enhancements resolved them.</p>
+      </section>
+
+      <!-- ── 06 · SYSTEM ── -->
+      <section class="section" id="s06">
+        <h2 class="section-heading">System</h2>
+        <p>Two guideline sets made the work survive its handoff. An icon system built on the Material Design
+          grid &mdash; product icons, system icons, light and dark background variants &mdash; and a system
+          feedback specification: what the app says, and how, at every error, pending, and success state.</p>
+
+        <figure class="fig">
+          <img src="assets/ktb/04-system-feedback.jpg" alt="System feedback and error message specification screens for the Send Money flow" loading="lazy">
+          <figcaption class="chart-caption">fig.04 &middot; system feedback &amp; error message spec &mdash; the unglamorous half of a banking flow, where trust is actually won</figcaption>
+        </figure>
+      </section>
+
+      <!-- ── 07 · TAKEAWAYS ── -->
+      <section class="section" id="s07">
+        <h2 class="section-heading">Takeaways</h2>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Research is a constraint system</h3>
+          <p>Treating the strategy agency&rsquo;s findings as constraints &mdash; every IA decision traceable to
+            a finding, every gap marked as a testable assumption &mdash; is what kept the translation honest.
+            The alternative is decorating your own opinions with someone else&rsquo;s research.</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Declare severity before you test</h3>
+          <p>Agreeing on what &ldquo;critical&rdquo; means before seeing any findings removed the negotiation
+            afterward. The same discipline &mdash; define the evaluation before the evidence exists &mdash;
+            became the backbone of my experimentation practice years later.</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Error states are the product</h3>
+          <p>In banking, the success path is table stakes &mdash; trust is decided in the pending screens,
+            failed transfers, and recovery paths. Specifying system feedback as a first-class deliverable, not
+            a development afterthought, is the difference between an app that works and one people trust with
+            their salary.</p>
+        </div>
+      </section>
+
+      <!-- ── 08 · MY ROLE & TEAM ── -->
+      <section class="section" id="s08">
+        <h2 class="section-heading">My role &amp; team</h2>
+        <p>UX designer on the product team: information architecture mapping from DINN&rsquo;s research, Send
+          Money flow design and documentation, the two-day usability test protocol and its severity framework,
+          and the icon and system-feedback guidelines.</p>
+        <ul class="team-list">
+          <li><strong>DINN</strong><span>Upstream research &middot; strategic direction</span></li>
+          <li><strong>Design team</strong><span>UI design &middot; heuristic evaluation</span></li>
+          <li><strong>KTB</strong><span>Banking domain rules &middot; compliance &middot; participant access</span></li>
+          <li><strong>Development team</strong><span>Implementation against the flow contracts</span></li>
+        </ul>
+        <p style="margin-top: 40px; font-size: 15.5px; line-height: 1.78; color: var(--ink);">
+          Sitting on research that hasn&rsquo;t become product yet?<br>
+          <a href="mailto:esaaveni@gmail.com" style="color: var(--peach); text-decoration: none;">esaaveni@gmail.com</a>
+        </p>
+        <p class="footnote">
+          Source: KTB project archive 2017 &mdash; usability plan, second-round critical issues report,
+          heuristic evaluation, IA maps, flow diagrams, icon guidelines<br>
+          Quantitative test results remain in the client report and are not published here &middot;
+          no outcome metrics are claimed.<br>
+          Last updated: 2026-06-09
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <span class="footer-logo">
+      <svg width="73" height="41" viewBox="0 0 73 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24.9177 39.7088C16.8677 40.8356 9.97748 38.7403 4.58498 32.5813C2.00454 29.6341 0.64907 26.1093 0.163821 22.2348C-0.155558 19.6847 -0.0142406 17.1704 0.643144 14.6954C1.69726 10.7269 3.88971 7.46544 7.04913 4.85329C10.6623 1.866 14.8674 0.36809 19.5297 0.0555814C23.1226 -0.185243 26.5868 0.34759 29.8697 1.82871C32.7226 3.11586 35.12 4.99504 36.9546 7.54746C37.0623 7.69737 37.1752 7.84367 37.284 7.98946C37.4951 7.93736 37.4996 7.76085 37.5496 7.63303C38.9783 3.97615 41.7917 1.88579 45.4589 0.838842C48.9514 -0.158241 52.4488 0.0454897 55.9146 1.05203C58.102 1.68728 60.1507 2.60556 61.9865 3.96962C62.3301 4.22495 62.4867 4.50295 62.4802 4.94352C62.4563 6.58359 62.4741 8.22424 62.4698 9.86466C62.4693 10.0219 62.5343 10.2019 62.3609 10.3531C62.1274 10.2513 62.1148 10.008 62.0297 9.82239C61.2487 8.11896 60.2726 6.54072 58.997 5.15754C56.8964 2.87985 54.3168 1.5685 51.1996 1.31827C48.3836 1.09222 45.7465 1.59599 43.391 3.20188C40.526 5.1551 39.4928 9.0176 41.0102 12.0156C41.651 13.2818 42.6938 14.1636 43.8943 14.8788C45.215 15.6655 46.6528 16.1847 48.0975 16.687C51.8184 17.9809 55.6421 18.9692 59.3175 20.3959C61.0253 21.0589 62.5989 21.9622 63.8728 23.3061C65.6516 25.1827 66.1887 27.4408 65.9444 29.9534C65.6818 32.6541 64.4879 34.8449 62.401 36.5694C60.6915 37.982 58.71 38.8471 56.5699 39.3571C52.5063 40.3255 48.4791 40.195 44.5179 38.8321C41.3749 37.7507 38.7087 35.9855 36.699 33.3085C36.6594 33.2557 36.6078 33.2118 36.5083 33.1078C33.4682 36.7187 29.5975 38.8827 24.9177 39.7088ZM61.9847 32.9806C62.8836 30.2149 62.0376 27.4222 59.7468 25.5537C58.5509 24.5782 57.2026 23.871 55.7808 23.293C52.9308 22.1343 49.9595 21.3256 47.0581 20.3147C44.9399 19.5766 42.8443 19.0257 40.5491 18.3661C39.733 18.1632 39.4917 18.1632 39.3759 18.1632C27.7487 18.1657 17.0246 17.4829 5.39739 17.4759C4.99317 17.4756 4.84486 17.5927 4.80245 18.0137C4.64549 19.5721 4.74093 21.1199 4.92487 22.6654C5.25084 25.4043 6.02194 28.0248 7.55878 30.3222C11.5247 36.2511 17.1519 38.9228 24.2595 38.1766C29.5769 37.6183 33.7425 34.9798 36.7341 30.5482C36.825 30.4136 36.8731 30.2324 37.0677 30.1853C37.2839 30.2494 37.3059 30.4612 37.3835 30.6177C38.0039 31.8698 38.7653 33.0274 39.7392 34.0338C42.3719 36.7547 45.6213 38.2171 49.3665 38.6316C52.0636 38.9301 54.6966 38.6584 57.214 37.6072C59.3797 36.7028 61.0656 35.2822 61.9847 32.9806ZM9.13512 16.4042C17.7866 16.4046 26.4382 16.4051 35.0897 16.4051C35.7981 16.4051 35.8363 16.3439 35.7395 15.6415C35.5244 14.0807 35.1913 12.5485 34.6631 11.0612C33.6575 8.22937 32.0954 5.75775 29.7391 3.85521C24.9874 0.0186293 18.4197 -0.184782 13.2833 3.00203C8.50557 5.96624 6.06491 10.4781 5.04102 15.8572C4.96801 16.2407 5.0901 16.4158 5.51481 16.4092C6.68732 16.3909 7.86031 16.4036 9.13512 16.4042Z" fill="black"/>
+        <path d="M70.554 40.506C69.9407 40.506 69.45 40.3373 69.082 40C68.714 39.632 68.53 39.1413 68.53 38.528C68.53 37.9453 68.714 37.4853 69.082 37.148C69.45 36.78 69.9407 36.596 70.554 36.596C71.198 36.596 71.6887 36.78 72.026 37.148C72.3633 37.4853 72.532 37.9453 72.532 38.528C72.532 39.1413 72.3633 39.632 72.026 40C71.6887 40.3373 71.198 40.506 70.554 40.506Z" fill="#1A1A1A"/>
+      </svg>
+    </span>
+    <a href="mailto:esaaveni@gmail.com" class="nav-link">esaaveni@gmail.com</a>
+  </footer>
+
+  <script>
+    const titleBar   = document.getElementById('titleBar');
+    const sidebar    = document.getElementById('sidebar');
+    const barSection = document.getElementById('barSection');
+    const hero       = document.getElementById('hero');
+    const items      = document.querySelectorAll('.sidebar-item');
+    const sections   = document.querySelectorAll('.section[id]');
+
+    const mobProgress     = document.getElementById('mobProgress');
+    const mobProgressFill = document.getElementById('mobProgressFill');
+    const mobChip         = document.getElementById('mobChip');
+    const mobOverlay      = document.getElementById('mobOverlay');
+    const mobSheet        = document.getElementById('mobSheet');
+    const mobSheetItems   = document.getElementById('mobSheetItems');
+    const mobMenuBtn      = document.getElementById('mobMenuBtn');
+    const mobDrawer       = document.getElementById('mobDrawer');
+    const mobDrawerOverlay= document.getElementById('mobDrawerOverlay');
+
+    let activeSection = null;
+    const isMobile = () => window.innerWidth <= 860;
+
+    function mobToggleDrawer() { mobDrawer.classList.contains('open') ? mobCloseDrawer() : mobOpenDrawer(); }
+    function mobOpenDrawer() {
+      mobDrawer.classList.add('open'); mobDrawerOverlay.classList.add('open');
+      mobMenuBtn.classList.add('open'); mobMenuBtn.setAttribute('aria-label','Close menu');
+    }
+    function mobCloseDrawer() {
+      mobDrawer.classList.remove('open'); mobDrawerOverlay.classList.remove('open');
+      mobMenuBtn.classList.remove('open'); mobMenuBtn.setAttribute('aria-label','Open menu');
+    }
+
+    function buildMobSheet() {
+      mobSheetItems.innerHTML = '';
+      items.forEach(item => {
+        const a = document.createElement('a');
+        a.className = 'mob-sheet-item' + (item.dataset.s === activeSection ? ' active-section' : '');
+        a.href = item.getAttribute('href');
+        a.innerHTML = `<span class="mob-sheet-num">${item.textContent.trim().split(' ')[0]}</span>
+          <span class="mob-sheet-name">${item.textContent.trim().split(/\s+/).slice(1).join(' ')}</span>
+          <div class="mob-sheet-dot"></div>`;
+        a.onclick = () => mobCloseSheet();
+        mobSheetItems.appendChild(a);
+      });
+    }
+    function mobOpenSheet() {
+      buildMobSheet();
+      mobOverlay.style.display = 'block';
+      requestAnimationFrame(() => { mobOverlay.classList.add('open'); mobSheet.classList.add('open'); });
+    }
+    function mobCloseSheet() {
+      mobOverlay.classList.remove('open'); mobSheet.classList.remove('open');
+      setTimeout(() => { mobOverlay.style.display = 'none'; }, 350);
+    }
+
+    function updateProgress() {
+      if (!isMobile()) return;
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      mobProgressFill.style.width = (docH > 0 ? Math.min(100, (window.scrollY / docH) * 100) : 0) + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+
+    const navEl = document.querySelector('nav');
+    window.addEventListener('scroll', () => { navEl.classList.toggle('scrolled', window.scrollY > 10); }, { passive: true });
+    window.addEventListener('scroll', () => { if (!isMobile()) return; mobChip.classList.toggle('visible', window.scrollY > 50); }, { passive: true });
+
+    const heroObs = new IntersectionObserver((entries) => {
+      const gone = !entries[0].isIntersecting;
+      titleBar.classList.toggle('visible', gone);
+      sidebar.classList.toggle('visible', gone);
+      if (isMobile()) mobProgress.classList.toggle('visible', gone);
+    }, { threshold: 0 });
+    heroObs.observe(hero);
+
+    const secObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        activeSection = e.target.id;
+        items.forEach(item => item.classList.toggle('active', item.dataset.s === activeSection));
+        const active = document.querySelector(`.sidebar-item[data-s="${activeSection}"]`);
+        if (active) {
+          const txt = active.textContent.trim().replace(/\s+/, ' · ');
+          barSection.innerHTML = txt;
+          if (isMobile()) mobChip.textContent = txt + ' ↑';
+        }
+      });
+    }, { threshold: 0, rootMargin: '-108px 0px -75% 0px' });
+    sections.forEach(s => secObs.observe(s));
+  </script>
+
+</body>
+</html>
