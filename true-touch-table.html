@@ -237,7 +237,32 @@
 
     /* ─ CHART ─ */
     .fig { margin: 28px 0; }
-    .fig img { width: 100%; display: block; border: 1px solid var(--ash); }
+    .fig img { width: 100%; display: block; border: 1px solid var(--ash); cursor: zoom-in; }
+
+    .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0 10px; }
+    .gallery figure { margin: 0; }
+    .gallery img { width: 100%; height: 240px; object-fit: cover; display: block; border: 1px solid var(--ash); cursor: zoom-in; }
+    .gallery .chart-caption { margin-top: 8px; }
+    .gallery figure:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .gallery figure:last-child:nth-child(odd) img { height: 300px; }
+    @media (max-width: 860px) { .gallery { grid-template-columns: 1fr; } .gallery img { height: auto !important; } }
+
+    .lightbox {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(26,26,26,0.92);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 4vw;
+      cursor: zoom-out;
+    }
+    .lightbox.open { opacity: 1; pointer-events: auto; }
+    .lightbox img { max-width: 100%; max-height: 92vh; display: block; box-shadow: 0 8px 60px rgba(0,0,0,0.5); }
+    .lightbox-caption {
+      position: absolute; bottom: 18px; left: 0; right: 0;
+      text-align: center; color: rgba(255,255,255,0.75);
+      font-size: 12px; letter-spacing: 0.02em; padding: 0 24px;
+    }
 
     .chart-wrap {
       margin: 28px 0; padding: 28px; background: #fff; border: 1px solid var(--ash);
@@ -583,6 +608,21 @@
           <figcaption class="chart-caption">fig.02 &middot; reach analysis on the original table &mdash; target distance annotated directly on the field photo</figcaption>
         </figure>
 
+        <div class="gallery">
+          <figure>
+            <img src="assets/true-touch-table/10-context-red-table.jpg" alt="Customers and a staff member interacting with phones at a curved red display table during contextual observation" loading="lazy">
+            <figcaption class="chart-caption">contextual observation &mdash; display tables pull people in pairs, never alone</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/true-touch-table/11-context-wood-table.jpg" alt="Two shoppers exploring phones on opposite sides of a wooden display table" loading="lazy">
+            <figcaption class="chart-caption">two users, opposite sides &mdash; the ownership-zone problem, observed</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/true-touch-table/12-research-annotated.jpg" alt="The original table annotated with arrows marking the unidirectional orientation problem" loading="lazy">
+            <figcaption class="chart-caption">orientation analysis &mdash; content faced one direction on a table approached from four</figcaption>
+          </figure>
+        </div>
+
         <p>This reframed the brief. The client asked for better content on the table. The research said the
           table itself &mdash; its size, position, and relationship to the physical phones &mdash; was the
           product.</p>
@@ -628,6 +668,16 @@
           <figcaption class="chart-caption">fig.04 &middot; moderated testing on the full-size mock &mdash; body position and reach observed before a single screen was built</figcaption>
         </figure>
 
+        <figure class="fig">
+          <img src="assets/true-touch-table/14-proto-radial-menus.gif" alt="Animated paper prototype: two phones on recognition zones with paper radial icon menus appearing around each" loading="lazy">
+          <figcaption class="chart-caption">fig.05 &middot; paper in motion &mdash; radial menus animated by hand, one frame per photo, to test how controls should appear around a placed phone</figcaption>
+        </figure>
+
+        <figure class="fig">
+          <img src="assets/true-touch-table/13-proto-drag-compare.gif" alt="Animated paper prototype of the drag-to-compare interaction: two paper phones dragged toward the compare zone" loading="lazy">
+          <figcaption class="chart-caption">fig.06 &middot; drag to compare &mdash; the proximity interaction prototyped as a stop-motion sequence before any code existed</figcaption>
+        </figure>
+
         <p>Testing at full physical scale mattered more than visual fidelity. A clickable on-screen prototype
           can&rsquo;t tell you that a control sits four centimeters past a comfortable reach, or that two users
           sharing the table block each other&rsquo;s zones. The paper table could.</p>
@@ -643,12 +693,12 @@
 
         <figure class="fig">
           <img src="assets/true-touch-table/07-ui-layers.jpg" alt="Exploded diagram of the five UI layers: gradient background, illustration, pattern, content, and control" loading="lazy">
-          <figcaption class="chart-caption">fig.05 &middot; the five-layer content architecture &mdash; marketing content rotates without touching the interaction layer</figcaption>
+          <figcaption class="chart-caption">fig.07 &middot; the five-layer content architecture &mdash; marketing content rotates without touching the interaction layer</figcaption>
         </figure>
 
         <figure class="fig">
           <img src="assets/true-touch-table/08-ui-screen.jpg" alt="Production UI screen in Thai showing the dual-camera feature story with radial control menus on both sides" loading="lazy">
-          <figcaption class="chart-caption">fig.06 &middot; production screen &mdash; feature storytelling with radial controls placed at each user&rsquo;s natural reach position</figcaption>
+          <figcaption class="chart-caption">fig.08 &middot; production screen &mdash; feature storytelling with radial controls placed at each user&rsquo;s natural reach position</figcaption>
         </figure>
 
         <p>Radial menus anchored to where the phone sat &mdash; not to screen edges &mdash; so controls always
@@ -658,7 +708,7 @@
 
         <figure class="fig">
           <img src="assets/true-touch-table/06-wireframing.jpg" alt="Working session: designing the comparison screen in Sketch on a large display with paper phone mocks on the desk" loading="lazy">
-          <figcaption class="chart-caption">fig.07 &middot; wireframing the compare flow &mdash; paper props from the prototype table stayed on the desk through UI design</figcaption>
+          <figcaption class="chart-caption">fig.09 &middot; wireframing the compare flow &mdash; paper props from the prototype table stayed on the desk through UI design</figcaption>
         </figure>
       </section>
 
@@ -675,7 +725,7 @@
 
         <figure class="fig">
           <img src="assets/true-touch-table/05-marker-spec-sketch.jpg" alt="Hand-drawn specification sketch of the conductive marker: 6cm ring, three contact dots, tolerances annotated in millimeters" loading="lazy">
-          <figcaption class="chart-caption">fig.08 &middot; conductive marker spec &mdash; 6&nbsp;cm ring, three contact points, 0.2&nbsp;mm tolerance, sketched by hand before sourcing a producer</figcaption>
+          <figcaption class="chart-caption">fig.10 &middot; conductive marker spec &mdash; 6&nbsp;cm ring, three contact points, 0.2&nbsp;mm tolerance, sketched by hand before sourcing a producer</figcaption>
         </figure>
 
         <p>We designed the markers ourselves &mdash; geometry, contact-point layout, tolerances &mdash; and I
@@ -692,7 +742,7 @@
 
         <figure class="fig">
           <img src="assets/true-touch-table/09-final-in-store.jpg" alt="Two customers at the production table in a True store, one placing a phone on the surface to trigger the comparison view" loading="lazy">
-          <figcaption class="chart-caption">fig.09 &middot; the production table in True&rsquo;s flagship store, 2019 &mdash; two users, two phones, comparison triggered by placement</figcaption>
+          <figcaption class="chart-caption">fig.11 &middot; the production table in True&rsquo;s flagship store, 2019 &mdash; two users, two phones, comparison triggered by placement</figcaption>
         </figure>
 
         <p>In the Facebook interview deck I built a year later, I titled this case &ldquo;story of a successful
@@ -855,6 +905,34 @@
       });
     }, { threshold: 0, rootMargin: '-108px 0px -75% 0px' });
     sections.forEach(s => secObs.observe(s));
+  </script>
+
+  <!-- ══ LIGHTBOX ══ -->
+  <div class="lightbox" id="lightbox" onclick="lbClose()">
+    <img id="lightboxImg" src="" alt="">
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+  </div>
+
+  <script>
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lightboxImg');
+    const lbCap = document.getElementById('lightboxCaption');
+    function lbClose() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+      setTimeout(() => { lbImg.src = ''; }, 250);
+    }
+    document.querySelectorAll('.fig img, .gallery img').forEach(img => {
+      img.addEventListener('click', () => {
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        const cap = img.closest('figure') ? img.closest('figure').querySelector('.chart-caption') : null;
+        lbCap.textContent = cap ? cap.textContent : '';
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) lbClose(); });
   </script>
 
 </body>
