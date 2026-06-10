@@ -237,32 +237,16 @@
 
     /* ─ CHART ─ */
     .fig { margin: 28px 0; }
-    .fig img { width: 100%; display: block; border: 1px solid var(--ash); cursor: zoom-in; }
+    .fig img { width: 100%; display: block; border: 1px solid var(--ash); }
 
     .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0 10px; }
     .gallery figure { margin: 0; }
-    .gallery img { width: 100%; height: 240px; object-fit: cover; display: block; border: 1px solid var(--ash); cursor: zoom-in; }
+    .gallery img { width: 100%; height: 240px; object-fit: cover; display: block; border: 1px solid var(--ash); }
     .gallery .chart-caption { margin-top: 8px; }
     .gallery figure:last-child:nth-child(odd) { grid-column: 1 / -1; }
     .gallery figure:last-child:nth-child(odd) img { height: 300px; }
     @media (max-width: 860px) { .gallery { grid-template-columns: 1fr; } .gallery img { height: auto !important; } }
 
-    .lightbox {
-      position: fixed; inset: 0; z-index: 300;
-      background: rgba(26,26,26,0.92);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.25s ease;
-      padding: 4vw;
-      cursor: zoom-out;
-    }
-    .lightbox.open { opacity: 1; pointer-events: auto; }
-    .lightbox img { max-width: 100%; max-height: 92vh; display: block; box-shadow: 0 8px 60px rgba(0,0,0,0.5); }
-    .lightbox-caption {
-      position: absolute; bottom: 18px; left: 0; right: 0;
-      text-align: center; color: rgba(255,255,255,0.75);
-      font-size: 12px; letter-spacing: 0.02em; padding: 0 24px;
-    }
 
     .chart-wrap {
       margin: 28px 0; padding: 28px; background: #fff; border: 1px solid var(--ash);
@@ -442,6 +426,47 @@
         line-height: 1.5; color: var(--graphite);
       }
       .mob-drawer-email { font-size: 12px; color: var(--peach); text-decoration: none; letter-spacing: 0.02em; }
+    }
+
+    /* ── lightbox ── */
+    .fig img, .gallery img, .fig-wrap img { cursor: zoom-in; }
+    .lightbox {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(26,26,26,0.92);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 4vw;
+      cursor: zoom-out;
+    }
+    .lightbox.open { opacity: 1; pointer-events: auto; }
+    .lightbox img { max-width: 100%; max-height: 88vh; display: block; box-shadow: 0 8px 60px rgba(0,0,0,0.5); cursor: default; }
+    .lightbox-caption {
+      position: absolute; bottom: 18px; left: 0; right: 0;
+      text-align: center; color: rgba(255,255,255,0.75);
+      font-size: 12px; letter-spacing: 0.02em; padding: 0 24px;
+    }
+    .lb-counter {
+      position: absolute; top: 18px; right: 24px;
+      color: rgba(255,255,255,0.55); font-size: 12px; letter-spacing: 0.06em;
+    }
+    .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(26,26,26,0.4);
+      color: rgba(255,255,255,0.85);
+      font-size: 20px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; user-select: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .lb-nav:hover { background: rgba(224,122,95,0.85); border-color: transparent; }
+    .lb-prev { left: 18px; }
+    .lb-next { right: 18px; }
+    @media (max-width: 860px) {
+      .lb-nav { width: 38px; height: 38px; font-size: 17px; }
+      .lb-prev { left: 8px; } .lb-next { right: 8px; }
     }
   </style>
 </head>
@@ -658,25 +683,24 @@
           to production: <em>compare by proximity</em> (two phones placed near each other trigger comparison)
           and <em>compare on full screen</em>.</p>
 
-        <figure class="fig">
-          <img src="assets/true-touch-table/03-board-prototype.jpg" alt="1:1 board prototype of the table surface with paper radial menus and real phones placed on marked zones" loading="lazy">
-          <figcaption class="chart-caption">fig.03 &middot; 1:1 board prototype &mdash; paper radial controls, real phones, real reach distances</figcaption>
-        </figure>
-
-        <figure class="fig">
-          <img src="assets/true-touch-table/04-prototype-testing.jpg" alt="A test participant standing at the full-size prototype table during a moderated session" loading="lazy">
-          <figcaption class="chart-caption">fig.04 &middot; moderated testing on the full-size mock &mdash; body position and reach observed before a single screen was built</figcaption>
-        </figure>
-
-        <figure class="fig">
-          <img src="assets/true-touch-table/14-proto-radial-menus.gif" alt="Animated paper prototype: two phones on recognition zones with paper radial icon menus appearing around each" loading="lazy">
-          <figcaption class="chart-caption">fig.05 &middot; paper in motion &mdash; radial menus animated by hand, one frame per photo, to test how controls should appear around a placed phone</figcaption>
-        </figure>
-
-        <figure class="fig">
-          <img src="assets/true-touch-table/13-proto-drag-compare.gif" alt="Animated paper prototype of the drag-to-compare interaction: two paper phones dragged toward the compare zone" loading="lazy">
-          <figcaption class="chart-caption">fig.06 &middot; drag to compare &mdash; the proximity interaction prototyped as a stop-motion sequence before any code existed</figcaption>
-        </figure>
+        <div class="gallery">
+          <figure>
+            <img src="assets/true-touch-table/03-board-prototype.jpg" alt="1:1 board prototype of the table surface with paper radial menus and real phones placed on marked zones" loading="lazy">
+            <figcaption class="chart-caption">fig.03 &middot; 1:1 board prototype &mdash; paper radial controls, real phones, real reach distances</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/true-touch-table/04-prototype-testing.jpg" alt="A test participant standing at the full-size prototype table during a moderated session" loading="lazy">
+            <figcaption class="chart-caption">fig.04 &middot; moderated testing on the full-size mock &mdash; body and reach observed first</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/true-touch-table/14-proto-radial-menus.gif" alt="Animated paper prototype: two phones on recognition zones with paper radial icon menus appearing around each" loading="lazy">
+            <figcaption class="chart-caption">fig.05 &middot; paper in motion &mdash; radial menus animated by hand, frame by frame</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/true-touch-table/13-proto-drag-compare.gif" alt="Animated paper prototype of the drag-to-compare interaction: two paper phones dragged toward the compare zone" loading="lazy">
+            <figcaption class="chart-caption">fig.06 &middot; drag to compare &mdash; the proximity interaction as stop motion, before any code</figcaption>
+          </figure>
+        </div>
 
         <p>Testing at full physical scale mattered more than visual fidelity. A clickable on-screen prototype
           can&rsquo;t tell you that a control sits four centimeters past a comfortable reach, or that two users
@@ -907,32 +931,57 @@
     sections.forEach(s => secObs.observe(s));
   </script>
 
+
   <!-- ══ LIGHTBOX ══ -->
-  <div class="lightbox" id="lightbox" onclick="lbClose()">
+  <div class="lightbox" id="lightbox">
     <img id="lightboxImg" src="" alt="">
     <p class="lightbox-caption" id="lightboxCaption"></p>
+    <span class="lb-counter" id="lbCounter"></span>
+    <div class="lb-nav lb-prev" id="lbPrev">&#8592;</div>
+    <div class="lb-nav lb-next" id="lbNext">&#8594;</div>
   </div>
 
   <script>
-    const lb = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lightboxImg');
-    const lbCap = document.getElementById('lightboxCaption');
-    function lbClose() {
-      lb.classList.remove('open');
-      document.body.style.overflow = '';
-      setTimeout(() => { lbImg.src = ''; }, 250);
-    }
-    document.querySelectorAll('.fig img, .gallery img').forEach(img => {
-      img.addEventListener('click', () => {
+    (function () {
+      const lb = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightboxImg');
+      const lbCap = document.getElementById('lightboxCaption');
+      const lbCount = document.getElementById('lbCounter');
+      const imgs = Array.from(document.querySelectorAll('.fig img, .gallery img, .fig-wrap img'));
+      let cur = -1;
+
+      function show(i) {
+        cur = (i + imgs.length) % imgs.length;
+        const img = imgs[cur];
         lbImg.src = img.src;
         lbImg.alt = img.alt;
-        const cap = img.closest('figure') ? img.closest('figure').querySelector('.chart-caption') : null;
+        const wrap = img.closest('figure') || img.closest('.fig-wrap');
+        const cap = wrap ? wrap.querySelector('.chart-caption, .fig-caption') : null;
         lbCap.textContent = cap ? cap.textContent : '';
+        lbCount.textContent = (cur + 1) + ' / ' + imgs.length;
+      }
+      function open(i) {
+        show(i);
         lb.classList.add('open');
         document.body.style.overflow = 'hidden';
+      }
+      function close() {
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(() => { lbImg.src = ''; }, 250);
+      }
+
+      imgs.forEach((img, i) => img.addEventListener('click', () => open(i)));
+      lb.addEventListener('click', e => { if (e.target === lb || e.target === lbImg) close(); });
+      document.getElementById('lbPrev').addEventListener('click', e => { e.stopPropagation(); show(cur - 1); });
+      document.getElementById('lbNext').addEventListener('click', e => { e.stopPropagation(); show(cur + 1); });
+      document.addEventListener('keydown', e => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') show(cur - 1);
+        if (e.key === 'ArrowRight') show(cur + 1);
       });
-    });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.classList.contains('open')) lbClose(); });
+    })();
   </script>
 
 </body>
