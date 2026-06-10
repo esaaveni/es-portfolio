@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Access — Esteban Saavedra</title>
+  <title>Access · Esteban Saavedra</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -448,7 +448,7 @@
     <a href="index.html" class="mob-drawer-link" onclick="mobCloseDrawer()">Work</a>
     <a href="https://claude.ai/public/artifacts/43d2c20a-9909-43fe-8db2-d67f269ab477" target="_blank" rel="noopener" class="mob-drawer-link" onclick="mobCloseDrawer()">Career evolution <svg style="display:inline-block;vertical-align:middle;margin-left:3px;margin-bottom:2px" xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/></svg></a>
     <div class="mob-drawer-contact">
-      <p class="mob-drawer-msg">Open to new projects &mdash;<br>I&rsquo;d love to hear from you.</p>
+      <p class="mob-drawer-msg">Open to new projects.<br>I&rsquo;d love to hear from you.</p>
       <a href="mailto:esaaveni@gmail.com" class="mob-drawer-email">esaaveni@gmail.com</a>
     </div>
   </div>
@@ -515,7 +515,7 @@
       <section class="section" id="s01">
         <h2 class="section-heading">Context</h2>
         <p>LATAM Airlines operates across 15 markets in Latin America. The Customer Service squad is responsible for
-          the digital self-service experience &mdash; the flows passengers use to change, cancel, or get a refund on
+          the digital self-service experience: the flows passengers use to change, cancel, or get a refund on
           their tickets, without calling support.</p>
         <p>The voluntary exchange flow was one of those self-service options. Passengers who found it could change
           their ticket end-to-end inside the app. The product worked. The problem was that on mobile, almost no one
@@ -528,11 +528,11 @@
       <!-- ── 02 · PROBLEM ── -->
       <section class="section" id="s02">
         <h2 class="section-heading">Problem</h2>
-        <p>The Medallia detractor data was specific. Passengers weren&rsquo;t writing vague complaints &mdash; they
+        <p>The Medallia detractor data was specific. Passengers weren&rsquo;t writing vague complaints. They
           were writing the same sentence, week after week: <em>&ldquo;It was hard to find where to change the
           ticket.&rdquo;</em> Ten percent of mobile users, in their own words, unprompted.</p>
         <p>The BigQuery analysis made it measurable. In a sample week, 268,210 mobile sessions reached My Trips
-          Level 2 &mdash; the panel where exchange should have been reachable. Only 2.45% got to the Request Change
+          Level 2, the panel where exchange should have been reachable. Only 2.45% got to the Request Change
           page. On desktop that same week, 12.33% made it.</p>
 
         <div class="chart-wrap">
@@ -552,7 +552,7 @@
             <text x="548" y="118" font-size="12" font-weight="600" fill="#E07A5F">2.45%</text>
             <!-- annotation -->
             <line x1="179" y1="86" x2="430" y2="100" stroke="#CCCCCC" stroke-width="1" stroke-dasharray="2 3"/>
-            <text x="230" y="96" font-size="10" fill="#AAAAAA">5&times; gap &mdash; same product, same users</text>
+            <text x="230" y="96" font-size="10" fill="#AAAAAA">5&times; gap &middot; same product, same users</text>
             <!-- source -->
             <text x="0" y="178" font-size="9" fill="#CCCCCC">Source: BigQuery &middot; GA4 &middot; sample week 2025</text>
           </svg>
@@ -561,7 +561,7 @@
 
         <p>The gap wasn&rsquo;t behavioral. It was architectural.</p>
         <p>FullStory sessions confirmed it. Passengers were scanning the My Trips panel, tapping adjacent buttons,
-          backing out &mdash; not because the feature was broken, but because there was no direct entry point. Users
+          backing out. Not because the feature was broken, but because there was no direct entry point. Users
           who needed exchange were routing through the baggage store as a discovery workaround.</p>
         <p>The flow worked fine once you reached it. The fix wasn&rsquo;t a redesign. It was an entry.</p>
       </section>
@@ -577,7 +577,7 @@
         </div>
         <p>Version A was the existing My Trips layout. Version B added one new button: a direct path to
           &ldquo;Exchange &amp; Refunds,&rdquo; mobile only.</p>
-        <p>I made a deliberate decision not to touch anything else &mdash; not the button styling, not the
+        <p>I made a deliberate decision not to touch anything else: not the button styling, not the
           surrounding hierarchy, not the desktop experience. The discipline matters because it makes the result
           attributable. If you redesign the panel and traffic goes up, you don&rsquo;t know why. If you add one
           entry and traffic goes up, you know exactly why.</p>
@@ -589,7 +589,7 @@
         <h2 class="section-heading">Test scope</h2>
         <p>The A/B test was deployed on mobile only, across all 15 LATAM markets, using ABSmartly for experiment
           management. Traffic was split equally between Version A (control) and Version B (treatment).</p>
-        <p>The experiment used predefined checkpoints &mdash; a statistical method that lets a team stop an
+        <p>The experiment used predefined checkpoints, a statistical method that lets a team stop an
           experiment early without inflating the risk of a false positive, as long as the stopping rules are
           declared before the experiment starts. The read date and 95% confidence threshold were locked in the
           experiment brief before any code was written.</p>
@@ -610,14 +610,14 @@
         <div class="tier">
           <p class="tier-title">Secondary &middot; downstream evidence</p>
           <p>Unique pageviews to exchange confirmation, and the CSAT shift on the &ldquo;hard to find&rdquo;
-            detractor segment &mdash; evidence that access improvement translated into completed exchanges and
+            detractor segment: evidence that access improvement translated into completed exchanges and
             reduced frustration.</p>
         </div>
         <div class="tier">
           <p class="tier-title">Guardrail &middot; what &ldquo;harm&rdquo; looked like</p>
           <p>Mobile baggage-store access. The hypothesis was that a direct exchange path would not cannibalize the
             bags flow. Declaring it as a guardrail before the test meant there was no debate about the 7.98% drop
-            when results came in. We&rsquo;d already agreed on what harm looked like &mdash; and this wasn&rsquo;t it.</p>
+            when results came in. We&rsquo;d already agreed on what harm looked like. This wasn&rsquo;t it.</p>
         </div>
       </section>
 
@@ -625,7 +625,7 @@
       <section class="section" id="s06">
         <h2 class="section-heading">Results</h2>
         <p>Statistical confidence reached 95% four days ahead of the planned read date. The experiment closed
-          early &mdash; the predefined checkpoint logic made that call legitimate.</p>
+          early. The predefined checkpoint logic made that call legitimate.</p>
         <div class="metrics-grid">
           <div class="metric-cell">
             <div class="metric-number">+11.89%</div>
@@ -645,7 +645,7 @@
           </div>
         </div>
         <p>The &minus;7.98% baggage-store drop is counter-intuitive. Users who previously routed through the bags
-          page to find exchange no longer needed to. They weren&rsquo;t buying fewer bags &mdash; they were no
+          page to find exchange no longer needed to. They weren&rsquo;t buying fewer bags. They were no
           longer using the bags page as a map. Conversion on baggage purchases was unaffected.</p>
         <p>CRO Brasil published the experiment results. The case was named finalist in the CRO Awards Brasil 2025,
           &ldquo;Experiments that move the needle&rdquo; category.</p>
@@ -656,12 +656,12 @@
         <h2 class="section-heading">Challenge</h2>
         <p>This was the squad&rsquo;s first production experiment. There was no internal playbook. No one had
           run an A/B test in this product surface before.</p>
-        <p>I built the measurement framework from scratch &mdash; BigQuery queries, ABSmartly configuration,
+        <p>I built the measurement framework from scratch: BigQuery queries, ABSmartly configuration,
           predefined checkpoint logic. The upfront investment was significant. But the cost showed up in the
           readout: when the results came in clean, no one questioned them. The rigor removed the debate.</p>
         <p>The baggage-store drop created a moment of friction during the readout. A 7.98% decrease in any metric
-          draws attention. Because we had declared it as a guardrail before the experiment started &mdash; and
-          defined what &ldquo;harm&rdquo; meant in advance &mdash; there was no debate. We had already agreed on
+          draws attention. Because we had declared it as a guardrail before the experiment started, and
+          defined what &ldquo;harm&rdquo; meant in advance, there was no debate. We had already agreed on
           the answer.</p>
       </section>
 
@@ -669,8 +669,8 @@
       <section class="section" id="s08">
         <h2 class="section-heading">Takeaways</h2>
         <p>This experiment shipped as a one-button change. What it actually shipped was a methodology. The three
-          PM squads that ran experiments after this one used the same framework: primary, secondary, guardrail
-          &mdash; defined before code, not after results.</p>
+          PM squads that ran experiments after this one used the same framework: primary, secondary, guardrail.
+          Defined before code, not after results.</p>
         <div class="takeaway">
           <h3 class="takeaway-title">Evidence is cheaper than opinion</h3>
           <p>One A/B test changes how a team argues about everything else. Before the experiment,
@@ -680,7 +680,7 @@
         <div class="takeaway">
           <h3 class="takeaway-title">The discovery layer is the design</h3>
           <p>When users can&rsquo;t find the feature, no improvement to the feature itself will help. Findability
-            isn&rsquo;t a navigation problem &mdash; it&rsquo;s a design surface. Treating it that way meant we
+            isn&rsquo;t a navigation problem. It&rsquo;s a design surface. Treating it that way meant we
             measured it the way we&rsquo;d measure any other design decision: with a hypothesis, a metric, and a
             test.</p>
         </div>
@@ -688,7 +688,7 @@
           <h3 class="takeaway-title">Cross-functional permission is granted by results</h3>
           <p>Design earned a seat in OKR co-authoring after this experiment, not before. The invitation came
             because the squad produced evidence the business could read and trust. Influence followed
-            accountability &mdash; not the other way around.</p>
+            accountability, not the other way around.</p>
         </div>
       </section>
 
@@ -700,7 +700,7 @@
           business could verify.</p>
         <p>The methodology became the template for every experiment the squad ran afterward. Three PM squads
           adopted the primary / secondary / guardrail framework directly. This case is the one peers cited when
-          arguing for an experimentation practice &mdash; not because of the result, but because of how the
+          arguing for an experimentation practice. Not because of the result, but because of how the
           result was produced.</p>
 
         <p style="margin-top: 40px; font-size: 15.5px; line-height: 1.78; color: var(--ink);">
@@ -713,7 +713,7 @@
       <section class="section" id="s10">
         <h2 class="section-heading">My role &amp; team</h2>
         <p>Senior Product Designer embedded in the Customer Service squad. I owned the experiment brief,
-          co-authored the hypothesis, and built the measurement framework from scratch &mdash; BigQuery queries,
+          co-authored the hypothesis, and built the measurement framework from scratch: BigQuery queries,
           ABSmartly configuration, and predefined checkpoint logic.</p>
         <p>I led the metric definition process and the internal result readout. After launch I became the
           reference point for experimentation methodology across adjacent squads.</p>
@@ -727,7 +727,7 @@
         <p class="footnote">
           Verified by: CRO Brasil, June 2025 &middot; LinkedIn pulse &middot;
           Esteban-Saavedra-2025-Cases-Study-LatamAirlines.pptx (slides 26&ndash;32) &middot;
-          Verified metrics &mdash; LATAM.md<br>
+          Verified metrics — LATAM.md<br>
           Available on request: raw 7,211-row CSAT survey &middot; internal eBusiness W16 checkpoint<br>
           Last updated: 2026-05-15
         </p>
