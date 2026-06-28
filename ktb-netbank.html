@@ -533,13 +533,14 @@
   <section class="hero" id="hero">
     <p class="hero-meta">Krungthai Bank &nbsp;&middot;&nbsp; Bangkok &nbsp;&middot;&nbsp; 2017</p>
     <h1 class="hero-title">KTB NetBank</h1>
-    <p class="hero-sub">Turning a strategy agency&rsquo;s research into a working mobile banking experience: architecture, flows, and validation</p>
+    <p class="hero-sub">Full redesign of a state bank&rsquo;s digital banking platform: information architecture, transaction flows, engagement features, and validation across mobile and web</p>
     <div class="hero-strip">
-      <span>Mobile banking</span>
+      <span>Mobile &amp; web banking</span>
       <span>Information architecture</span>
-      <span>Flow design</span>
+      <span>Transaction flows</span>
+      <span>Engagement design</span>
       <span>Usability testing</span>
-      <span>Design guidelines</span>
+      <span>Design system</span>
     </div>
   </section>
 
@@ -549,13 +550,14 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <a href="#s01" class="sidebar-item" data-s="s01">01&nbsp; context</a>
-      <a href="#s02" class="sidebar-item" data-s="s02">02&nbsp; the handoff gap</a>
+      <a href="#s02" class="sidebar-item" data-s="s02">02&nbsp; the scope</a>
       <a href="#s03" class="sidebar-item" data-s="s03">03&nbsp; architecture</a>
-      <a href="#s04" class="sidebar-item" data-s="s04">04&nbsp; flow design</a>
-      <a href="#s05" class="sidebar-item" data-s="s05">05&nbsp; validation</a>
-      <a href="#s06" class="sidebar-item" data-s="s06">06&nbsp; system</a>
-      <a href="#s07" class="sidebar-item" data-s="s07">07&nbsp; takeaways</a>
-      <a href="#s08" class="sidebar-item" data-s="s08">08&nbsp; my role &amp; team</a>
+      <a href="#s04" class="sidebar-item" data-s="s04">04&nbsp; transaction flows</a>
+      <a href="#s05" class="sidebar-item" data-s="s05">05&nbsp; engagement layer</a>
+      <a href="#s06" class="sidebar-item" data-s="s06">06&nbsp; validation</a>
+      <a href="#s07" class="sidebar-item" data-s="s07">07&nbsp; system</a>
+      <a href="#s08" class="sidebar-item" data-s="s08">08&nbsp; takeaways</a>
+      <a href="#s09" class="sidebar-item" data-s="s09">09&nbsp; my role &amp; team</a>
     </aside>
 
     <!-- CONTENT -->
@@ -564,13 +566,15 @@
       <!-- ── 01 · CONTEXT ── -->
       <section class="section" id="s01">
         <h2 class="section-heading">Context</h2>
-        <p>Krungthai Bank (KTB) is one of Thailand&rsquo;s largest banks, state-owned and serving tens of
-          millions of customers. In 2017 the bank was rebuilding its NetBank mobile experience, and the
-          strategy agency DINN had delivered the upstream work: customer research, strategic direction, and a
-          brand foundation.</p>
-        <p>Research reports don&rsquo;t move money. Someone has to translate strategic findings into an
-          information architecture, screen flows, interaction rules, and a system developers can build,
-          and then prove with real users that the translation worked. That was our job.</p>
+        <p>Krungthai Bank (KTB) is one of Thailand&rsquo;s largest banks &mdash; state-owned, serving tens of
+          millions of customers. In 2017 the bank was executing a digital transformation: not updating an
+          existing app, but rebuilding its entire NetBank experience from the ground up, across mobile and
+          web simultaneously.</p>
+        <p>Strategy agency DINN had delivered the upstream work: customer research, segmentation, a digital
+          banking strategy, and a brand foundation. Lead Innovation was brought in to translate that upstream
+          work into product. Research reports don&rsquo;t move money. Someone has to turn strategic findings
+          into an information architecture, screen flows, interaction rules, and a system developers can
+          actually build &mdash; and then prove with real users that the translation worked. That was our job.</p>
 
         <figure class="fig">
           <img src="assets/ktb/01-brand-values-workshop.jpg" alt="Brand values workshop room: walls and conference table covered in hundreds of printed images being sorted by the team" loading="lazy">
@@ -578,59 +582,121 @@
         </figure>
       </section>
 
-      <!-- ── 02 · THE HANDOFF GAP ── -->
+      <!-- ── 02 · THE SCOPE ── -->
       <section class="section" id="s02">
-        <h2 class="section-heading">The handoff gap</h2>
-        <p>The gap between &ldquo;research says users want simpler payments&rdquo; and a payment flow a Thai
-          grandmother can complete is where most bank app redesigns die. The research was solid; what
-          didn&rsquo;t exist yet was the structural decisions: what lives on the home screen, how accounts,
-          payments, and products relate, what happens at every error state.</p>
-        <p>We treated DINN&rsquo;s research as constraints, not suggestions. Every architecture decision
-          had to trace back to a finding. Where the research was silent, we marked it as an assumption to be
-          tested rather than guessing silently. The usability protocol later in the project existed precisely
-          to catch those marked assumptions.</p>
+        <h2 class="section-heading">The scope</h2>
+        <p>The project covered the entire KTB NetBank product. Nine account types. Funds transfer to own
+          accounts, third-party accounts, other banks, and internationally &mdash; via account list, manual
+          input, QR code, and PromptPay. Bill payment with full vendor management. Investment products:
+          fund subscription, redemption, switching, NAV, and portfolio summary. Loans, cheques, and
+          services including Western Union, ATM and branch management, and a queue-at-branch feature.</p>
+        <p>Mobile and web were scoped simultaneously, with explicit parity decisions on every function.
+          Some features ran on both. Some were web-only. Some mobile-only. These decisions were made at the
+          architecture stage &mdash; not discovered in QA.</p>
+        <p>The Terms of Reference formalised the brief: defined deliverables, phased milestones, and a
+          December 2016 customer profile dataset as a structured input alongside DINN&rsquo;s strategy work.
+          This was a full product architecture assignment, not a redesign of one flow.</p>
       </section>
 
       <!-- ── 03 · ARCHITECTURE ── -->
       <section class="section" id="s03">
         <h2 class="section-heading">Architecture</h2>
-        <p>The new information architecture was drafted by hand, on paper, against the research: balance
-          and filtering, payments, products, and a &ldquo;Dreams&rdquo; section for savings goals where the bank
-          suggests amounts from the user&rsquo;s actual cash flow. Sketching the map before any screen design
-          forced the structural argument to happen early, when changing it was free.</p>
+        <p>Two candidate information architectures were developed against DINN&rsquo;s research &mdash; Map A
+          and Map B. Both were built from the same core insight: Thai banking users&rsquo; mental model
+          does not map neatly onto bank product categories. People think in tasks, not product lines.</p>
+        <p>The new architecture prioritised actions over products. The home screen organised around what
+          users need to do: check balance, move money, pay bills. Products &mdash; loans, investment funds,
+          fixed accounts &mdash; lived in a separate navigation layer accessed when needed, not interleaved
+          with daily tasks. The IA was sketched by hand on paper against the research first. Making the
+          structural argument early, when changing it was free, is the only way to avoid rebuilding it
+          in code.</p>
 
         <figure class="fig">
           <img src="assets/ktb/02-ia-map-sketch.jpg" alt="Hand-drawn information architecture map for the new app: home, balance, payments, products, dreams and lifestyle sections with annotations" loading="lazy">
-          <figcaption class="chart-caption">fig.02 &middot; the new app&rsquo;s IA, drafted by hand against DINN&rsquo;s research &middot; including the savings-goal logic annotated at right</figcaption>
+          <figcaption class="chart-caption">fig.02 &middot; new IA, drafted by hand against DINN&rsquo;s research &middot; actions over product categories, engagement layer elevated to first class</figcaption>
         </figure>
+
+        <p>We treated DINN&rsquo;s findings as constraints, not suggestions. Every IA decision had to trace
+          back to a research finding. Where the research was silent, we marked it as an assumption to be
+          tested rather than guessing silently. The usability protocol existed precisely to catch those
+          marked gaps.</p>
       </section>
 
-      <!-- ── 04 · FLOW DESIGN ── -->
+      <!-- ── 04 · TRANSACTION FLOWS ── -->
       <section class="section" id="s04">
-        <h2 class="section-heading">Flow design: Send Money</h2>
-        <p>Send Money was the highest-stakes flow in the app. The one customers use most and trust
-          least. The flow covered sending to other people, to the user&rsquo;s own accounts, adding accounts,
-          and scheduling transactions, with every screen state and decision branch documented in a single
-          annotated diagram.</p>
+        <h2 class="section-heading">Transaction flows</h2>
+        <p>Four major transaction flows were designed end-to-end, documented as annotated diagrams that
+          served as the contract between design and development. Each annotation answered a question a
+          developer would otherwise have to guess.</p>
+
+        <p><strong>Send Money</strong> was the highest-stakes flow. The one customers use most and trust
+          least. The flow covered sending to KTB accounts, third-party accounts, other banks, PromptPay,
+          and wallet &mdash; each with its own account selection path, recipient verification, and confirmation
+          state. Every screen state and every decision branch was documented in a single diagram.</p>
 
         <figure class="fig">
           <img src="assets/ktb/03-send-money-flow.jpg" alt="Complete annotated Send Money flow diagram: account selection, recipient, amount entry, confirmation, and success states with branch logic" loading="lazy">
-          <figcaption class="chart-caption">fig.03 &middot; the Send Money flow &middot; every branch from account selection to confirmation, annotated for development</figcaption>
+          <figcaption class="chart-caption">fig.03 &middot; Send Money flow &middot; every branch from account selection to confirmation, annotated for development</figcaption>
         </figure>
 
-        <p>The diagram was the contract between design and development. Each annotation answered a question a
-          developer would otherwise have to guess: what happens when the recipient isn&rsquo;t found, when the
-          amount exceeds the balance, when the user edits a saved contact mid-flow.</p>
+        <p><strong>Pay Bills</strong> covered the full vendor lookup, payee management, and payment
+          flow &mdash; adding new payees, paying from a saved favourites list, and the
+          confirmation and success states for each path.</p>
+        <p><strong>Pre-login</strong> &mdash; registration, login, and forgot password &mdash; was delivered
+          as Sprint 1. The first experience a new user has with the bank sets the trust tone for everything
+          that follows. It received the same flow rigour as the transaction screens.</p>
+        <p><strong>Product navigation</strong> mapped how users move between the banking home, investment
+          products, and loan services &mdash; including the transitions that had no equivalent in the
+          previous on-premise experience and had to be designed from first principles.</p>
       </section>
 
-      <!-- ── 05 · VALIDATION ── -->
+      <!-- ── 05 · ENGAGEMENT LAYER ── -->
       <section class="section" id="s05">
+        <h2 class="section-heading">Engagement layer</h2>
+        <p>Beyond core transactions, KTB&rsquo;s strategy included features designed to make the app
+          habitual rather than purely transactional. These were designed as a distinct layer sitting above
+          the banking functions.</p>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Dreams</h3>
+          <p>Savings goals where the bank surfaces a suggested amount drawn from the user&rsquo;s own
+            cash flow. Users set a goal, name it, track progress, and receive contextual suggestions
+            based on actual spending patterns &mdash; not generic savings calculators.</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Lifestyle</h3>
+          <p>Curated offers and recommendations connected to account activity. The idea was to bridge
+            banking and daily life: the app knows what you spend on, so it can surface things that
+            are genuinely relevant rather than generic promotions.</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Rewards</h3>
+          <p>A recognition system rewarding active use of digital banking features, including a
+            leaderboard. Designed to surface the value of going digital to users who still defaulted
+            to branch or ATM.</p>
+        </div>
+        <div class="takeaway">
+          <h3 class="takeaway-title">Butler</h3>
+          <p>A personalised assistant layer surfacing contextual actions based on account status,
+            upcoming obligations, and usage patterns. Early version of what is now called
+            proactive banking.</p>
+        </div>
+        <p>These features were speculative at the time. In 2024, savings goals with contextual suggestions,
+          lifestyle offers, and proactive assistants are standard in the neobank playbook. KTB designed
+          them in 2017.</p>
+      </section>
+
+      <!-- ── 06 · VALIDATION ── -->
+      <section class="section" id="s06">
         <h2 class="section-heading">Validation</h2>
-        <p>We wrote and ran a two-day moderated usability protocol against the working design. Day one: icon
-          findability, registration, login, look and feel, sending money to others, and payments. Day two:
-          transfers to own accounts (including adding an account and scheduling a transaction),
-          top-up, and paying from favorites.</p>
-        <p>Findings were graded on a declared severity scale before testing began:</p>
+        <p>Two validation methods ran in sequence: a heuristic evaluation against the first design pass,
+          then two-round moderated usability testing against the working design.</p>
+        <p>The heuristic evaluation was run before involving real users &mdash; using established usability
+          principles to identify structural problems while they were still cheap to fix. Issues caught here
+          were resolved before the usability protocol began.</p>
+        <p>The usability protocol covered two days. Day one: icon findability, registration, login, look and
+          feel, sending money to others, and payments. Day two: transfers to own accounts (including adding
+          an account and scheduling a transaction), top-up, and paying from favourites.</p>
+        <p>Findings were graded on a declared severity scale set before testing began:</p>
         <div class="tier">
           <p class="tier-title">Critical</p>
           <p>The app doesn&rsquo;t work if this is ignored. Must be solved.</p>
@@ -643,59 +709,72 @@
           <p class="tier-title">Basic</p>
           <p>Doesn&rsquo;t affect functionality, but annoys users and erodes satisfaction.</p>
         </div>
-        <p>Measured outcomes per task: completion rate, average time, and a satisfaction questionnaire covering
-          label comprehension, language, navigation flow, interactive elements, and system feedback. A second
-          round of testing focused specifically on the critical issues from round one and verified the design
-          enhancements resolved them.</p>
+        <p>Measured outcomes per task: completion rate, average time, and a satisfaction questionnaire
+          covering label comprehension, language, navigation flow, interactive elements, and system
+          feedback. A second round focused specifically on the critical issues from round one and verified
+          the design enhancements resolved them.</p>
       </section>
 
-      <!-- ── 06 · SYSTEM ── -->
-      <section class="section" id="s06">
+      <!-- ── 07 · SYSTEM ── -->
+      <section class="section" id="s07">
         <h2 class="section-heading">System</h2>
-        <p>Two guideline sets made the work survive its handoff. An icon system built on the Material Design
-          grid (product icons, system icons, light and dark background variants) and a system
-          feedback specification: what the app says, and how, at every error, pending, and success state.</p>
+        <p>Two guideline sets made the work survive its handoff. An icon system built on the Material
+          Design grid &mdash; product icons and system icons, delivered in light and dark background
+          variants, documented to the component level with usage rules. And a system feedback
+          specification: what the app says, and how, at every error, pending, and success state.</p>
 
         <figure class="fig">
           <img src="assets/ktb/04-system-feedback.jpg" alt="System feedback and error message specification screens for the Send Money flow" loading="lazy">
           <figcaption class="chart-caption">fig.04 &middot; system feedback &amp; error message spec &middot; the unglamorous half of a banking flow, where trust is actually won</figcaption>
         </figure>
+
+        <p>In banking, the success path is table stakes. Trust is decided in the pending screens, failed
+          transfers, and recovery paths. Specifying system feedback as a first-class deliverable &mdash; not
+          a development afterthought &mdash; is the difference between an app that works and one people
+          trust with their salary.</p>
       </section>
 
-      <!-- ── 07 · TAKEAWAYS ── -->
-      <section class="section" id="s07">
+      <!-- ── 08 · TAKEAWAYS ── -->
+      <section class="section" id="s08">
         <h2 class="section-heading">Takeaways</h2>
         <div class="takeaway">
           <h3 class="takeaway-title">Research is a constraint system</h3>
-          <p>Treating the strategy agency&rsquo;s findings as constraints is what kept the translation honest:
-            every IA decision traceable to a finding, every gap marked as a testable assumption.
+          <p>Two IA maps were developed and the structural argument was made early, against actual research
+            findings. Every decision traceable to a finding; every gap marked as a testable assumption.
             The alternative is decorating your own opinions with someone else&rsquo;s research.</p>
         </div>
         <div class="takeaway">
+          <h3 class="takeaway-title">Parity decisions are design decisions</h3>
+          <p>Which features run on mobile, web, or both is not a technical call. Every parity gap is a
+            promise &mdash; or a broken promise &mdash; about the consistency of the digital experience.
+            Making those decisions explicit at the IA stage, rather than discovering them in QA, is what
+            keeps the product coherent.</p>
+        </div>
+        <div class="takeaway">
           <h3 class="takeaway-title">Declare severity before you test</h3>
-          <p>Agreeing on what &ldquo;critical&rdquo; means before seeing any findings removed the negotiation
-            afterward. The same discipline, define the evaluation before the evidence exists,
+          <p>Agreeing on what &ldquo;critical&rdquo; means before seeing any findings removes the negotiation
+            afterward. The same discipline &mdash; define the evaluation before the evidence exists &mdash;
             became the backbone of my experimentation practice years later.</p>
         </div>
         <div class="takeaway">
           <h3 class="takeaway-title">Error states are the product</h3>
-          <p>In banking, the success path is table stakes. Trust is decided in the pending screens,
-            failed transfers, and recovery paths. Specifying system feedback as a first-class deliverable, not
-            a development afterthought, is the difference between an app that works and one people trust with
-            their salary.</p>
+          <p>The success path is table stakes. Trust is decided in the pending screens, failed transfers,
+            and recovery paths. This is as true at LATAM or Nubank as it was at KTB in 2017.</p>
         </div>
       </section>
 
-      <!-- ── 08 · MY ROLE & TEAM ── -->
-      <section class="section" id="s08">
+      <!-- ── 09 · MY ROLE & TEAM ── -->
+      <section class="section" id="s09">
         <h2 class="section-heading">My role &amp; team</h2>
-        <p>UX designer on the product team: information architecture mapping from DINN&rsquo;s research, Send
-          Money flow design and documentation, the two-day usability test protocol and its severity framework,
-          and the icon and system-feedback guidelines.</p>
+        <p>UX designer on the product team: information architecture across all feature groups (both
+          candidate maps), transaction flow design and documentation (Send Money, Pay Bills, Pre-login,
+          Product Navigation), engagement feature design (Dreams, Lifestyle, Rewards, Butler), heuristic
+          evaluation, the two-day usability test protocol and its severity framework, and the icon and
+          system-feedback guidelines.</p>
         <ul class="team-list">
-          <li><strong>DINN</strong><span>Upstream research &middot; strategic direction</span></li>
-          <li><strong>Design team</strong><span>UI design &middot; heuristic evaluation</span></li>
-          <li><strong>KTB</strong><span>Banking domain rules &middot; compliance &middot; participant access</span></li>
+          <li><strong>DINN</strong><span>Upstream research &middot; strategic direction &middot; brand foundation</span></li>
+          <li><strong>Design team</strong><span>UI design &middot; visual execution</span></li>
+          <li><strong>KTB</strong><span>Banking domain rules &middot; compliance &middot; participant access &middot; customer data</span></li>
           <li><strong>Development team</strong><span>Implementation against the flow contracts</span></li>
         </ul>
         <p style="margin-top: 40px; font-size: 15.5px; line-height: 1.78; color: var(--ink);">
@@ -703,11 +782,12 @@
           <a href="mailto:esaaveni@gmail.com" style="color: var(--peach); text-decoration: none;">esaaveni@gmail.com</a>
         </p>
         <p class="footnote">
-          Source: KTB project archive 2017 &middot; usability plan, second-round critical issues report,
-          heuristic evaluation, IA maps, flow diagrams, icon guidelines<br>
+          Source: KTB project archive 2017 &middot; TOR, customer segmentation, digital banking strategy,
+          IA maps (Map A &amp; B), wireframes v2, flow diagrams, usability plan, second-round critical
+          issues report, heuristic evaluation, icon guidelines, system feedback specification<br>
           Quantitative test results remain in the client report and are not published here &middot;
           no outcome metrics are claimed.<br>
-          Last updated: 2026-06-09
+          Last updated: 2026-06-27
         </p>
       </section>
 
